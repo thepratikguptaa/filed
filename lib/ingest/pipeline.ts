@@ -5,7 +5,7 @@ import { chunkFiling } from "./chunk";
 import { fetchFilingHtml, listFilings } from "./edgar";
 import { parseFiling } from "./parse";
 import { CORPUS, YEARS_PER_COMPANY, type CorpusCompany } from "./corpus";
-import { documentIsCurrent, existingEmbeddings, replaceChunks, upsertDocument } from "./store";
+import { documentIsCurrent, existingEmbeddings, persistFiling } from "./store";
 
 export interface IngestResult {
   filing: FilingRef;
@@ -41,13 +41,12 @@ export async function ingestFiling(filing: FilingRef, options: IngestOptions = {
   log(`  embedding ${pending.length} new chunks (${chunks.length - pending.length} reused)`);
 
   if (pending.length > 0) {
-    const vectors = await getEmbedder().embed(pending.map((chunk) => chunk.text));
+    const vectors = await getEmbedder().embed(pending.map((chunk) => chunk.text), "document");
     pending.forEach((chunk, index) => cache.set(chunk.contentHash, toVectorLiteral(vectors[index])));
   }
 
   const literals = chunks.map((chunk) => cache.get(chunk.contentHash)!);
-  await replaceChunks(documentId, chunks, literals);
-  await upsertDocument(filing, contentHash, chunks.length);
+  await persistFiling(filing, contentHash, chunks, literals);
 
   return {
     filing,

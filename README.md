@@ -8,12 +8,20 @@ This is a research and analysis tool. It surfaces cited evidence from public fil
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in DATABASE_URL, OPENAI_API_KEY, SEC_USER_AGENT
+cp .env.example .env.local   # fill in the values below
+npm run check                # verifies env, database, embedding deployment and EDGAR access
 npm run migrate
 ```
 
-`DATABASE_URL` is the Supabase Postgres connection string (Session pooler, port 5432).
-`SEC_USER_AGENT` must identify you to EDGAR, e.g. `Filed Research you@example.com`.
+| Variable | Notes |
+| --- | --- |
+| `DATABASE_URL` | Supabase Postgres connection string, Session pooler on port 5432 |
+| `AZURE_OPENAI_ENDPOINT` | Resource root, e.g. `https://<resource>.openai.azure.com/` — deployment paths are added by the client |
+| `AZURE_OPENAI_EMBEDDING_DEPLOYMENT` | A `text-embedding-3-small` deployment, 1536 dimensions |
+| `AZURE_OPENAI_CHAT_DEPLOYMENT` | Chat deployment used by the answer layer |
+| `SEC_USER_AGENT` | Identifies you to EDGAR, e.g. `Filed Research you@example.com` |
+
+Embeddings run on Azure OpenAI behind the `Embedder` interface in [lib/embed](lib/embed), so swapping to a local ONNX model via transformers.js means adding one file. The embedding dimension must match `vector(1536)` in the schema.
 
 ## Corpus
 
@@ -44,12 +52,12 @@ Raw filings are cached under `data/raw/` so re-ingestion never re-downloads. Ing
 
 ## Architecture
 
-```
+```text
 lib/ingest      EDGAR client, HTML parsing, section splitting, chunking, storage
-lib/embed       embedder interface (OpenAI today, swappable)
+lib/embed       embedder interface (Azure OpenAI today, swappable)
 lib/retrieve    retrieval strategies behind one interface
 lib/db.ts       Postgres client
-scripts         ingestion, migration and query CLIs
+scripts         preflight check, ingestion, migration and query CLIs
 db/migrations   schema
 ```
 

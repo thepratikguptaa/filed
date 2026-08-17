@@ -50,7 +50,7 @@ export function filterClause(filters?: RetrievalFilters) {
 }
 
 export async function vectorSearch(query: string, k: number, filters?: RetrievalFilters): Promise<Chunk[]> {
-  const [vector] = await getEmbedder().embed([query]);
+  const [vector] = await getEmbedder().embed([query], "query");
   return vectorSearchByEmbedding(vector, k, filters);
 }
 

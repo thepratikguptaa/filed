@@ -18,27 +18,31 @@ export async function existingEmbeddings(hashes: string[]): Promise<Map<string, 
   return new Map(rows.map((row) => [row.content_hash, row.embedding]));
 }
 
-export async function upsertDocument(filing: FilingRef, contentHash: string, chunkCount: number): Promise<void> {
-  const documentId = filing.accessionNumber.replace(/-/g, "");
-  await db()`
-    insert into documents (
-      id, cik, company, ticker, filing_type, fiscal_year,
-      period_end, filed_date, source_url, content_hash, chunk_count
-    ) values (
-      ${documentId}, ${filing.cik}, ${filing.company}, ${filing.ticker}, ${filing.filingType},
-      ${filing.fiscalYear}, ${filing.periodEnd}, ${filing.filedDate}, ${filing.sourceUrl},
-      ${contentHash}, ${chunkCount}
-    )
-    on conflict (id) do update set
-      content_hash = excluded.content_hash,
-      chunk_count = excluded.chunk_count,
-      ingested_at = now()
-  `;
-}
-
-export async function replaceChunks(documentId: string, chunks: ChunkInput[], vectors: string[]): Promise<void> {
+export async function persistFiling(
+  filing: FilingRef,
+  contentHash: string,
+  chunks: ChunkInput[],
+  vectors: string[],
+): Promise<void> {
   const sql = db();
+  const documentId = filing.accessionNumber.replace(/-/g, "");
+
   await sql.begin(async (tx) => {
+    await tx`
+      insert into documents (
+        id, cik, company, ticker, filing_type, fiscal_year,
+        period_end, filed_date, source_url, content_hash, chunk_count
+      ) values (
+        ${documentId}, ${filing.cik}, ${filing.company}, ${filing.ticker}, ${filing.filingType},
+        ${filing.fiscalYear}, ${filing.periodEnd}, ${filing.filedDate}, ${filing.sourceUrl},
+        ${contentHash}, ${chunks.length}
+      )
+      on conflict (id) do update set
+        content_hash = excluded.content_hash,
+        chunk_count = excluded.chunk_count,
+        source_url = excluded.source_url,
+        ingested_at = now()
+    `;
     await tx`delete from chunks where document_id = ${documentId}`;
     for (let i = 0; i < chunks.length; i += 200) {
       const slice = chunks.slice(i, i + 200);

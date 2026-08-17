@@ -9,23 +9,41 @@ function required(name: string): string {
   return value;
 }
 
+function resourceOrigin(value: string): string {
+  return new URL(value).origin;
+}
+
 export const env = {
   get databaseUrl() {
     return required("DATABASE_URL");
   },
-  get openaiApiKey() {
-    return required("OPENAI_API_KEY");
+  get azureEndpoint() {
+    return resourceOrigin(required("AZURE_OPENAI_ENDPOINT"));
+  },
+  get azureApiKey() {
+    return required("AZURE_OPENAI_API_KEY");
+  },
+  get azureApiVersion() {
+    return required("AZURE_OPENAI_API_VERSION");
+  },
+  get azureEmbeddingDeployment() {
+    return required("AZURE_OPENAI_EMBEDDING_DEPLOYMENT");
   },
   get secUserAgent() {
     return required("SEC_USER_AGENT");
   },
 };
 
-export const embedding = {
-  model: "text-embedding-3-small",
-  dimensions: 1536,
-  batchSize: 96,
-};
+export type EmbeddingProvider = "local" | "azure";
+
+const EMBEDDING_PROVIDERS = {
+  local: { model: "nomic-ai/nomic-embed-text-v1.5", dimensions: 768, batchSize: 16 },
+  azure: { model: "text-embedding-3-small", dimensions: 1536, batchSize: 96 },
+} as const;
+
+export const embeddingProvider = (process.env.EMBEDDING_PROVIDER ?? "local") as EmbeddingProvider;
+
+export const embedding = EMBEDDING_PROVIDERS[embeddingProvider];
 
 export const chunking = {
   targetTokens: 700,

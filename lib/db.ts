@@ -10,6 +10,7 @@ export function db(): postgres.Sql {
       max: 4,
       idle_timeout: 20,
       connect_timeout: 30,
+      onnotice: () => {},
     });
   }
   return client;

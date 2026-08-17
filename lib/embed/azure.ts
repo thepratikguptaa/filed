@@ -1,21 +1,27 @@
-import OpenAI from "openai";
+import { AzureOpenAI } from "openai";
 import { embedding, env } from "../config";
-import type { Embedder } from "./types";
+import type { EmbedKind, Embedder } from "./types";
 
-export function openaiEmbedder(): Embedder {
-  const client = new OpenAI({ apiKey: env.openaiApiKey });
+export function azureEmbedder(): Embedder {
+  const deployment = env.azureEmbeddingDeployment;
+  const client = new AzureOpenAI({
+    endpoint: env.azureEndpoint,
+    apiKey: env.azureApiKey,
+    apiVersion: env.azureApiVersion,
+    deployment,
+  });
 
   return {
-    id: embedding.model,
+    id: `azure:${deployment}`,
     dimensions: embedding.dimensions,
-    async embed(texts: string[]): Promise<number[][]> {
+    async embed(texts: string[], _kind: EmbedKind): Promise<number[][]> {
       if (texts.length === 0) return [];
       const vectors: number[][] = [];
 
       for (let i = 0; i < texts.length; i += embedding.batchSize) {
         const batch = texts.slice(i, i + embedding.batchSize);
         const response = await client.embeddings.create({
-          model: embedding.model,
+          model: deployment,
           input: batch,
           encoding_format: "float",
         });
