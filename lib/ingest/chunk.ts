@@ -4,6 +4,7 @@ import { chunking } from "../config";
 import type { Block, ChunkInput, FilingRef, Section } from "../types";
 
 const encoder = getEncoding("cl100k_base");
+const SEPARATOR_SLACK = 16;
 
 export function countTokens(text: string): number {
   return encoder.encode(text).length;
@@ -27,19 +28,54 @@ function splitOversizedText(text: string, limit: number): string[] {
   return parts;
 }
 
+function splitOversizedTable(text: string, limit: number): string[] {
+  const rows = text.split("\n");
+  const header = rows[0];
+  const headerTokens = countTokens(header);
+  const parts: string[] = [];
+  let buffer: string[] = [];
+  let tokens = 0;
+
+  for (const row of rows) {
+    const size = countTokens(row);
+    if (buffer.length > 0 && tokens + size > limit) {
+      parts.push(buffer.join("\n"));
+      buffer = parts.length > 0 && header !== buffer[0] ? [header] : [];
+      tokens = buffer.length > 0 ? headerTokens : 0;
+    }
+    buffer.push(row);
+    tokens += size;
+  }
+  if (buffer.length > 0) parts.push(buffer.join("\n"));
+  return parts;
+}
+
+function hardSplit(text: string, limit: number): string[] {
+  const ids = encoder.encode(text);
+  const parts: string[] = [];
+  for (let i = 0; i < ids.length; i += limit) {
+    parts.push(encoder.decode(ids.slice(i, i + limit)));
+  }
+  return parts;
+}
+
 function expandBlocks(blocks: Block[]): Block[] {
+  const limit = chunking.maxTokens - chunking.overlapTokens - SEPARATOR_SLACK;
   const expanded: Block[] = [];
+
   for (const block of blocks) {
-    if (block.kind === "table") {
+    if (countTokens(block.text) <= limit) {
       expanded.push(block);
       continue;
     }
-    if (countTokens(block.text) <= chunking.maxTokens) {
-      expanded.push(block);
-      continue;
-    }
-    for (const part of splitOversizedText(block.text, chunking.targetTokens)) {
-      expanded.push({ kind: "text", text: part });
+    const parts =
+      block.kind === "table"
+        ? splitOversizedTable(block.text, limit)
+        : splitOversizedText(block.text, limit);
+
+    for (const part of parts) {
+      const pieces = countTokens(part) > limit ? hardSplit(part, limit) : [part];
+      for (const piece of pieces) expanded.push({ kind: block.kind, text: piece });
     }
   }
   return expanded;
@@ -77,6 +113,11 @@ export function chunkFiling(filing: FilingRef, sections: Section[]): ChunkInput[
       if (buffer.length === 0 || buffer.length === carried) return;
       const text = render(buffer);
       const tokenCount = countTokens(text);
+      if (tokenCount > chunking.maxTokens) {
+        throw new Error(
+          `Chunk of ${tokenCount} tokens exceeds the ${chunking.maxTokens} limit and would be truncated by the model`,
+        );
+      }
       if (tokenCount >= chunking.minTokens) {
         const documentId = filing.accessionNumber.replace(/-/g, "");
         chunks.push({

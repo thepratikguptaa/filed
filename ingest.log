@@ -1,0 +1,64 @@
+
+> filed@0.1.0 ingest
+> tsx scripts/ingest.ts
+
+AAPL FY2025 10-K 0000320193-25-000079
+  parsed 13 sections -> 145 chunks
+  embedding 145 new chunks (0 reused)
+  ingested (145 chunks)
+AAPL FY2024 10-K 0000320193-24-000123
+  parsed 14 sections -> 144 chunks
+  embedding 139 new chunks (5 reused)
+  ingested (144 chunks)
+MSFT FY2026 10-K 0001193125-26-323660
+  parsed 14 sections -> 211 chunks
+  embedding 211 new chunks (0 reused)
+  ingested (211 chunks)
+MSFT FY2025 10-K 0000950170-25-100235
+  parsed 13 sections -> 204 chunks
+  embedding 196 new chunks (8 reused)
+  ingested (204 chunks)
+JPM FY2025 10-K 0001628280-26-008131
+  parsed 10 sections -> 858 chunks
+  embedding 858 new chunks (0 reused)
+  ingested (858 chunks)
+JPM FY2024 10-K 0000019617-25-000270
+  parsed 10 sections -> 876 chunks
+  embedding 846 new chunks (30 reused)
+  ingested (876 chunks)
+XOM FY2025 10-K 0000034088-26-000045
+  parsed 12 sections -> 324 chunks
+  embedding 324 new chunks (0 reused)
+  ingested (324 chunks)
+XOM FY2024 10-K 0000034088-25-000010
+  parsed 13 sections -> 338 chunks
+  embedding 328 new chunks (10 reused)
+  ingested (338 chunks)
+PFE FY2025 10-K 0000078003-26-000026
+  parsed 14 sections -> 433 chunks
+  embedding 433 new chunks (0 reused)
+  ingested (433 chunks)
+PFE FY2024 10-K 0000078003-25-000054
+  parsed 14 sections -> 441 chunks
+  embedding 425 new chunks (16 reused)
+  ingested (441 chunks)
+
+--- ingest summary ---
+filings processed : 10 (10 ingested, 0 unchanged)
+chunks written    : 3974 (3905 embedded, 69 cached)
+corpus totals     : 10 documents, 3974 chunks, 1296439 tokens
+elapsed           : 1382.7s
+
+top sections by chunk count:
+  Item 15    1589
+  Item 8     668
+  Item 16    517
+  Item 1A    422
+  Item 1     234
+  Item 7     227
+  (none)     92
+  Item 2     84
+  Item 9A    31
+  Item 1C    25
+  Item 5     23
+  Item 3     17

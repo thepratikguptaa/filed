@@ -34,24 +34,64 @@ export const env = {
   },
 };
 
-export type EmbeddingProvider = "local" | "azure";
+export type EmbeddingProvider = "bge" | "nomic" | "azure";
 
-const EMBEDDING_PROVIDERS = {
-  local: { model: "nomic-ai/nomic-embed-text-v1.5", dimensions: 768, batchSize: 16 },
-  azure: { model: "text-embedding-3-small", dimensions: 1536, batchSize: 96 },
-} as const;
+interface EmbeddingConfig {
+  kind: "local" | "azure";
+  model: string;
+  dimensions: number;
+  batchSize: number;
+  maxInputTokens: number;
+  pooling: "cls" | "mean";
+  prefixes: { document: string; query: string };
+}
 
-export const embeddingProvider = (process.env.EMBEDDING_PROVIDER ?? "local") as EmbeddingProvider;
+const EMBEDDING_PROVIDERS: Record<EmbeddingProvider, EmbeddingConfig> = {
+  bge: {
+    kind: "local",
+    model: "Xenova/bge-small-en-v1.5",
+    dimensions: 384,
+    batchSize: 32,
+    maxInputTokens: 512,
+    pooling: "cls",
+    prefixes: { document: "", query: "Represent this sentence for searching relevant passages: " },
+  },
+  nomic: {
+    kind: "local",
+    model: "nomic-ai/nomic-embed-text-v1.5",
+    dimensions: 768,
+    batchSize: 16,
+    maxInputTokens: 8192,
+    pooling: "mean",
+    prefixes: { document: "search_document: ", query: "search_query: " },
+  },
+  azure: {
+    kind: "azure",
+    model: "text-embedding-3-small",
+    dimensions: 1536,
+    batchSize: 96,
+    maxInputTokens: 8191,
+    pooling: "mean",
+    prefixes: { document: "", query: "" },
+  },
+};
+
+export const embeddingProvider = (process.env.EMBEDDING_PROVIDER ?? "bge") as EmbeddingProvider;
 
 export const embedding = EMBEDDING_PROVIDERS[embeddingProvider];
 
+const CHUNK_HEADROOM = 12;
+
+const hardLimit = embedding.maxInputTokens - CHUNK_HEADROOM;
+
 export const chunking = {
-  targetTokens: 700,
-  overlapTokens: 100,
+  targetTokens: Math.min(400, hardLimit - 60),
+  overlapTokens: 60,
   minTokens: 40,
-  maxTokens: 1200,
+  maxTokens: hardLimit,
 };
 
 export const paths = {
   rawCache: "data/raw",
+  modelCache: "data/models",
 };

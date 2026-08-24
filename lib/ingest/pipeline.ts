@@ -1,4 +1,6 @@
+import { createHash } from "node:crypto";
 import { getEmbedder } from "../embed";
+import { chunking } from "../config";
 import { toVectorLiteral } from "../db";
 import type { FilingRef } from "../types";
 import { chunkFiling } from "./chunk";
@@ -23,10 +25,16 @@ export interface IngestOptions {
   onProgress?: (message: string) => void;
 }
 
+function pipelineHash(rawHash: string): string {
+  const recipe = JSON.stringify({ rawHash, chunking, embedder: getEmbedder().id });
+  return createHash("sha256").update(recipe).digest("hex");
+}
+
 export async function ingestFiling(filing: FilingRef, options: IngestOptions = {}): Promise<IngestResult> {
   const log = options.onProgress ?? (() => {});
   const documentId = filing.accessionNumber.replace(/-/g, "");
-  const { html, contentHash } = await fetchFilingHtml(filing);
+  const { html, contentHash: rawHash } = await fetchFilingHtml(filing);
+  const contentHash = pipelineHash(rawHash);
 
   if (!options.force && (await documentIsCurrent(documentId, contentHash))) {
     return { filing, status: "skipped", sections: 0, chunks: 0, embedded: 0, reused: 0 };
