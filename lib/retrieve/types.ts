@@ -21,7 +21,7 @@ export interface Retriever {
 }
 
 export const DEFAULT_OPTS = {
-  strategy: "vector" as RetrievalStrategy,
+  strategy: "hybrid" as RetrievalStrategy,
   k: 5,
-  candidateK: 30,
+  candidateK: 50,
 };

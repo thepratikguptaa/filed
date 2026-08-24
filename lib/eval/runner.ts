@@ -8,6 +8,7 @@ export const HISTORY_PATH = "eval/history.jsonl";
 export interface RunOptions {
   strategy: RetrievalStrategy;
   k?: number;
+  candidateK?: number;
   goldenVersion: number;
   onProgress?: (done: number, total: number) => void;
 }
@@ -17,7 +18,11 @@ export async function runEval(questions: GoldenQuestion[], options: RunOptions):
   const scores: QuestionScore[] = [];
 
   for (const [index, question] of questions.entries()) {
-    const retrieved = await retrieve(question.question, { strategy: options.strategy, k });
+    const retrieved = await retrieve(question.question, {
+      strategy: options.strategy,
+      k,
+      candidateK: options.candidateK,
+    });
     scores.push(scoreQuestion(question, retrieved));
     options.onProgress?.(index + 1, questions.length);
   }
@@ -31,6 +36,7 @@ export async function runEval(questions: GoldenQuestion[], options: RunOptions):
   return {
     ranAt: new Date().toISOString(),
     strategy: options.strategy,
+    candidateK: options.candidateK,
     k,
     goldenVersion: options.goldenVersion,
     questions: questions.length,

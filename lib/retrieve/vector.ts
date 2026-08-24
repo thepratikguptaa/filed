@@ -3,7 +3,7 @@ import { getEmbedder } from "../embed";
 import type { Chunk } from "../types";
 import type { RetrievalFilters } from "./types";
 
-interface ChunkRow {
+export interface ChunkRow {
   id: string;
   document_id: string;
   company: string;

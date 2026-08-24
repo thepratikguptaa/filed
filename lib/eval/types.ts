@@ -35,6 +35,7 @@ export interface QuestionScore {
 export interface EvalReport {
   ranAt: string;
   strategy: string;
+  candidateK?: number;
   k: number;
   goldenVersion: number;
   questions: number;

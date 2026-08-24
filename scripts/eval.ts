@@ -20,6 +20,7 @@ async function main() {
   const report = await runEval(questions, {
     strategy,
     k: flag("k") ? Number(flag("k")) : undefined,
+    candidateK: flag("candidates") ? Number(flag("candidates")) : undefined,
     goldenVersion: golden.version,
     onProgress: (done, total) => process.stdout.write(`\r  ${done}/${total}`),
   });

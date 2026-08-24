@@ -44,7 +44,7 @@ function renderContext(chunks: Chunk[]): string {
 
 export async function answerQuestion(question: string, opts: RetrieveOpts = {}): Promise<AnswerResult> {
   const started = Date.now();
-  const chunks = await retrieve(question, { strategy: opts.strategy ?? "vector", k: opts.k ?? 8, filters: opts.filters });
+  const chunks = await retrieve(question, { strategy: opts.strategy ?? "hybrid", k: opts.k ?? 8, filters: opts.filters });
 
   const citations: AnswerCitation[] = chunks.map((chunk, index) => ({
     marker: `C${index + 1}`,

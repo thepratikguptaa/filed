@@ -102,6 +102,12 @@ npm run apply-labels                    # write golden.json from proposed-labels
 | milestone | strategy | recall@3 | recall@5 | recall@10 | MRR |
 | --- | --- | --- | --- | --- | --- |
 | M1 baseline | vector | 17.2% | 25.3% | 35.1% | 0.235 |
+| — | keyword only | 6.9% | 10.3% | 10.3% | 0.089 |
+| M3 hybrid | vector + keyword, RRF | **19.0%** | **32.2%** | **42.0%** | **0.270** |
+
+Hybrid against the vector baseline: recall@10 **+6.9pts**, recall@5 **+6.9pts**, MRR **+0.035**. The gain is concentrated exactly where it was predicted — numeric lookups went 21.4% to 35.7% recall@10 and single-fact 30.6% to 47.2%, while section questions were unchanged at 53.3%. Keyword search alone is far worse than vector on every category, but it fails on different questions, which is what makes the fusion worth more than either input.
+
+Fusion pool size was measured rather than assumed: `candidateK` of 15, 30, 50 and 100 gives recall@10 of 43.7%, 42.0%, 42.0%, 42.0% and MRR of 0.254, 0.252, 0.270, 0.270. The pool saturates at 50 because keyword search often returns fewer candidates than that. 50 is the default — it wins on MRR and recall@3, which is what the answer layer actually consumes.
 
 Golden set v1: 29 labelled questions (6 single-fact, 7 numeric, 10 section, 6 cross-document), 49 labelled chunks.
 
@@ -123,6 +129,14 @@ Retrieval strategy is a config option, not a separate code path:
 ```ts
 retrieve(query: string, opts: RetrieveOpts): Promise<Chunk[]>
 ```
+
+| strategy | how it works |
+| --- | --- |
+| `vector` | pgvector cosine similarity over bge-small embeddings |
+| `keyword` | Postgres full-text search, `websearch_to_tsquery` ranked by `ts_rank_cd` |
+| `hybrid` | both lists fused by Reciprocal Rank Fusion (default) |
+
+Fusion is rank-based — `1 / (60 + rank)` summed across lists — so no per-corpus score calibration is needed and the two retrievers' incomparable score scales never have to be reconciled. Metadata filters (`tickers`, `fiscalYears`, `sections`, `filingTypes`) apply to every strategy.
 
 ## EDGAR access
 
