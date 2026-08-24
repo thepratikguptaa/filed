@@ -10,7 +10,12 @@
     "ingest": "tsx scripts/ingest.ts",
     "query": "tsx scripts/query.ts",
     "migrate": "tsx scripts/migrate.ts",
-    "check": "tsx scripts/check.ts"
+    "check": "tsx scripts/check.ts",
+    "label": "tsx scripts/label.ts",
+    "eval": "tsx scripts/eval.ts",
+    "candidates": "tsx scripts/candidates.ts",
+    "find": "tsx scripts/find.ts",
+    "apply-labels": "tsx scripts/apply-labels.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",

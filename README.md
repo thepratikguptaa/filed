@@ -50,6 +50,49 @@ npm run query -- "net interest income" --ticker=JPM --year=2025 --section="Item 
 
 Raw filings are cached under `data/raw/` so re-ingestion never re-downloads. Ingestion is idempotent: a filing whose content hash is unchanged is skipped, and chunk embeddings are reused across runs by content hash.
 
+## Evaluation
+
+The golden set is human-labelled. Candidate chunks are proposed by retrieval; a person decides which ones genuinely answer each question.
+
+```bash
+npm run label                  # label every unlabelled question
+npm run label -- --id=q08      # revisit one question
+npm run label -- --all         # revisit everything, including labelled
+npm run eval                   # run the golden set, print metrics, append history
+npm run eval -- --strategy=vector --k=10 --no-history
+```
+
+In the labeller: type candidate numbers to toggle them, `m` for more candidates, `s` to save and move on, `k` to skip, `q` to quit. Progress is written to `eval/golden.json` after every save.
+
+Each label stores the chunk id **and** a normalised text anchor from that chunk. Chunk ids change whenever chunk size or the parser changes, so id-only labels would be invalidated by exactly the experiments the harness exists to run. A chunk counts as relevant if its id matches or its text contains the anchor, which keeps labels usable across re-chunking.
+
+Metrics are recall@3, recall@5, recall@10 and MRR, reported overall and per category. No LLM is involved. Every run appends a summary to `eval/history.jsonl` so deltas across milestones stay visible.
+
+| file | contents |
+| --- | --- |
+| `eval/questions.draft.json` | proposed questions, no labels |
+| `eval/proposed-labels.json` | question id to chunk id mapping, applied by `npm run apply-labels` |
+| `eval/golden.json` | the labelled golden set, with `labelledBy` recording its provenance |
+| `eval/history.jsonl` | one line per eval run |
+
+Supporting tools used to locate candidate answers while labelling:
+
+```bash
+npm run candidates -- --from=1 --to=6   # union of vector, filtered-vector and lexical candidates
+npm run find -- "employed approximately [0-9,]+" --ticker=MSFT
+npm run apply-labels                    # write golden.json from proposed-labels.json
+```
+
+### Measured results
+
+| milestone | strategy | recall@3 | recall@5 | recall@10 | MRR |
+| --- | --- | --- | --- | --- | --- |
+| M1 baseline | vector | 17.2% | 25.3% | 35.1% | 0.235 |
+
+Golden set v1: 29 labelled questions (6 single-fact, 7 numeric, 10 section, 6 cross-document), 49 labelled chunks.
+
+`labelledBy: "model"` on the current golden set means the labels were machine-proposed, not human-confirmed. They were located largely through lexical and metadata-filtered search rather than the vector retriever being measured, which avoids grading the retriever against its own output, but two caveats follow: the label set is deliberately small (1–3 chunks per question), so recall is a **floor** rather than a true rate, and no human has yet confirmed that each labelled chunk genuinely answers its question. Run `npm run label -- --all` to review and extend.
+
 ## Architecture
 
 ```text

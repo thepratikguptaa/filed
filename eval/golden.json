@@ -1,0 +1,819 @@
+{
+  "version": 1,
+  "embedder": "Xenova/bge-small-en-v1.5",
+  "labelledBy": "model",
+  "questions": [
+    {
+      "id": "q01",
+      "category": "single-fact",
+      "question": "What was Apple's total net sales in fiscal 2025?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ],
+        "fiscalYears": [
+          2025
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0064",
+          "documentId": "000032019325000079",
+          "section": "Item 7",
+          "anchor": " rest of asia pacific | 33,696 | 10 | % | 30,658 | 4 | % | 29,615 total net sales | $ | 416,161 | 6 | % | $ | 391,035 | 2 | % | $ | 383,285 "
+        },
+        {
+          "chunkId": "000032019325000079#0065",
+          "documentId": "000032019325000079",
+          "section": "Item 7",
+          "anchor": "pple inc. | 2025 form 10-k | 22 products and services performance the following table shows net sales by category for 2025, 2024 and 2023 (d"
+        },
+        {
+          "chunkId": "000032019325000079#0077",
+          "documentId": "000032019325000079",
+          "section": "Item 8",
+          "anchor": ",915 selling, general and administrative | 27,601 | 26,097 | 24,932 total operating expenses | 62,151 | 57,467 | 54,847 operating income | 1"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.726Z"
+    },
+    {
+      "id": "q02",
+      "category": "single-fact",
+      "question": "How many people does Microsoft employ?",
+      "hint": {
+        "tickers": [
+          "MSFT"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000119312526323660#0017",
+          "documentId": "000119312526323660",
+          "section": "Item 1",
+          "anchor": "77,000 were in product research and development; 43,000 were in sales and marketing; and 14,000 were in general and administration. certain "
+        },
+        {
+          "chunkId": "000095017025100235#0017",
+          "documentId": "000095017025100235",
+          "section": "Item 1",
+          "anchor": "s well as other digital content offerings. our search and news advertising business competes with search engines, and a wide array of websit"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.727Z"
+    },
+    {
+      "id": "q03",
+      "category": "single-fact",
+      "question": "What was JPMorgan Chase's CET1 capital ratio at the end of 2025?",
+      "hint": {
+        "tickers": [
+          "JPM"
+        ],
+        "fiscalYears": [
+          2025
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000162828026008131#0242",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": "pital | 307,630 | 294,881 | 307,630 | 294,881 total capital | 343,843 | 325,589 | 328,962 | (e) | 311,898 | (e) risk-weighted assets | 1,981"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q04",
+      "category": "single-fact",
+      "question": "Who is Exxon Mobil's independent registered public accounting firm?",
+      "hint": {
+        "tickers": [
+          "XOM"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000003408826000045#0070",
+          "documentId": "000003408826000045",
+          "section": "Item 8",
+          "anchor": "ort of independent registered public accounting firm” and continuing through note 20; •“supplemental information on oil and gas exploration "
+        },
+        {
+          "chunkId": "000003408826000045#0071",
+          "documentId": "000003408826000045",
+          "section": "Item 9A",
+          "anchor": "utive officer, chief financial officer, and principal accounting officer, is responsible for establishing and maintaining adequate internal "
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q05",
+      "category": "single-fact",
+      "question": "Where is Pfizer's corporate headquarters located?",
+      "hint": {
+        "tickers": [
+          "PFE"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000007800326000026#0000",
+          "documentId": "000007800326000026",
+          "section": null,
+          "anchor": "r identification number) 66 hudson boulevard east, new york, new york 10001-2192 (address of principal executive offices) (zip code) (212) 7"
+        },
+        {
+          "chunkId": "000007800326000026#0014",
+          "documentId": "000007800326000026",
+          "section": null,
+          "anchor": " boulevard east, new york, ny 10001-2192. we will disclose any future amendments to, or waivers from, provisions of the pfizer policies on b"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q06",
+      "category": "single-fact",
+      "question": "What is Apple's fiscal year end date?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0006",
+          "documentId": "000032019325000079",
+          "section": "Item 1",
+          "anchor": "des ipad pro®, ipad air®, ipad and ipad mini®. wearables, home and accessories wearables includes smartwatches, wireless headphones and spat"
+        },
+        {
+          "chunkId": "000032019325000079#0062",
+          "documentId": "000032019325000079",
+          "section": "Item 7",
+          "anchor": "ificant announcements during fiscal year 2025 included the following: first quarter 2025: •macbook pro •mac mini •imac •ipad mini second qua"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q07",
+      "category": "numeric",
+      "question": "What were Apple's net sales by product category, including iPhone, Mac and iPad?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ],
+        "sections": [
+          "Item 7",
+          "Item 8"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0090",
+          "documentId": "000032019325000079",
+          "section": "Item 8",
+          "anchor": "1 | $ | 391,035 | $ | 383,285 portion of total net sales that was included in deferred revenue as of the beginning of the period | $ | 8,229"
+        },
+        {
+          "chunkId": "000032019325000079#0065",
+          "documentId": "000032019325000079",
+          "section": "Item 7",
+          "anchor": "pple inc. | 2025 form 10-k | 22 products and services performance the following table shows net sales by category for 2025, 2024 and 2023 (d"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q08",
+      "category": "numeric",
+      "question": "What was JPMorgan Chase's net interest income in 2025?",
+      "hint": {
+        "tickers": [
+          "JPM"
+        ],
+        "fiscalYears": [
+          2025
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000162828026008131#0160",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": " | 90,041 average interest-earning assets(a) | $ | 3,834,359 | $ | 3,537,567 | $ | 3,325,708 less: average markets interest-earning assets(b"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q09",
+      "category": "numeric",
+      "question": "What was Microsoft's revenue by segment?",
+      "hint": {
+        "tickers": [
+          "MSFT"
+        ]
+      },
+      "labels": []
+    },
+    {
+      "id": "q10",
+      "category": "numeric",
+      "question": "What were Exxon Mobil's capital and exploration expenditures?",
+      "hint": {
+        "tickers": [
+          "XOM"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000003408825000010#0157",
+          "documentId": "000003408825000010",
+          "section": "Item 7",
+          "anchor": "plant and equipment when acquired. while exxonmobil’s management is responsible for all investments and elements of net income, particular f"
+        },
+        {
+          "chunkId": "000003408825000010#0084",
+          "documentId": "000003408825000010",
+          "section": "Item 16",
+          "anchor": "51,957 | 7.5 | 8.1 | 11,252 | 8,813 non-u.s. | 18,964 | 17,106 | 93,390 | 91,358 | 20.3 | 18.7 | 10,596 | 10,948 total | 25,390 | 21,308 | 1"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q11",
+      "category": "numeric",
+      "question": "How much did Pfizer spend on research and development?",
+      "hint": {
+        "tickers": [
+          "PFE"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000007800326000026#0180",
+          "documentId": "000007800326000026",
+          "section": "Item 7",
+          "anchor": "ses decreased $936 million, primarily reflecting focused investments and ongoing productivity improvements as part of our cost realignment p"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q12",
+      "category": "numeric",
+      "question": "What was Apple's gross margin percentage?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0066",
+          "documentId": "000032019325000079",
+          "section": "Item 7",
+          "anchor": "ompared to 2024 primarily due to lower net sales of accessories and wearables. services services net sales increased during 2025 compared to"
+        },
+        {
+          "chunkId": "000032019324000123#0063",
+          "documentId": "000032019324000123",
+          "section": "Item 7",
+          "anchor": " due primarily to lower net sales of wearables and accessories. services services net sales increased during 2024 compared to 2023 due prima"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.728Z"
+    },
+    {
+      "id": "q13",
+      "category": "numeric",
+      "question": "What was JPMorgan Chase's provision for credit losses?",
+      "hint": {
+        "tickers": [
+          "JPM"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000162828026008131#0142",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": "e consolidated average balance sheets, interest and rates schedule on pages 315–319 for additional information. net yield excluding markets "
+        },
+        {
+          "chunkId": "000162828026008131#0130",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": " | (2) diluted earnings per share | 20.02 | 19.75 | 1 selected ratios and metrics return on common equity | 17 | % | 18 | % return on tangib"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.729Z"
+    },
+    {
+      "id": "q14",
+      "category": "numeric",
+      "question": "What were Microsoft's capital expenditures on property and equipment?",
+      "hint": {
+        "tickers": [
+          "MSFT"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000119312526323660#0112",
+          "documentId": "000119312526323660",
+          "section": "Item 8",
+          "anchor": "cquired and divestitures, and purchases of intangible and other assets | (1,743 | ) | (5,978 | ) | (69,132 | ) purchases of investments | (5"
+        },
+        {
+          "chunkId": "000095017025100235#0111",
+          "documentId": "000095017025100235",
+          "section": "Item 8",
+          "anchor": "ets | (5,978 | ) | (69,132 | ) | (1,670 | ) purchases of investments | (29,775 | ) | (17,732 | ) | (37,651 | ) maturities of investments | 1"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.729Z"
+    },
+    {
+      "id": "q15",
+      "category": "section",
+      "question": "What cybersecurity risk management processes does Apple describe?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ],
+        "sections": [
+          "Item 1C"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0053",
+          "documentId": "000032019325000079",
+          "section": "Item 1C",
+          "anchor": "r large technology companies and leading the company’s information security team since 2016. the company’s information security team coordin"
+        },
+        {
+          "chunkId": "000032019325000079#0054",
+          "documentId": "000032019325000079",
+          "section": "Item 1C",
+          "anchor": "ness conduct, business assurance, and internal audit, and receives updates, as necessary, regarding cybersecurity incidents. the chair of th"
+        },
+        {
+          "chunkId": "000032019324000123#0051",
+          "documentId": "000032019324000123",
+          "section": "Item 1C",
+          "anchor": "large technology companies and leading the company’s information security team since 2016. the company’s information security team coordinat"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.729Z"
+    },
+    {
+      "id": "q16",
+      "category": "section",
+      "question": "What legal proceedings does Microsoft disclose?",
+      "hint": {
+        "tickers": [
+          "MSFT"
+        ],
+        "sections": [
+          "Item 3"
+        ]
+      },
+      "labels": []
+    },
+    {
+      "id": "q17",
+      "category": "section",
+      "question": "What properties and facilities does Exxon Mobil describe?",
+      "hint": {
+        "tickers": [
+          "XOM"
+        ],
+        "sections": [
+          "Item 2"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000003408826000045#0053",
+          "documentId": "000003408826000045",
+          "section": "Item 2",
+          "anchor": " table of contents canada / other americas production operations for the region are mainly in canada, guyana, and brazil. total operations i"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q18",
+      "category": "section",
+      "question": "What conclusion did JPMorgan Chase reach about the effectiveness of its disclosure controls and procedures?",
+      "hint": {
+        "tickers": [
+          "JPM"
+        ],
+        "sections": [
+          "Item 9A"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000162828026008131#0092",
+          "documentId": "000162828026008131",
+          "section": "Item 9A",
+          "anchor": "ed on that evaluation, the chairman and chief executive officer and the chief financial officer concluded that these disclosure controls and"
+        },
+        {
+          "chunkId": "000001961725000270#0110",
+          "documentId": "000001961725000270",
+          "section": "Item 9A",
+          "anchor": " 1934). based on that evaluation, the chairman and chief executive officer and the chief financial officer concluded that these disclosure c"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q19",
+      "category": "section",
+      "question": "How does Pfizer describe its business segments and commercial operations?",
+      "hint": {
+        "tickers": [
+          "PFE"
+        ],
+        "sections": [
+          "Item 1"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000007800326000026#0029",
+          "documentId": "000007800326000026",
+          "section": "Item 1",
+          "anchor": "in our biopharma reportable segment, our commercial divisions market, sell and distribute our products, and global operating functions are r"
+        },
+        {
+          "chunkId": "000007800326000026#0032",
+          "documentId": "000007800326000026",
+          "section": "Item 1",
+          "anchor": "ee the item 1a. risk factors—concentration section. research and development r&d is at the heart of fulfilling our purpose to deliver breakt"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q20",
+      "category": "section",
+      "question": "What does Apple disclose about its share repurchase program?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ],
+        "sections": [
+          "Item 5"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0071",
+          "documentId": "000032019325000079",
+          "section": "Item 7",
+          "anchor": "dwill and other—internal-use software (subtopic 350-40): targeted improvements to the accounting for internal-use software (“asu 2025-06”), "
+        },
+        {
+          "chunkId": "000032019325000079#0112",
+          "documentId": "000032019325000079",
+          "section": "Item 8",
+          "anchor": "l 2 inputs, was $80.4 billion and $88.4 billion, respectively. note 10 – shareholders’ equity share repurchase program during 2025, the comp"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q21",
+      "category": "section",
+      "question": "How does Apple describe supply chain and manufacturing concentration risk?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ],
+        "sections": [
+          "Item 1A"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0019",
+          "documentId": "000032019325000079",
+          "section": "Item 1A",
+          "anchor": "protective public safety measures, such as stringent employee travel restrictions and limitations on freight services and the movement of pr"
+        },
+        {
+          "chunkId": "000032019325000079#0024",
+          "documentId": "000032019325000079",
+          "section": "Item 1A",
+          "anchor": " disruptions could occur in the future. additionally, the company’s new products often utilize custom components available from only one sou"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q22",
+      "category": "section",
+      "question": "What climate-related and energy transition risks does Exxon Mobil disclose?",
+      "hint": {
+        "tickers": [
+          "XOM"
+        ],
+        "sections": [
+          "Item 1A"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000003408826000045#0017",
+          "documentId": "000003408826000045",
+          "section": "Item 1A",
+          "anchor": "et-zero, derive from hypothetical scenarios that reflect many assumptions about the future, including supportive policy and technology advan"
+        },
+        {
+          "chunkId": "000003408826000045#0012",
+          "documentId": "000003408826000045",
+          "section": "Item 1A",
+          "anchor": "ults can be adversely affected by political or regulatory developments affecting our businesses or operations. access limitations. a number "
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q23",
+      "category": "section",
+      "question": "What does Pfizer say about patent expiration and loss of market exclusivity?",
+      "hint": {
+        "tickers": [
+          "PFE"
+        ],
+        "sections": [
+          "Item 1A"
+        ]
+      },
+      "labels": []
+    },
+    {
+      "id": "q24",
+      "category": "section",
+      "question": "What cybersecurity and technology risks does JPMorgan Chase identify?",
+      "hint": {
+        "tickers": [
+          "JPM"
+        ],
+        "sections": [
+          "Item 1A"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000162828026008131#0064",
+          "documentId": "000162828026008131",
+          "section": "Item 1A",
+          "anchor": "ined by intercepting signals or communications from mobile devices used by jpmorganchase’s employees. jpmorganchase could become increasingl"
+        },
+        {
+          "chunkId": "000001961725000270#0072",
+          "documentId": "000001961725000270",
+          "section": "Item 1A",
+          "anchor": "the systems of the large number of clients, customers, counterparties and third-party service providers with which it does business, and •it"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q25",
+      "category": "section",
+      "question": "How does Microsoft describe risks related to artificial intelligence?",
+      "hint": {
+        "tickers": [
+          "MSFT"
+        ],
+        "sections": [
+          "Item 1A"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000119312526323660#0027",
+          "documentId": "000119312526323660",
+          "section": "Item 1A",
+          "anchor": "rgins, and expose us to operational risks. we derive substantial revenue from licenses of windows operating systems on pcs. we face signific"
+        },
+        {
+          "chunkId": "000119312526323660#0040",
+          "documentId": "000119312526323660",
+          "section": "Item 1A",
+          "anchor": " unknown (“zero-day”) vulnerabilities. product vulnerabilities can persist even after we have issued security patches if customers have not "
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q26",
+      "category": "section",
+      "question": "What foreign exchange and interest rate risks does Apple disclose?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0075",
+          "documentId": "000032019325000079",
+          "section": "Item 7A",
+          "anchor": "ns, including accounting considerations or prohibitive cost. the company applied a value-at-risk (“var”) model to its foreign currency deriv"
+        },
+        {
+          "chunkId": "000032019324000123#0072",
+          "documentId": "000032019324000123",
+          "section": "Item 7A",
+          "anchor": "ns, including accounting considerations or prohibitive cost. the company applied a value-at-risk (“var”) model to its foreign currency deriv"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q27",
+      "category": "cross-document",
+      "question": "How did JPMorgan Chase's net interest income change from fiscal 2024 to fiscal 2025?",
+      "hint": {
+        "tickers": [
+          "JPM"
+        ],
+        "fiscalYears": [
+          2024,
+          2025
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000162828026008131#0160",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": " | 90,041 average interest-earning assets(a) | $ | 3,834,359 | $ | 3,537,567 | $ | 3,325,708 less: average markets interest-earning assets(b"
+        },
+        {
+          "chunkId": "000001961725000270#0143",
+          "documentId": "000001961725000270",
+          "section": "Item 7",
+          "anchor": "1 | 49,552 | 18 diluted earnings per share | 19.75 | 16.23 | 22 selected ratios and metrics return on common equity | 18 | % | 17 | % return"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q28",
+      "category": "cross-document",
+      "question": "How did Apple's risk factor disclosures change between fiscal 2024 and fiscal 2025?",
+      "hint": {
+        "tickers": [
+          "AAPL"
+        ],
+        "fiscalYears": [
+          2024,
+          2025
+        ],
+        "sections": [
+          "Item 1A"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0019",
+          "documentId": "000032019325000079",
+          "section": "Item 1A",
+          "anchor": "protective public safety measures, such as stringent employee travel restrictions and limitations on freight services and the movement of pr"
+        },
+        {
+          "chunkId": "000032019324000123#0018",
+          "documentId": "000032019324000123",
+          "section": "Item 1A",
+          "anchor": "arkets characterized by aggressive price competition and resulting downward pressure on gross margins, frequent introduction of new products"
+        },
+        {
+          "chunkId": "000032019324000123#0023",
+          "documentId": "000032019324000123",
+          "section": "Item 1A",
+          "anchor": "ry has in the past experienced high demand and shortages of supply, which adversely affected the company’s ability to obtain sufficient quan"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.730Z"
+    },
+    {
+      "id": "q29",
+      "category": "cross-document",
+      "question": "Did Pfizer's total revenue grow or decline year over year, and by how much?",
+      "hint": {
+        "tickers": [
+          "PFE"
+        ],
+        "fiscalYears": [
+          2024,
+          2025
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000007800326000026#0148",
+          "documentId": "000007800326000026",
+          "section": "Item 7",
+          "anchor": "nes the components of the net change in total revenues: see the total revenues by geography and total revenues––selected product discussion "
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.731Z"
+    },
+    {
+      "id": "q30",
+      "category": "cross-document",
+      "question": "How do Apple and Microsoft differ in how they describe supply chain risk?",
+      "hint": {
+        "tickers": [
+          "AAPL",
+          "MSFT"
+        ],
+        "sections": [
+          "Item 1A"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000032019325000079#0024",
+          "documentId": "000032019325000079",
+          "section": "Item 1A",
+          "anchor": " disruptions could occur in the future. additionally, the company’s new products often utilize custom components available from only one sou"
+        },
+        {
+          "chunkId": "000119312526323660#0051",
+          "documentId": "000119312526323660",
+          "section": "Item 1A",
+          "anchor": "xpanding manufacturing or supply capacity for certain components may require significant investments and multi-year lead times. as component"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.731Z"
+    },
+    {
+      "id": "q31",
+      "category": "cross-document",
+      "question": "Which companies in the corpus disclose artificial intelligence as a risk factor?",
+      "hint": {
+        "sections": [
+          "Item 1A"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000119312526323660#0027",
+          "documentId": "000119312526323660",
+          "section": "Item 1A",
+          "anchor": "rgins, and expose us to operational risks. we derive substantial revenue from licenses of windows operating systems on pcs. we face signific"
+        },
+        {
+          "chunkId": "000162828026008131#0064",
+          "documentId": "000162828026008131",
+          "section": "Item 1A",
+          "anchor": "ined by intercepting signals or communications from mobile devices used by jpmorganchase’s employees. jpmorganchase could become increasingl"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.731Z"
+    },
+    {
+      "id": "q32",
+      "category": "cross-document",
+      "question": "How does research and development spending compare between Microsoft and Pfizer?",
+      "hint": {
+        "tickers": [
+          "MSFT",
+          "PFE"
+        ]
+      },
+      "labels": [
+        {
+          "chunkId": "000119312526323660#0123",
+          "documentId": "000119312526323660",
+          "section": "Item 8",
+          "anchor": "ociated with sales and marketing personnel, and the costs of advertising, promotions, trade shows, seminars, and other programs. advertising"
+        },
+        {
+          "chunkId": "000007800326000026#0180",
+          "documentId": "000007800326000026",
+          "section": "Item 7",
+          "anchor": "ses decreased $936 million, primarily reflecting focused investments and ongoing productivity improvements as part of our cost realignment p"
+        }
+      ],
+      "labelledAt": "2026-08-24T16:24:15.731Z"
+    }
+  ]
+}

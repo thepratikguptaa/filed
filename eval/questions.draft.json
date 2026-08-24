@@ -1,0 +1,38 @@
+[
+  { "id": "q01", "category": "single-fact", "question": "What was Apple's total net sales in fiscal 2025?", "hint": { "tickers": ["AAPL"], "fiscalYears": [2025] }, "labels": [] },
+  { "id": "q02", "category": "single-fact", "question": "How many people does Microsoft employ?", "hint": { "tickers": ["MSFT"] }, "labels": [] },
+  { "id": "q03", "category": "single-fact", "question": "What was JPMorgan Chase's CET1 capital ratio at the end of 2025?", "hint": { "tickers": ["JPM"], "fiscalYears": [2025] }, "labels": [] },
+  { "id": "q04", "category": "single-fact", "question": "Who is Exxon Mobil's independent registered public accounting firm?", "hint": { "tickers": ["XOM"] }, "labels": [] },
+  { "id": "q05", "category": "single-fact", "question": "Where is Pfizer's corporate headquarters located?", "hint": { "tickers": ["PFE"] }, "labels": [] },
+  { "id": "q06", "category": "single-fact", "question": "What is Apple's fiscal year end date?", "hint": { "tickers": ["AAPL"] }, "labels": [] },
+
+  { "id": "q07", "category": "numeric", "question": "What were Apple's net sales by product category, including iPhone, Mac and iPad?", "hint": { "tickers": ["AAPL"], "sections": ["Item 7", "Item 8"] }, "labels": [] },
+  { "id": "q08", "category": "numeric", "question": "What was JPMorgan Chase's net interest income in 2025?", "hint": { "tickers": ["JPM"], "fiscalYears": [2025] }, "labels": [] },
+  { "id": "q09", "category": "numeric", "question": "What was Microsoft's revenue by segment?", "hint": { "tickers": ["MSFT"] }, "labels": [] },
+  { "id": "q10", "category": "numeric", "question": "What were Exxon Mobil's capital and exploration expenditures?", "hint": { "tickers": ["XOM"] }, "labels": [] },
+  { "id": "q11", "category": "numeric", "question": "How much did Pfizer spend on research and development?", "hint": { "tickers": ["PFE"] }, "labels": [] },
+  { "id": "q12", "category": "numeric", "question": "What was Apple's gross margin percentage?", "hint": { "tickers": ["AAPL"] }, "labels": [] },
+  { "id": "q13", "category": "numeric", "question": "What was JPMorgan Chase's provision for credit losses?", "hint": { "tickers": ["JPM"] }, "labels": [] },
+  { "id": "q14", "category": "numeric", "question": "What were Microsoft's capital expenditures on property and equipment?", "hint": { "tickers": ["MSFT"] }, "labels": [] },
+
+  { "id": "q15", "category": "section", "question": "What cybersecurity risk management processes does Apple describe?", "hint": { "tickers": ["AAPL"], "sections": ["Item 1C"] }, "labels": [] },
+  { "id": "q16", "category": "section", "question": "What legal proceedings does Microsoft disclose?", "hint": { "tickers": ["MSFT"], "sections": ["Item 3"] }, "labels": [] },
+  { "id": "q17", "category": "section", "question": "What properties and facilities does Exxon Mobil describe?", "hint": { "tickers": ["XOM"], "sections": ["Item 2"] }, "labels": [] },
+  { "id": "q18", "category": "section", "question": "What conclusion did JPMorgan Chase reach about the effectiveness of its disclosure controls and procedures?", "hint": { "tickers": ["JPM"], "sections": ["Item 9A"] }, "labels": [] },
+  { "id": "q19", "category": "section", "question": "How does Pfizer describe its business segments and commercial operations?", "hint": { "tickers": ["PFE"], "sections": ["Item 1"] }, "labels": [] },
+  { "id": "q20", "category": "section", "question": "What does Apple disclose about its share repurchase program?", "hint": { "tickers": ["AAPL"], "sections": ["Item 5"] }, "labels": [] },
+
+  { "id": "q21", "category": "section", "question": "How does Apple describe supply chain and manufacturing concentration risk?", "hint": { "tickers": ["AAPL"], "sections": ["Item 1A"] }, "labels": [] },
+  { "id": "q22", "category": "section", "question": "What climate-related and energy transition risks does Exxon Mobil disclose?", "hint": { "tickers": ["XOM"], "sections": ["Item 1A"] }, "labels": [] },
+  { "id": "q23", "category": "section", "question": "What does Pfizer say about patent expiration and loss of market exclusivity?", "hint": { "tickers": ["PFE"], "sections": ["Item 1A"] }, "labels": [] },
+  { "id": "q24", "category": "section", "question": "What cybersecurity and technology risks does JPMorgan Chase identify?", "hint": { "tickers": ["JPM"], "sections": ["Item 1A"] }, "labels": [] },
+  { "id": "q25", "category": "section", "question": "How does Microsoft describe risks related to artificial intelligence?", "hint": { "tickers": ["MSFT"], "sections": ["Item 1A"] }, "labels": [] },
+  { "id": "q26", "category": "section", "question": "What foreign exchange and interest rate risks does Apple disclose?", "hint": { "tickers": ["AAPL"] }, "labels": [] },
+
+  { "id": "q27", "category": "cross-document", "question": "How did JPMorgan Chase's net interest income change from fiscal 2024 to fiscal 2025?", "hint": { "tickers": ["JPM"], "fiscalYears": [2024, 2025] }, "labels": [] },
+  { "id": "q28", "category": "cross-document", "question": "How did Apple's risk factor disclosures change between fiscal 2024 and fiscal 2025?", "hint": { "tickers": ["AAPL"], "fiscalYears": [2024, 2025], "sections": ["Item 1A"] }, "labels": [] },
+  { "id": "q29", "category": "cross-document", "question": "Did Pfizer's total revenue grow or decline year over year, and by how much?", "hint": { "tickers": ["PFE"], "fiscalYears": [2024, 2025] }, "labels": [] },
+  { "id": "q30", "category": "cross-document", "question": "How do Apple and Microsoft differ in how they describe supply chain risk?", "hint": { "tickers": ["AAPL", "MSFT"], "sections": ["Item 1A"] }, "labels": [] },
+  { "id": "q31", "category": "cross-document", "question": "Which companies in the corpus disclose artificial intelligence as a risk factor?", "hint": { "sections": ["Item 1A"] }, "labels": [] },
+  { "id": "q32", "category": "cross-document", "question": "How does research and development spending compare between Microsoft and Pfizer?", "hint": { "tickers": ["MSFT", "PFE"] }, "labels": [] }
+]
