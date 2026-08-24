@@ -5,7 +5,7 @@ import { toVectorLiteral } from "../db";
 import type { FilingRef } from "../types";
 import { chunkFiling } from "./chunk";
 import { fetchFilingHtml, listFilings } from "./edgar";
-import { parseFiling } from "./parse";
+import { PARSER_VERSION, parseFiling } from "./parse";
 import { CORPUS, YEARS_PER_COMPANY, type CorpusCompany } from "./corpus";
 import { documentIsCurrent, existingEmbeddings, persistFiling } from "./store";
 
@@ -26,7 +26,7 @@ export interface IngestOptions {
 }
 
 function pipelineHash(rawHash: string): string {
-  const recipe = JSON.stringify({ rawHash, chunking, embedder: getEmbedder().id });
+  const recipe = JSON.stringify({ rawHash, chunking, parser: PARSER_VERSION, embedder: getEmbedder().id });
   return createHash("sha256").update(recipe).digest("hex");
 }
 

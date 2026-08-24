@@ -127,6 +127,47 @@ function sizeOf(blocks: Block[]): number {
   return blocks.reduce((total, block) => total + block.text.length, 0);
 }
 
+const INCORPORATED_SECTION_CHARS = 200_000;
+
+export const PARSER_VERSION = 2;
+
+const MDA_CAPTION = /management[''’]s discussion and analysis/i;
+const AUDIT_CAPTION = /report of independent registered public accounting firm/i;
+const NOTES_CAPTION = /notes to consolidated financial statements|consolidated statements of (income|operations|cash flows)/i;
+
+function firstMatch(blocks: Block[], pattern: RegExp, from = 0): number {
+  for (let i = from; i < blocks.length; i += 1) {
+    if (blocks[i].kind === "text" && pattern.test(blocks[i].text)) return i;
+  }
+  return -1;
+}
+
+function lastMatch(blocks: Block[], pattern: RegExp): number {
+  for (let i = blocks.length - 1; i >= 0; i -= 1) {
+    if (blocks[i].kind === "text" && pattern.test(blocks[i].text)) return i;
+  }
+  return -1;
+}
+
+function splitIncorporatedReport(section: Section): Section[] {
+  const { blocks } = section;
+  const mda = firstMatch(blocks, MDA_CAPTION);
+  const audit = firstMatch(blocks, AUDIT_CAPTION, mda < 0 ? 0 : mda);
+  const notesEnd = lastMatch(blocks, NOTES_CAPTION);
+  if (mda < 0 || audit <= mda || notesEnd < audit) return [section];
+
+  const parts: Section[] = [];
+  const push = (item: string | null, title: string, slice: Block[]) => {
+    if (slice.length > 0) parts.push({ item, title, blocks: slice });
+  };
+
+  push(section.item, section.title, blocks.slice(0, mda));
+  push("Item 7", "Management's Discussion and Analysis", blocks.slice(mda, audit));
+  push("Item 8", "Financial Statements and Supplementary Data", blocks.slice(audit, notesEnd + 1));
+  push(section.item, section.title, blocks.slice(notesEnd + 1));
+  return parts;
+}
+
 export function parseFiling(html: string): ParsedFiling {
   const $ = cheerio.load(html);
   $("script, style, ix\\:header, [style*='display:none'], [style*='display: none']").remove();
@@ -165,6 +206,10 @@ export function parseFiling(html: string): ParsedFiling {
     deduped.push(section);
   }
 
+  const expanded = deduped.flatMap((section) =>
+    sizeOf(section.blocks) > INCORPORATED_SECTION_CHARS ? splitIncorporatedReport(section) : [section],
+  );
+
   const text = normalized.map((block) => block.text).join("\n");
-  return { sections: deduped, contentHash: createHash("sha256").update(text).digest("hex") };
+  return { sections: expanded, contentHash: createHash("sha256").update(text).digest("hex") };
 }
