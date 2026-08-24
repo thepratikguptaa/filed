@@ -50,6 +50,20 @@ npm run query -- "net interest income" --ticker=JPM --year=2025 --section="Item 
 
 Raw filings are cached under `data/raw/` so re-ingestion never re-downloads. Ingestion is idempotent: a filing whose content hash is unchanged is skipped, and chunk embeddings are reused across runs by content hash.
 
+## Asking questions
+
+```bash
+npm run dev     # http://localhost:3000
+```
+
+Question in, cited answer out, with the retrieved passages and their scores beside it. Citation markers in the answer are interactive: hovering one highlights its source, clicking scrolls to it.
+
+`POST /api/ask` takes `{ question, strategy?, k? }` and returns the answer, the ordered citations, the retrieved chunks, and which chunk ids the model actually cited.
+
+Grounding rules live in the system prompt in [lib/answer.ts](lib/answer.ts): answer only from the supplied sources, cite inline, quote figures exactly, name the company and fiscal year, say plainly when the sources fall short, and never phrase anything as investment advice.
+
+The LLM sits behind the `LlmProvider` interface in [lib/llm](lib/llm), so swapping Azure for Gemini or Groq is one file.
+
 ## Evaluation
 
 The golden set is human-labelled. Candidate chunks are proposed by retrieval; a person decides which ones genuinely answer each question.

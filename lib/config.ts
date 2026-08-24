@@ -29,6 +29,9 @@ export const env = {
   get azureEmbeddingDeployment() {
     return required("AZURE_OPENAI_EMBEDDING_DEPLOYMENT");
   },
+  get azureChatDeployment() {
+    return required("AZURE_OPENAI_CHAT_DEPLOYMENT");
+  },
   get secUserAgent() {
     return required("SEC_USER_AGENT");
   },

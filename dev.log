@@ -1,0 +1,18 @@
+
+> filed@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://169.254.139.225:3000
+- Environments: .env.local
+✓ Ready in 19.7s
+✓ Running next.config.ts took 3.0s
+
+○ Compiling / ...
+ GET / 200 in 34.6s (next.js: 32.0s, application-code: 2.6s)
+○ Compiling /api/ask ...
+ POST /api/ask 200 in 18.1s (next.js: 8.4s, application-code: 9.7s)
+ GET / 200 in 2.6s (next.js: 249ms, application-code: 2.4s)
+ GET / 200 in 1130ms (next.js: 8ms, application-code: 1122ms)
+ POST /api/ask 200 in 5.1s (next.js: 1428ms, application-code: 3.6s)
