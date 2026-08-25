@@ -1,5 +1,7 @@
 import { appendFile, mkdir } from "node:fs/promises";
-import { retrieve, type RetrievalStrategy } from "../retrieve";
+import { retrieve, DEFAULT_OPTS, type RetrievalStrategy } from "../retrieve";
+import { embedding } from "../config";
+import { reranker } from "../retrieve/rerank";
 import { aggregate, K_VALUES, scoreQuestion } from "./metrics";
 import type { EvalReport, GoldenQuestion, QuestionScore } from "./types";
 
@@ -37,9 +39,20 @@ export async function runEval(questions: GoldenQuestion[], options: RunOptions):
     byCategory[category] = { questions: subset.length, ...aggregate(subset) };
   }
 
+  const usesRerank = options.strategy === "hybrid+rerank" || options.strategy === "agentic";
+
   return {
     ranAt: new Date().toISOString(),
     strategy: options.strategy,
+    config: {
+      strategy: options.strategy,
+      k,
+      candidateK: options.candidateK ?? DEFAULT_OPTS.candidateK,
+      rrfK: options.rrfK ?? DEFAULT_OPTS.rrfK,
+      rerankN: options.rerankN ?? DEFAULT_OPTS.rerankN,
+      embedder: embedding.model,
+      reranker: usesRerank ? `${reranker.model}/${reranker.dtype}` : "none",
+    },
     candidateK: options.candidateK,
     k,
     goldenVersion: options.goldenVersion,

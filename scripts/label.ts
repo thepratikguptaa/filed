@@ -3,6 +3,7 @@ import { closeDb } from "../lib/db";
 import { retrieve } from "../lib/retrieve";
 import { embedding } from "../lib/config";
 import { GOLDEN_PATH, labelFromChunk, loadDraft, loadGolden, saveGolden } from "../lib/eval/golden";
+import type { GoldenSet } from "../lib/eval/types";
 import type { Chunk } from "../lib/types";
 
 const CANDIDATES = 8;
@@ -43,6 +44,7 @@ async function main() {
   console.log(`\n${queue.length} question(s) to label. Commands: numbers to toggle, "m" more, "s" save+next, "k" skip, "q" quit.\n`);
 
   let quit = false;
+  let touched = false;
 
   for (const question of queue) {
     if (quit) break;
@@ -71,10 +73,21 @@ async function main() {
       }
 
       if (answer === "s") {
-        question.labels = pool.filter((chunk) => selected.has(chunk.id)).map(labelFromChunk);
+        const inPool = new Set(pool.map((chunk) => chunk.id));
+        const kept = question.labels.filter(
+          (label) => selected.has(label.chunkId) && !inPool.has(label.chunkId),
+        );
+        const chosen = pool.filter((chunk) => selected.has(chunk.id)).map(labelFromChunk);
+        question.labels = [...kept, ...chosen];
         question.labelledAt = new Date().toISOString();
         byId.set(question.id, question);
-        await saveGolden({ version: golden.version, embedder: embedding.model, questions: [...byId.values()] });
+        touched = true;
+        await saveGolden({
+          version: golden.version,
+          embedder: embedding.model,
+          labelledBy: "human",
+          questions: [...byId.values()],
+        });
         console.log(`saved ${question.labels.length} label(s) for ${question.id}`);
         break;
       }
@@ -92,7 +105,12 @@ async function main() {
     }
   }
 
-  const set = { version: golden.version, embedder: embedding.model, questions: [...byId.values()] };
+  const set: GoldenSet = {
+    version: golden.version,
+    embedder: embedding.model,
+    labelledBy: touched ? "human" : golden.labelledBy,
+    questions: [...byId.values()],
+  };
   await saveGolden(set);
   const done = set.questions.filter((question) => question.labels.length > 0).length;
   console.log(`\n${done}/${set.questions.length} questions labelled -> ${GOLDEN_PATH}`);

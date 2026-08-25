@@ -16,12 +16,17 @@ npm run migrate
 | Variable | Notes |
 | --- | --- |
 | `DATABASE_URL` | Supabase Postgres connection string, Session pooler on port 5432 |
+| `EMBEDDING_PROVIDER` | `bge` (default, local), `nomic` (local, long context), or `azure` |
 | `AZURE_OPENAI_ENDPOINT` | Resource root, e.g. `https://<resource>.openai.azure.com/` — deployment paths are added by the client |
-| `AZURE_OPENAI_EMBEDDING_DEPLOYMENT` | A `text-embedding-3-small` deployment, 1536 dimensions |
 | `AZURE_OPENAI_CHAT_DEPLOYMENT` | Chat deployment used by the answer layer |
+| `AZURE_OPENAI_EMBEDDING_DEPLOYMENT` | Only needed when `EMBEDDING_PROVIDER=azure` |
 | `SEC_USER_AGENT` | Identifies you to EDGAR, e.g. `Filed Research you@example.com` |
+| `RERANK_MODEL` | Cross-encoder, defaults to `Xenova/ms-marco-MiniLM-L-6-v2` |
+| `AGENT_BUDGET_MS` | Agent wall-clock budget, defaults to 45000 |
 
-Embeddings run on Azure OpenAI behind the `Embedder` interface in [lib/embed](lib/embed), so swapping to a local ONNX model via transformers.js means adding one file. The embedding dimension must match `vector(1536)` in the schema.
+Embeddings run through the `Embedder` interface in [lib/embed](lib/embed). The default is `bge-small-en-v1.5` running locally in-process via transformers.js — no API key, no per-token cost, 384 dimensions. Each provider carries its own dimension, pooling method and query/document prefixes, and the active provider's dimension must match the `vector(...)` column in the schema; changing provider means a migration.
+
+Chunk size is derived from the embedder's context limit rather than hardcoded, because bge truncates at 512 tokens. Switching provider automatically re-chunks: the document hash covers the raw filing, the chunk config, the parser version and the embedder id, so any of those changing invalidates a filing and re-ingests it.
 
 ## Corpus
 
@@ -156,9 +161,9 @@ Two behaviours account for most of the gain. Decomposition — *"How did JPMorga
 | M3 | hybrid (RRF) | 19.0% | 25.3% | 44.8% | 0.304 |
 | M4 | hybrid + MiniLM rerank | 28.7% | 37.4% | 43.7% | 0.303 |
 | M4 | hybrid + bge rerank | 27.6% | 47.7% | 54.6% | 0.390 |
-| **M5** | **agentic** | **39.7%** | **54.6%** | **75.9%** | **0.501** |
+| **M5** | **agentic** | **37.9%** | **58.0%** | **72.4%** | **0.518** |
 
-Baseline to agentic: recall@10 **+40.8pts**, recall@5 **+29.3pts**, MRR **+0.266**. Questions with no relevant chunk in the top 10 fell from 15 of 29 to 5.
+Baseline to agentic: recall@10 **+37.3pts**, recall@5 **+32.7pts**, MRR **+0.283**. Questions with no relevant chunk in the top 10 fell from 15 of 29 to 6.
 
 Cross-document subset, which is what the agent exists for:
 
@@ -167,11 +172,15 @@ Cross-document subset, which is what the agent exists for:
 | vector | 16.7% | 16.7% | 25.0% | 0.194 |
 | hybrid | 16.7% | 16.7% | 16.7% | 0.167 |
 | hybrid + bge rerank | 16.7% | 25.0% | 41.7% | 0.224 |
-| **agentic** | 16.7% | **41.7%** | **58.3%** | **0.357** |
+| **agentic** | 16.7% | **41.7%** | **41.7%** | **0.325** |
 
 Single-shot strategies plateau on these questions because no single ranking can hold evidence from two filings at once. Cross-document recall@10 more than doubles against the baseline, and section questions reach 90.0% recall@10 with MRR 0.758.
 
-Agentic retrieval costs 20–60s per question against roughly 7s for `hybrid+rerank`, since it makes several reranked retrievals plus two LLM calls. It is the default in the app; the eval harness runs any strategy with `--strategy=`.
+Agentic retrieval costs 20–45s per question against roughly 7s for `hybrid+rerank`, since it makes several reranked retrievals plus two LLM calls. It is the default in the app; the eval harness runs any strategy with `--strategy=`.
+
+The agent stops at a wall-clock budget (`AGENT_BUDGET_MS`, 45s by default) as well as at its iteration and search caps, because Vercel's free tier kills a request at 60s. That budget costs cross-document recall — before it existed the same code scored 58.3% recall@10 on that subset instead of 41.7%, since multi-hop questions are exactly the ones that run long. Raising `AGENT_BUDGET_MS` recovers it wherever the 60s limit does not apply.
+
+Every eval run records the full configuration it ran under — strategy, k, candidateK, rrfK, rerankN, embedder and reranker — so two runs of the same strategy under different settings stay distinguishable in `eval/history.jsonl`.
 
 Golden set v1: 29 labelled questions (6 single-fact, 7 numeric, 10 section, 6 cross-document), 49 labelled chunks.
 

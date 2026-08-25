@@ -1,4 +1,4 @@
-import { getCorpusOutline } from "../corpus";
+import { getCorpusOutline, getCorpusVocabulary, type CorpusVocabulary } from "../corpus";
 import { getLlm } from "../llm";
 import { retrieve } from "../retrieve";
 import type { Chunk } from "../types";
@@ -66,7 +66,17 @@ interface RawSearch {
   sections?: string[];
 }
 
-function toPlanned(raw: RawSearch[] | undefined, limit: number): PlannedSearch[] {
+function keep<T>(values: T[] | undefined, allowed: Set<T>): T[] | undefined {
+  if (!values?.length) return undefined;
+  const valid = values.filter((value) => allowed.has(value));
+  return valid.length > 0 ? valid : undefined;
+}
+
+function toPlanned(
+  raw: RawSearch[] | undefined,
+  limit: number,
+  vocab: CorpusVocabulary,
+): PlannedSearch[] {
   if (!Array.isArray(raw)) return [];
   return raw
     .filter((entry) => typeof entry?.query === "string" && entry.query.trim().length > 0)
@@ -75,9 +85,9 @@ function toPlanned(raw: RawSearch[] | undefined, limit: number): PlannedSearch[]
       query: entry.query!.trim(),
       purpose: entry.purpose,
       filters: {
-        tickers: entry.tickers?.length ? entry.tickers : undefined,
-        fiscalYears: entry.fiscalYears?.length ? entry.fiscalYears : undefined,
-        sections: entry.sections?.length ? entry.sections : undefined,
+        tickers: keep(entry.tickers?.map((value) => value.toUpperCase()), vocab.tickers),
+        fiscalYears: keep(entry.fiscalYears?.map(Number), vocab.fiscalYears),
+        sections: keep(entry.sections, vocab.sections),
       },
     }));
 }
@@ -122,6 +132,8 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
   const maxIterations = options.maxIterations ?? AGENT_DEFAULTS.maxIterations;
   const maxSearches = options.maxSearches ?? AGENT_DEFAULTS.maxSearches;
   const perSearchK = options.perSearchK ?? AGENT_DEFAULTS.perSearchK;
+  const budgetMs = options.budgetMs ?? Number(process.env.AGENT_BUDGET_MS ?? AGENT_DEFAULTS.budgetMs);
+  const deadline = Date.now() + budgetMs;
 
   const llm = getLlm();
   const steps: AgentStep[] = [];
@@ -132,8 +144,10 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
   let searchCount = 0;
   let iteration = 0;
   let stoppedBecause: AgentTrace["stoppedBecause"] = "iteration-cap";
+  let outOfTime = false;
 
   const corpus = await getCorpusOutline();
+  const vocab = await getCorpusVocabulary();
 
   const planStarted = Date.now();
   const planRaw = await llm.complete(
@@ -144,7 +158,7 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
     { json: true, maxTokens: 700 },
   );
   const plan = parseJson<{ needsRetrieval?: boolean; searches?: RawSearch[] }>(planRaw);
-  let queue = toPlanned(plan?.searches, maxSearches);
+  let queue = toPlanned(plan?.searches, maxSearches, vocab);
 
   steps.push({
     iteration: 0,
@@ -171,6 +185,10 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
 
     for (const search of queue) {
       if (searchCount >= maxSearches) break;
+      if (Date.now() > deadline) {
+        outOfTime = true;
+        break;
+      }
       const key = `${search.query}|${JSON.stringify(search.filters ?? {})}`;
       if (attempted.has(key)) continue;
       attempted.add(key);
@@ -200,6 +218,10 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
     }
 
     const merged = interleave(groups);
+    if (outOfTime || Date.now() > deadline) {
+      stoppedBecause = "time-budget";
+      break;
+    }
     if (searchCount >= maxSearches || iteration >= maxIterations) {
       stoppedBecause = "iteration-cap";
       break;
@@ -233,7 +255,7 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
       break;
     }
 
-    const followUps = toPlanned(assessment?.searches, 3).filter(
+    const followUps = toPlanned(assessment?.searches, 3, vocab).filter(
       (search) => !attempted.has(`${search.query}|${JSON.stringify(search.filters ?? {})}`),
     );
 
@@ -250,6 +272,8 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
       break;
     }
     queue = followUps;
+
+    if (iteration >= maxIterations) stoppedBecause = "iteration-cap";
   }
 
   return {

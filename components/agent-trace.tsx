@@ -23,6 +23,7 @@ const STOPPED_LABEL: Record<AgentTrace["stoppedBecause"], string> = {
   "iteration-cap": "stopped at the iteration cap",
   "no-progress": "stopped when searches stopped finding anything new",
   "no-retrieval-needed": "no retrieval needed",
+  "time-budget": "stopped at the time budget",
 };
 
 export function AgentTraceView({ trace }: { trace: AgentTrace }) {

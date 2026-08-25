@@ -23,7 +23,7 @@ export interface AgentTrace {
   steps: AgentStep[];
   searches: number;
   iterations: number;
-  stoppedBecause: "sufficient" | "iteration-cap" | "no-progress" | "no-retrieval-needed";
+  stoppedBecause: "sufficient" | "iteration-cap" | "no-progress" | "no-retrieval-needed" | "time-budget";
 }
 
 export interface AgentRetrieval {
@@ -36,6 +36,7 @@ export interface AgentOptions {
   maxIterations?: number;
   maxSearches?: number;
   perSearchK?: number;
+  budgetMs?: number;
 }
 
 export const AGENT_DEFAULTS = {
@@ -43,4 +44,5 @@ export const AGENT_DEFAULTS = {
   maxIterations: 3,
   maxSearches: 6,
   perSearchK: 10,
+  budgetMs: 45_000,
 };

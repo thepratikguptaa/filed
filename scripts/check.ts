@@ -1,6 +1,6 @@
 import { closeDb, db } from "../lib/db";
 import { getEmbedder } from "../lib/embed";
-import { embedding, env } from "../lib/config";
+import { embedding, embeddingProvider, env } from "../lib/config";
 import { listFilings } from "../lib/ingest/edgar";
 import { CORPUS } from "../lib/ingest/corpus";
 
@@ -22,7 +22,7 @@ async function main() {
     void env.databaseUrl;
     void env.azureApiKey;
     void env.secUserAgent;
-    return `endpoint ${env.azureEndpoint}, deployment ${env.azureEmbeddingDeployment}`;
+    return `provider ${embeddingProvider} (${embedding.model}), chat ${env.azureChatDeployment}`;
   }));
 
   checks.push(await run("database", async () => {

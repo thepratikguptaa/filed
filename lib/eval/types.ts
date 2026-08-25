@@ -32,9 +32,20 @@ export interface QuestionScore {
   reciprocalRank: number;
 }
 
+export interface EvalConfig {
+  strategy: string;
+  k: number;
+  candidateK: number;
+  rrfK: number;
+  rerankN: number;
+  embedder: string;
+  reranker: string;
+}
+
 export interface EvalReport {
   ranAt: string;
   strategy: string;
+  config: EvalConfig;
   candidateK?: number;
   k: number;
   goldenVersion: number;

@@ -50,3 +50,30 @@ export async function getCorpusOutline(): Promise<string> {
   );
   return `${lines.join("\n")}\n\nSections available: ${sections.map((row) => row.section).join(", ")}`;
 }
+
+export interface CorpusVocabulary {
+  tickers: Set<string>;
+  fiscalYears: Set<number>;
+  sections: Set<string>;
+}
+
+let vocabulary: Promise<CorpusVocabulary> | null = null;
+
+export function getCorpusVocabulary(): Promise<CorpusVocabulary> {
+  if (!vocabulary) {
+    vocabulary = (async () => {
+      const rows = await db()<{ ticker: string; fiscal_year: number }[]>`
+        select ticker, fiscal_year from documents
+      `;
+      const sections = await db()<{ section: string }[]>`
+        select section from chunks where section is not null group by section
+      `;
+      return {
+        tickers: new Set(rows.map((row) => row.ticker)),
+        fiscalYears: new Set(rows.map((row) => row.fiscal_year)),
+        sections: new Set(sections.map((row) => row.section)),
+      };
+    })();
+  }
+  return vocabulary;
+}

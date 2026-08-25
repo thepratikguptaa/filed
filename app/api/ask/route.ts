@@ -1,7 +1,7 @@
 import { answerQuestion } from "@/lib/answer";
 import type { RetrievalStrategy } from "@/lib/retrieve";
 
-export const maxDuration = 300;
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   let body: { question?: string; strategy?: RetrievalStrategy; k?: number };

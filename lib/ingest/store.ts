@@ -1,4 +1,4 @@
-import { db, toVectorLiteral } from "../db";
+import { db, toVectorLiteral, withRetry } from "../db";
 import type { ChunkInput, FilingRef } from "../types";
 
 export async function documentIsCurrent(documentId: string, contentHash: string): Promise<boolean> {
@@ -27,7 +27,7 @@ export async function persistFiling(
   const sql = db();
   const documentId = filing.accessionNumber.replace(/-/g, "");
 
-  await sql.begin(async (tx) => {
+  await withRetry(() => sql.begin(async (tx) => {
     await tx`
       insert into documents (
         id, cik, company, ticker, filing_type, fiscal_year,
@@ -64,7 +64,7 @@ export async function persistFiling(
       }));
       await tx`insert into chunks ${tx(rows)}`;
     }
-  });
+  }));
 }
 
 export function vectorLiteral(values: number[]): string {
