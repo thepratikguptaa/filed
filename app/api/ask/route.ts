@@ -1,7 +1,7 @@
 import { answerQuestion } from "@/lib/answer";
 import type { RetrievalStrategy } from "@/lib/retrieve";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 export async function POST(request: Request) {
   let body: { question?: string; strategy?: RetrievalStrategy; k?: number };
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await answerQuestion(question, {
-      strategy: body.strategy ?? "hybrid+rerank",
+      strategy: body.strategy ?? "agentic",
       k: Math.min(Math.max(body.k ?? 8, 1), 20),
     });
     return Response.json(result);

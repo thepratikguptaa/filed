@@ -1,6 +1,6 @@
 import type { Chunk } from "../types";
 
-export type RetrievalStrategy = "vector" | "keyword" | "hybrid" | "hybrid+rerank";
+export type RetrievalStrategy = "vector" | "keyword" | "hybrid" | "hybrid+rerank" | "agentic";
 
 export interface RetrievalFilters {
   tickers?: string[];

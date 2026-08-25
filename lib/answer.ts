@@ -1,5 +1,6 @@
 import { getLlm } from "./llm";
 import { retrieve, type RetrieveOpts } from "./retrieve";
+import type { AgentTrace } from "./agent/types";
 import type { Chunk } from "./types";
 
 const SYSTEM_PROMPT = `You are a research assistant that answers questions about public SEC filings.
@@ -25,6 +26,7 @@ export interface AnswerCitation {
 
 export interface AnswerResult {
   question: string;
+  trace?: AgentTrace;
   answer: string;
   citations: AnswerCitation[];
   chunks: Chunk[];
@@ -44,7 +46,20 @@ function renderContext(chunks: Chunk[]): string {
 
 export async function answerQuestion(question: string, opts: RetrieveOpts = {}): Promise<AnswerResult> {
   const started = Date.now();
-  const chunks = await retrieve(question, { strategy: opts.strategy ?? "hybrid+rerank", k: opts.k ?? 8, filters: opts.filters });
+  const strategy = opts.strategy ?? "agentic";
+  const k = opts.k ?? 8;
+
+  let chunks;
+  let trace: AgentTrace | undefined;
+
+  if (strategy === "agentic") {
+    const { agenticRetrieve } = await import("./agent");
+    const result = await agenticRetrieve(question, { k });
+    chunks = result.chunks;
+    trace = result.trace;
+  } else {
+    chunks = await retrieve(question, { strategy, k, filters: opts.filters });
+  }
 
   const citations: AnswerCitation[] = chunks.map((chunk, index) => ({
     marker: `C${index + 1}`,
@@ -58,6 +73,7 @@ export async function answerQuestion(question: string, opts: RetrieveOpts = {}):
   if (chunks.length === 0) {
     return {
       question,
+      trace,
       answer: "No filings in the corpus matched that question, so there is nothing to cite.",
       citations: [],
       chunks: [],
@@ -81,6 +97,7 @@ export async function answerQuestion(question: string, opts: RetrieveOpts = {}):
 
   return {
     question,
+    trace,
     answer,
     citations,
     chunks,

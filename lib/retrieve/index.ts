@@ -36,6 +36,12 @@ export async function retrieve(query: string, opts: RetrieveOpts = {}): Promise<
       return rerank(query, fused.slice(0, opts.rerankN ?? DEFAULT_OPTS.rerankN), k);
     }
 
+    case "agentic": {
+      const { agenticRetrieve } = await import("../agent");
+      const { chunks } = await agenticRetrieve(query, { k });
+      return chunks;
+    }
+
     default:
       throw new Error(`Retrieval strategy "${strategy}" is not implemented yet.`);
   }

@@ -1,4 +1,4 @@
-import { db } from "../db";
+import { db, withRetry } from "../db";
 import type { Chunk } from "../types";
 import type { RetrievalFilters } from "./types";
 import { rowToChunk, type ChunkRow } from "./vector";
@@ -20,7 +20,7 @@ async function search(query: string, k: number, mode: "all" | "any", filters?: R
       ? sql`nullif(plainto_tsquery('english', ${query})::text, '')::tsquery`
       : sql`nullif(replace(plainto_tsquery('english', ${query})::text, '&', '|'), '')::tsquery`;
 
-  return sql<ChunkRow[]>`
+  return withRetry(() => sql<ChunkRow[]>`
     with q as (select ${tsquery} as tsq)
     select
       id, document_id, company, ticker, filing_type, fiscal_year,
@@ -30,7 +30,7 @@ async function search(query: string, k: number, mode: "all" | "any", filters?: R
     where search_vector @@ q.tsq and ${metadataClause(filters)}
     order by score desc
     limit ${k}
-  `;
+  `);
 }
 
 export async function keywordSearch(

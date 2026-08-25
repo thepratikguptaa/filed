@@ -138,6 +138,16 @@ RERANK_MODEL=Xenova/bge-reranker-base npm run eval -- --strategy=hybrid+rerank
 
 Note MiniLM's recall@10 (43.7%) is slightly *below* unreranked hybrid (44.8%). Reranking only reorders the fused top-N, so a relevant chunk at fused rank 25 can be pushed out of the top 10. It buys shallow precision with deep recall.
 
+### M5 — agentic retrieval
+
+The model drives retrieval instead of receiving one blind top-k. It plans searches from the question, rewrites them into filing vocabulary, applies company/year/section filters, judges whether the results answer the question, and searches again when they do not.
+
+Caps are hard: 3 iterations, 6 searches, and every duplicated query is skipped. Each search is a full `hybrid+rerank` retrieval, and results from different searches are interleaved so every hop contributes to the top of the list rather than one hop dominating it.
+
+Two behaviours account for most of the gain. Decomposition — *"How did JPMorgan's net interest income change from FY2024 to FY2025?"* becomes two filtered searches, one per year, which puts the FY2025 figure at rank 2 where unreranked hybrid had it at rank 61. And vocabulary rewriting — *"capital expenditures"* becomes *"Additions to property and equipment"*, which is what Microsoft's cash flow statement actually says, retrieving a chunk that was unreachable at depth 200 by any single-shot strategy.
+
+`perSearchK` matters more than it looks. At 5, a simple one-search question yields only five candidates in total, capping recall@10 at recall@5 — single-fact recall@10 was 38.9%. Raising it to 10 took that to 83.3%.
+
 ### Results summary
 
 | milestone | strategy | recall@3 | recall@5 | recall@10 | MRR |
@@ -145,9 +155,23 @@ Note MiniLM's recall@10 (43.7%) is slightly *below* unreranked hybrid (44.8%). R
 | M1 | vector | 17.2% | 25.3% | 35.1% | 0.235 |
 | M3 | hybrid (RRF) | 19.0% | 25.3% | 44.8% | 0.304 |
 | M4 | hybrid + MiniLM rerank | 28.7% | 37.4% | 43.7% | 0.303 |
-| M4 | hybrid + bge rerank | 27.6% | 47.7% | **54.6%** | **0.390** |
+| M4 | hybrid + bge rerank | 27.6% | 47.7% | 54.6% | 0.390 |
+| **M5** | **agentic** | **39.7%** | **54.6%** | **75.9%** | **0.501** |
 
-Baseline to best measured configuration: recall@10 **+19.5pts**, recall@5 **+22.4pts**, MRR **+0.155**.
+Baseline to agentic: recall@10 **+40.8pts**, recall@5 **+29.3pts**, MRR **+0.266**. Questions with no relevant chunk in the top 10 fell from 15 of 29 to 5.
+
+Cross-document subset, which is what the agent exists for:
+
+| strategy | recall@3 | recall@5 | recall@10 | MRR |
+| --- | --- | --- | --- | --- |
+| vector | 16.7% | 16.7% | 25.0% | 0.194 |
+| hybrid | 16.7% | 16.7% | 16.7% | 0.167 |
+| hybrid + bge rerank | 16.7% | 25.0% | 41.7% | 0.224 |
+| **agentic** | 16.7% | **41.7%** | **58.3%** | **0.357** |
+
+Single-shot strategies plateau on these questions because no single ranking can hold evidence from two filings at once. Cross-document recall@10 more than doubles against the baseline, and section questions reach 90.0% recall@10 with MRR 0.758.
+
+Agentic retrieval costs 20–60s per question against roughly 7s for `hybrid+rerank`, since it makes several reranked retrievals plus two LLM calls. It is the default in the app; the eval harness runs any strategy with `--strategy=`.
 
 Golden set v1: 29 labelled questions (6 single-fact, 7 numeric, 10 section, 6 cross-document), 49 labelled chunks.
 

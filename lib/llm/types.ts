@@ -6,6 +6,7 @@ export interface Message {
 export interface CompletionOptions {
   temperature?: number;
   maxTokens?: number;
+  json?: boolean;
 }
 
 export interface LlmProvider {

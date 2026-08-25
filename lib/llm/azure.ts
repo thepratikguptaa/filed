@@ -19,6 +19,7 @@ export function azureLlm(): LlmProvider {
         messages,
         temperature: options.temperature ?? 0,
         max_tokens: options.maxTokens ?? 900,
+        ...(options.json ? { response_format: { type: "json_object" as const } } : {}),
       });
       return response.choices[0]?.message?.content?.trim() ?? "";
     },

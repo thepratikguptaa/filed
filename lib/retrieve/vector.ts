@@ -1,4 +1,4 @@
-import { db, toVectorLiteral } from "../db";
+import { db, toVectorLiteral, withRetry } from "../db";
 import { getEmbedder } from "../embed";
 import type { Chunk } from "../types";
 import type { RetrievalFilters } from "./types";
@@ -61,7 +61,7 @@ export async function vectorSearchByEmbedding(
 ): Promise<Chunk[]> {
   const sql = db();
   const literal = toVectorLiteral(vector);
-  const rows = await sql<ChunkRow[]>`
+  const rows = await withRetry(() => sql<ChunkRow[]>`
     select
       id, document_id, company, ticker, filing_type, fiscal_year,
       section, section_title, position, text, token_count, has_table, content_hash,
@@ -70,6 +70,6 @@ export async function vectorSearchByEmbedding(
     where ${filterClause(filters)}
     order by embedding <=> ${literal}::vector
     limit ${k}
-  `;
+  `);
   return rows.map(rowToChunk).map((chunk, index) => ({ ...chunk, vectorRank: index + 1 }));
 }

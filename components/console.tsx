@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CitationText } from "@/components/citation-text";
 import { SourceCard } from "@/components/source-card";
+import { AgentTraceView } from "@/components/agent-trace";
 import type { AnswerResult } from "@/lib/answer";
 import type { CorpusStats } from "@/lib/corpus";
 
@@ -14,6 +15,7 @@ const EXAMPLES = [
   "How does Apple describe supply chain concentration risk?",
   "What cybersecurity risks does JPMorgan identify?",
   "How much did Pfizer spend on research and development?",
+  "How did JPMorgan's net interest income change from FY2024 to FY2025?",
 ];
 
 export function Console({ stats }: { stats: CorpusStats }) {
@@ -168,6 +170,8 @@ export function Console({ stats }: { stats: CorpusStats }) {
                   onSelectMarker={scrollToSource}
                 />
               </div>
+              {result.trace && <AgentTraceView trace={result.trace} />}
+
               <p className="mt-8 border-t border-border pt-4 text-[11px] leading-relaxed text-muted-foreground">
                 Filed reports what the filings say and cites where. It does not give investment advice.
               </p>
