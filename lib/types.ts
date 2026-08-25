@@ -49,4 +49,5 @@ export interface Chunk extends ChunkInput {
   score?: number;
   vectorRank?: number;
   keywordRank?: number;
+  fusedRank?: number;
 }

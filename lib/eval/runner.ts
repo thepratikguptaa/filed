@@ -10,6 +10,7 @@ export interface RunOptions {
   k?: number;
   candidateK?: number;
   rrfK?: number;
+  rerankN?: number;
   goldenVersion: number;
   onProgress?: (done: number, total: number) => void;
 }
@@ -24,6 +25,7 @@ export async function runEval(questions: GoldenQuestion[], options: RunOptions):
       k,
       candidateK: options.candidateK,
       rrfK: options.rrfK,
+      rerankN: options.rerankN,
     });
     scores.push(scoreQuestion(question, retrieved));
     options.onProgress?.(index + 1, questions.length);

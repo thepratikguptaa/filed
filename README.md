@@ -117,6 +117,38 @@ Fusion pool size (`candidateK`) at 15/30/50 gives recall@10 of 40.2/43.7/44.8; i
 
 Both `rrfK` and `candidateK` are tuned against 29 questions, which is a small sample. Treat them as reasonable defaults rather than settled constants.
 
+### M4 — reranking
+
+A cross-encoder rescores the fused top-N before the chunks reach the LLM.
+
+| reranker | rerankN | recall@3 | recall@5 | recall@10 | MRR | rerank latency |
+| --- | --- | --- | --- | --- | --- | --- |
+| none (M3 hybrid) | — | 19.0% | 25.3% | 44.8% | 0.304 | — |
+| ms-marco-MiniLM-L-6-v2 | 30 | **28.7%** | 37.4% | 43.7% | 0.303 | ~6.5s |
+| bge-reranker-base | 12 | 30.5% | 43.7% | 50.0% | 0.394 | ~20s |
+| bge-reranker-base | 30 | 27.6% | **47.7%** | **54.6%** | **0.390** | ~50s |
+
+Reranking does what a reranker should: it lifts relevant chunks into the shallow ranks the answer layer actually reads, rather than finding anything new. With bge at N=30, recall@5 nearly doubles against unreranked hybrid.
+
+The two models are a genuine speed/quality trade. `bge-reranker-base` is 278M parameters against MiniLM's 22M, and measured 1,684ms per pair versus 218ms on this machine. MiniLM is the default because it keeps an end-to-end answer around 10s; bge is one env var away and is the better choice for offline eval or if you accept ~50s per question:
+
+```bash
+RERANK_MODEL=Xenova/bge-reranker-base npm run eval -- --strategy=hybrid+rerank
+```
+
+Note MiniLM's recall@10 (43.7%) is slightly *below* unreranked hybrid (44.8%). Reranking only reorders the fused top-N, so a relevant chunk at fused rank 25 can be pushed out of the top 10. It buys shallow precision with deep recall.
+
+### Results summary
+
+| milestone | strategy | recall@3 | recall@5 | recall@10 | MRR |
+| --- | --- | --- | --- | --- | --- |
+| M1 | vector | 17.2% | 25.3% | 35.1% | 0.235 |
+| M3 | hybrid (RRF) | 19.0% | 25.3% | 44.8% | 0.304 |
+| M4 | hybrid + MiniLM rerank | 28.7% | 37.4% | 43.7% | 0.303 |
+| M4 | hybrid + bge rerank | 27.6% | 47.7% | **54.6%** | **0.390** |
+
+Baseline to best measured configuration: recall@10 **+19.5pts**, recall@5 **+22.4pts**, MRR **+0.155**.
+
 Golden set v1: 29 labelled questions (6 single-fact, 7 numeric, 10 section, 6 cross-document), 49 labelled chunks.
 
 `labelledBy: "model"` on the current golden set means the labels were machine-proposed, not human-confirmed. They were located largely through lexical and metadata-filtered search rather than the vector retriever being measured, which avoids grading the retriever against its own output, but two caveats follow: the label set is deliberately small (1–3 chunks per question), so recall is a **floor** rather than a true rate, and no human has yet confirmed that each labelled chunk genuinely answers its question. Run `npm run label -- --all` to review and extend.

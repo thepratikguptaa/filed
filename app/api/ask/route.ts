@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await answerQuestion(question, {
-      strategy: body.strategy ?? "hybrid",
+      strategy: body.strategy ?? "hybrid+rerank",
       k: Math.min(Math.max(body.k ?? 8, 1), 20),
     });
     return Response.json(result);

@@ -14,6 +14,7 @@ export interface RetrieveOpts {
   k?: number;
   candidateK?: number;
   rrfK?: number;
+  rerankN?: number;
   filters?: RetrievalFilters;
 }
 
@@ -22,8 +23,9 @@ export interface Retriever {
 }
 
 export const DEFAULT_OPTS = {
-  strategy: "hybrid" as RetrievalStrategy,
+  strategy: "hybrid+rerank" as RetrievalStrategy,
   k: 5,
   candidateK: 50,
   rrfK: 5,
+  rerankN: 30,
 };
