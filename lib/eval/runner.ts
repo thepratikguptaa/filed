@@ -9,6 +9,7 @@ export interface RunOptions {
   strategy: RetrievalStrategy;
   k?: number;
   candidateK?: number;
+  rrfK?: number;
   goldenVersion: number;
   onProgress?: (done: number, total: number) => void;
 }
@@ -22,6 +23,7 @@ export async function runEval(questions: GoldenQuestion[], options: RunOptions):
       strategy: options.strategy,
       k,
       candidateK: options.candidateK,
+      rrfK: options.rrfK,
     });
     scores.push(scoreQuestion(question, retrieved));
     options.onProgress?.(index + 1, questions.length);

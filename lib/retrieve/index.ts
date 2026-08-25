@@ -23,7 +23,7 @@ export async function retrieve(query: string, opts: RetrieveOpts = {}): Promise<
         vectorSearch(query, candidateK, opts.filters),
         keywordSearch(query, candidateK, opts.filters),
       ]);
-      return reciprocalRankFusion([dense, sparse]).slice(0, k);
+      return reciprocalRankFusion([dense, sparse], opts.rrfK ?? DEFAULT_OPTS.rrfK).slice(0, k);
     }
 
     default:

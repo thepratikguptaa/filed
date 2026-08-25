@@ -102,12 +102,20 @@ npm run apply-labels                    # write golden.json from proposed-labels
 | milestone | strategy | recall@3 | recall@5 | recall@10 | MRR |
 | --- | --- | --- | --- | --- | --- |
 | M1 baseline | vector | 17.2% | 25.3% | 35.1% | 0.235 |
-| — | keyword only | 6.9% | 10.3% | 10.3% | 0.089 |
-| M3 hybrid | vector + keyword, RRF | **19.0%** | **32.2%** | **42.0%** | **0.270** |
+| M3 first cut | keyword only (AND) | 6.9% | 10.3% | 10.3% | 0.089 |
+| M3 first cut | hybrid, RRF k=60 | 17.2% | **32.2%** | 42.0% | 0.245 |
+| M3 fixed | keyword only (AND→OR) | 16.7% | 23.6% | 33.3% | 0.173 |
+| **M3 final** | **hybrid, RRF k=5** | **19.0%** | 25.3% | **44.8%** | **0.304** |
 
-Hybrid against the vector baseline: recall@10 **+6.9pts**, recall@5 **+6.9pts**, MRR **+0.035**. The gain is concentrated exactly where it was predicted — numeric lookups went 21.4% to 35.7% recall@10 and single-fact 30.6% to 47.2%, while section questions were unchanged at 53.3%. Keyword search alone is far worse than vector on every category, but it fails on different questions, which is what makes the fusion worth more than either input.
+Against the vector baseline: recall@10 **+9.7pts**, recall@3 **+1.8pts**, MRR **+0.069**. Single-fact questions gained most (30.6% → 61.1% recall@10, MRR 0.274 → 0.449) and numeric questions went 21.4% → 42.9%.
 
-Fusion pool size was measured rather than assumed: `candidateK` of 15, 30, 50 and 100 gives recall@10 of 43.7%, 42.0%, 42.0%, 42.0% and MRR of 0.254, 0.252, 0.270, 0.270. The pool saturates at 50 because keyword search often returns fewer candidates than that. 50 is the default — it wins on MRR and recall@3, which is what the answer layer actually consumes.
+One metric moved the wrong way: recall@5 is 25.3%, below the 32.2% that RRF k=60 produced. The `rrfK` sweep gives recall@10 of 44.8/43.7/38.5/42.0 and MRR of 0.304/0.284/0.281/0.245 at k = 5/10/20/60. k=5 was chosen because it wins on both MRR and recall@10, and the answer layer reads the top 8 — but the recall@5 regression is real, and k=60 is the better setting if middle-depth recall matters more for your use.
+
+**The keyword half was broken on first implementation.** `websearch_to_tsquery` ANDs every term, so a natural-language question required a chunk containing all of them, and keyword search returned nothing for 25 of 29 questions. It now tries the strict AND query first and falls back to an OR query for the remaining slots, which took keyword-only recall@10 from 10.3% to 33.3%. Diagnosing this needed [scripts/diagnose.ts](scripts/diagnose.ts), which reports the rank of each labelled chunk per strategy at depth 200 — a `—` there means genuinely unreachable, which is a different problem from ranked-too-low.
+
+Fusion pool size (`candidateK`) at 15/30/50 gives recall@10 of 40.2/43.7/44.8; it saturates at 50 because keyword search often returns fewer candidates than that.
+
+Both `rrfK` and `candidateK` are tuned against 29 questions, which is a small sample. Treat them as reasonable defaults rather than settled constants.
 
 Golden set v1: 29 labelled questions (6 single-fact, 7 numeric, 10 section, 6 cross-document), 49 labelled chunks.
 

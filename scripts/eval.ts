@@ -21,6 +21,7 @@ async function main() {
     strategy,
     k: flag("k") ? Number(flag("k")) : undefined,
     candidateK: flag("candidates") ? Number(flag("candidates")) : undefined,
+    rrfK: flag("rrfk") ? Number(flag("rrfk")) : undefined,
     goldenVersion: golden.version,
     onProgress: (done, total) => process.stdout.write(`\r  ${done}/${total}`),
   });

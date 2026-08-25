@@ -13,6 +13,7 @@ export interface RetrieveOpts {
   strategy?: RetrievalStrategy;
   k?: number;
   candidateK?: number;
+  rrfK?: number;
   filters?: RetrievalFilters;
 }
 
@@ -24,4 +25,5 @@ export const DEFAULT_OPTS = {
   strategy: "hybrid" as RetrievalStrategy,
   k: 5,
   candidateK: 50,
+  rrfK: 5,
 };

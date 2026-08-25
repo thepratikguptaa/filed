@@ -1,6 +1,6 @@
 import type { Chunk } from "../types";
 
-export const RRF_K = 60;
+export const RRF_K = 5;
 
 export function reciprocalRankFusion(lists: Chunk[][], k = RRF_K): Chunk[] {
   const merged = new Map<string, Chunk>();
