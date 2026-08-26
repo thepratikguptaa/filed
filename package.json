@@ -16,7 +16,8 @@
     "candidates": "tsx scripts/candidates.ts",
     "find": "tsx scripts/find.ts",
     "apply-labels": "tsx scripts/apply-labels.ts",
-    "diagnose": "tsx scripts/diagnose.ts"
+    "diagnose": "tsx scripts/diagnose.ts",
+    "verify-labels": "tsx scripts/verify-labels.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",

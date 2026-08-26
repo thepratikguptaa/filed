@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { getEncoding } from "js-tiktoken";
-import { chunking } from "../config";
+import { chunking, HEADER_BUDGET } from "../config";
 import type { Block, ChunkInput, FilingRef, Section } from "../types";
 
 const encoder = getEncoding("cl100k_base");
@@ -60,7 +60,7 @@ function hardSplit(text: string, limit: number): string[] {
 }
 
 function expandBlocks(blocks: Block[]): Block[] {
-  const limit = chunking.maxTokens - chunking.overlapTokens - SEPARATOR_SLACK;
+  const limit = chunking.maxTokens - HEADER_BUDGET - chunking.overlapTokens - SEPARATOR_SLACK;
   const expanded: Block[] = [];
 
   for (const block of blocks) {
@@ -99,6 +99,29 @@ function render(blocks: Block[]): string {
   return blocks.map((block) => block.text).join("\n\n");
 }
 
+const CAPTION_HINT = /^(the following|this table|summary of|components of|selected|consolidated|changes in)/i;
+
+function isCaption(block: Block): boolean {
+  return block.kind === "text" && block.text.length < 220 && CAPTION_HINT.test(block.text);
+}
+
+function buildHeader(filing: FilingRef, section: Section, caption: string | null): string {
+  const where = section.item ? `${section.item} ${section.title}` : "front matter";
+  const base = `${filing.company} (${filing.ticker}) FY${filing.fiscalYear} ${filing.filingType} · ${where}`;
+  if (!caption) return base;
+
+  const room = HEADER_BUDGET - countTokens(base) - 4;
+  if (room <= 4) return base;
+
+  let text = "";
+  for (const word of caption.replace(/\s+/g, " ").trim().split(" ")) {
+    const next = text ? `${text} ${word}` : word;
+    if (countTokens(next) > room) break;
+    text = next;
+  }
+  return text ? `${base} · ${text}` : base;
+}
+
 export function chunkFiling(filing: FilingRef, sections: Section[]): ChunkInput[] {
   const chunks: ChunkInput[] = [];
   let position = 0;
@@ -108,10 +131,13 @@ export function chunkFiling(filing: FilingRef, sections: Section[]): ChunkInput[
     let buffer: Block[] = [];
     let tokens = 0;
     let carried = 0;
+    let caption: string | null = null;
 
     const flush = () => {
       if (buffer.length === 0 || buffer.length === carried) return;
-      const text = render(buffer);
+      const body = render(buffer);
+      const header = buildHeader(filing, section, buffer.some((b) => b.kind === "table") ? caption : null);
+      const text = `${header}\n\n${body}`;
       const tokenCount = countTokens(text);
       if (tokenCount > chunking.maxTokens) {
         throw new Error(
@@ -137,6 +163,7 @@ export function chunkFiling(filing: FilingRef, sections: Section[]): ChunkInput[
         });
         position += 1;
       }
+      caption = null;
       const carry = overlapFrom(buffer);
       buffer = [...carry];
       carried = carry.length;
@@ -146,6 +173,7 @@ export function chunkFiling(filing: FilingRef, sections: Section[]): ChunkInput[
     for (const block of blocks) {
       const size = countTokens(block.text);
       if (tokens > 0 && tokens + size > chunking.targetTokens) flush();
+      if (isCaption(block)) caption = block.text;
       buffer.push(block);
       tokens += size;
       if (tokens >= chunking.targetTokens) flush();

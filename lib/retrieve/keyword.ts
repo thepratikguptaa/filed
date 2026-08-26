@@ -1,10 +1,10 @@
-import { db, withRetry } from "../db";
+import type postgres from "postgres";
+import { withRetry } from "../db";
 import type { Chunk } from "../types";
 import type { RetrievalFilters } from "./types";
 import { rowToChunk, type ChunkRow } from "./vector";
 
-function metadataClause(filters?: RetrievalFilters) {
-  const sql = db();
+function metadataClause(sql: postgres.Sql, filters?: RetrievalFilters) {
   let clause = sql`true`;
   if (filters?.tickers?.length) clause = sql`${clause} and ticker = any(${filters.tickers})`;
   if (filters?.fiscalYears?.length) clause = sql`${clause} and fiscal_year = any(${filters.fiscalYears})`;
@@ -14,23 +14,24 @@ function metadataClause(filters?: RetrievalFilters) {
 }
 
 async function search(query: string, k: number, mode: "all" | "any", filters?: RetrievalFilters) {
-  const sql = db();
-  const tsquery =
-    mode === "all"
-      ? sql`nullif(plainto_tsquery('english', ${query})::text, '')::tsquery`
-      : sql`nullif(replace(plainto_tsquery('english', ${query})::text, '&', '|'), '')::tsquery`;
+  return withRetry((sql) => {
+    const tsquery =
+      mode === "all"
+        ? sql`nullif(plainto_tsquery('english', ${query})::text, '')::tsquery`
+        : sql`nullif(replace(plainto_tsquery('english', ${query})::text, '&', '|'), '')::tsquery`;
 
-  return withRetry(() => sql<ChunkRow[]>`
+    return sql<ChunkRow[]>`
     with q as (select ${tsquery} as tsq)
     select
       id, document_id, company, ticker, filing_type, fiscal_year,
       section, section_title, position, text, token_count, has_table, content_hash,
       ts_rank_cd(search_vector, q.tsq, 32) as score
     from chunks, q
-    where search_vector @@ q.tsq and ${metadataClause(filters)}
+    where search_vector @@ q.tsq and ${metadataClause(sql, filters)}
     order by score desc
     limit ${k}
-  `);
+  `;
+  });
 }
 
 export async function keywordSearch(

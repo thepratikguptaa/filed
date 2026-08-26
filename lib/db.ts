@@ -24,18 +24,32 @@ export async function closeDb(): Promise<void> {
   }
 }
 
-const TRANSIENT = /ECONNRESET|Connection terminated|connection closed|socket hang up|ETIMEDOUT/i;
+const TRANSIENT = /ECONNRESET|CONNECTION_CLOSED|CONNECTION_ENDED|Connection terminated|connection closed|socket hang up|ETIMEDOUT|EPIPE/i;
 
-export async function withRetry<T>(run: () => Promise<T>, attempts = 3): Promise<T> {
+async function resetClient(): Promise<void> {
+  const dying = client;
+  client = null;
+  if (dying) {
+    try {
+      await dying.end({ timeout: 5 });
+    } catch {
+      // the connection is already broken; dropping the reference is the point
+    }
+  }
+}
+
+export async function withRetry<T>(run: (sql: postgres.Sql) => Promise<T>, attempts = 4): Promise<T> {
   let lastError: unknown;
+
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
-      return await run();
+      return await run(db());
     } catch (error) {
       lastError = error;
-      const message = error instanceof Error ? `${error.message} ${(error as { code?: string }).code ?? ""}` : "";
+      const message = `${error instanceof Error ? error.message : ""} ${(error as { code?: string })?.code ?? ""}`;
       if (!TRANSIENT.test(message)) throw error;
-      await new Promise((resolve) => setTimeout(resolve, 500 * 2 ** attempt));
+      await resetClient();
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** attempt));
     }
   }
   throw lastError;

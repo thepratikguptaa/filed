@@ -1,3 +1,4 @@
+import type postgres from "postgres";
 import { db, toVectorLiteral, withRetry } from "../db";
 import { getEmbedder } from "../embed";
 import type { Chunk } from "../types";
@@ -39,8 +40,8 @@ export function rowToChunk(row: ChunkRow): Chunk {
   };
 }
 
-export function filterClause(filters?: RetrievalFilters) {
-  const sql = db();
+export function filterClause(filters?: RetrievalFilters, client?: postgres.Sql) {
+  const sql = client ?? db();
   let clause = sql`embedding is not null`;
   if (filters?.tickers?.length) clause = sql`${clause} and ticker = any(${filters.tickers})`;
   if (filters?.fiscalYears?.length) clause = sql`${clause} and fiscal_year = any(${filters.fiscalYears})`;
@@ -59,15 +60,14 @@ export async function vectorSearchByEmbedding(
   k: number,
   filters?: RetrievalFilters,
 ): Promise<Chunk[]> {
-  const sql = db();
   const literal = toVectorLiteral(vector);
-  const rows = await withRetry(() => sql<ChunkRow[]>`
+  const rows = await withRetry((sql) => sql<ChunkRow[]>`
     select
       id, document_id, company, ticker, filing_type, fiscal_year,
       section, section_title, position, text, token_count, has_table, content_hash,
       1 - (embedding <=> ${literal}::vector) as score
     from chunks
-    where ${filterClause(filters)}
+    where ${filterClause(filters, sql)}
     order by embedding <=> ${literal}::vector
     limit ${k}
   `);

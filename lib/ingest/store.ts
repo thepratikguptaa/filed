@@ -1,20 +1,20 @@
-import { db, toVectorLiteral, withRetry } from "../db";
+import { toVectorLiteral, withRetry } from "../db";
 import type { ChunkInput, FilingRef } from "../types";
 
 export async function documentIsCurrent(documentId: string, contentHash: string): Promise<boolean> {
-  const rows = await db()<{ content_hash: string; chunk_count: number }[]>`
+  const rows = await withRetry((sql) => sql<{ content_hash: string; chunk_count: number }[]>`
     select content_hash, chunk_count from documents where id = ${documentId}
-  `;
+  `);
   return rows.length > 0 && rows[0].content_hash === contentHash && rows[0].chunk_count > 0;
 }
 
 export async function existingEmbeddings(hashes: string[]): Promise<Map<string, string>> {
   if (hashes.length === 0) return new Map();
-  const rows = await db()<{ content_hash: string; embedding: string }[]>`
+  const rows = await withRetry((sql) => sql<{ content_hash: string; embedding: string }[]>`
     select distinct on (content_hash) content_hash, embedding::text as embedding
     from chunks
-    where content_hash in ${db()(hashes)} and embedding is not null
-  `;
+    where content_hash in ${sql(hashes)} and embedding is not null
+  `);
   return new Map(rows.map((row) => [row.content_hash, row.embedding]));
 }
 
@@ -24,10 +24,9 @@ export async function persistFiling(
   chunks: ChunkInput[],
   vectors: string[],
 ): Promise<void> {
-  const sql = db();
   const documentId = filing.accessionNumber.replace(/-/g, "");
 
-  await withRetry(() => sql.begin(async (tx) => {
+  await withRetry((sql) => sql.begin(async (tx) => {
     await tx`
       insert into documents (
         id, cik, company, ticker, filing_type, fiscal_year,

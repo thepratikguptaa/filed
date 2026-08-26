@@ -47,6 +47,21 @@ function hasBlockDescendant($: cheerio.CheerioAPI, element: Element): boolean {
   return $(element).find([...BLOCK_TAGS].join(",")).length > 0;
 }
 
+const ADORNMENT = /^(\$|%|\)|\(|—|–|-|\*|†|‡|(\([a-z]{1,3}\))+)$/i;
+
+function mergeAdornments(cells: string[]): string[] {
+  const merged: string[] = [];
+  for (const cell of cells) {
+    if (merged.length > 0 && ADORNMENT.test(cell)) {
+      const previous = merged[merged.length - 1];
+      merged[merged.length - 1] = cell === "$" ? `${cell}${previous}` : `${previous}${cell}`;
+      continue;
+    }
+    merged.push(cell);
+  }
+  return merged;
+}
+
 function tableToText($: cheerio.CheerioAPI, table: Element): string | null {
   const rows: string[] = [];
   $(table)
@@ -58,7 +73,7 @@ function tableToText($: cheerio.CheerioAPI, table: Element): string | null {
         .each((__, cell) => {
           cells.push(clean($(cell).text()));
         });
-      const filled = cells.filter((cell) => cell.length > 0);
+      const filled = mergeAdornments(cells.filter((cell) => cell.length > 0));
       if (filled.length > 0) rows.push(filled.join(" | "));
     });
   if (rows.length === 0) return null;
@@ -129,7 +144,7 @@ function sizeOf(blocks: Block[]): number {
 
 const INCORPORATED_SECTION_CHARS = 200_000;
 
-export const PARSER_VERSION = 2;
+export const PARSER_VERSION = 3;
 
 const MDA_CAPTION = /management[''’]s discussion and analysis/i;
 const AUDIT_CAPTION = /report of independent registered public accounting firm/i;

@@ -153,7 +153,58 @@ Two behaviours account for most of the gain. Decomposition — *"How did JPMorga
 
 `perSearchK` matters more than it looks. At 5, a simple one-search question yields only five candidates in total, capping recall@10 at recall@5 — single-fact recall@10 was 38.9%. Raising it to 10 took that to 83.3%.
 
+### M6 — table-aware chunking
+
+Financial tables were the weakest category, so the fix targeted why. Inspecting the chunk holding JPMorgan's CET1 ratio showed the problem plainly: a well-formed table of numbers in which the string "JPMorgan" never appears. The company name, the table caption and the units all live in blocks *outside* the chunk, so a bare grid of figures cannot match a question that names the company.
+
+Every chunk now carries a context header — company, ticker, fiscal year, filing type, section, and for table chunks the nearest preceding caption. The header is budgeted at 48 tokens and counted against the model's 512-token limit, so the body shrinks to make room.
+
+| strategy | headers | recall@3 | recall@5 | recall@10 | MRR |
+| --- | --- | --- | --- | --- | --- |
+| hybrid + rerank | no | 28.7% | 37.4% | 43.7% | 0.303 |
+| hybrid + rerank | **yes** | **39.7%** | **49.4%** | **64.4%** | **0.399** |
+| agentic | no | 37.9% | 58.0% | **72.4%** | **0.518** |
+| agentic | **yes** | **41.4%** | 54.6% | 62.6% | 0.453 |
+
+The result is genuinely split. Headers are a large win for single-shot retrieval — recall@10 **+20.7pts**, and numeric questions went 35.7% to **71.4%**, which was the hypothesis. They are a loss for the agent: **−9.8pts** recall@10 and −0.065 MRR, with only recall@3 improving.
+
+The likely reason is redundancy. The agent already supplies company and year through metadata filters, so the header repeats information it does not need, while still paying the cost. That cost is the confound in this experiment: headers did not only add context, they also cut the body budget from 400 to 352 tokens and pushed the corpus from 3,976 to 4,603 chunks. Each retrieved chunk therefore carries less filing text, and a fixed k covers less material. Separating the two effects needs a third ingest that keeps the header and restores the body, which is what M7 does.
+
+Which configuration is best depends on the strategy you can actually deploy. Under Vercel's 60s request limit the agent frequently will not finish, making `hybrid+rerank` the realistic production path — and there headers are decisively better.
+
+### M7 — column alignment and body budget
+
+Two defects surfaced together, both visible in the same chunk.
+
+**Misaligned table columns.** Asked for JPMorgan's 2025 CET1 ratio, the app answered *"14.6% under the Standardized approach and 15.7% under the Advanced approach"*. The first figure is right; the second is the FY2024 Standardized ratio, read off the wrong column. The cause is in extraction, not retrieval: `%` signs and footnote markers like `(c)` occupy their own `<td>` cells, so a six-column row arrives as thirteen cells and column position stops meaning anything.
+
+```
+before  CET1 capital ratio | 14.6 | % | (c) | 15.7 | % | 11.5 | % | 14.1 | % | (c) | 15.8 | % | 11.5 | %
+after   CET1 capital ratio(c) | 14.6% | 15.3% | 14.1% | 15.8%
+```
+
+Cells matching a small adornment set are now folded into the neighbour they belong to before the row is rendered. The same question now answers 14.6% Standardized and 14.1% Advanced, matching the filing. This is the more serious of the two defects: a retrieval miss produces a visible "not found", but a misparsed table produces a confident, well-cited, wrong number.
+
+**The header budget was charged twice.** M6 shrank chunk bodies from 400 to 352 tokens to make room for the 48-token header. That was unnecessary — the header is counted inside the 500-token limit already, so bodies never needed to give anything up. Restoring them to 400 tokens undoes the confound M6 flagged.
+
+| strategy | body | recall@3 | recall@5 | recall@10 | MRR |
+| --- | --- | --- | --- | --- | --- |
+| hybrid + rerank | 352 | 39.7% | 49.4% | 64.4% | 0.399 |
+| hybrid + rerank | **400** | **44.8%** | 49.4% | **66.1%** | **0.436** |
+| agentic | 352 | 41.4% | 54.6% | 62.6% | 0.453 |
+| agentic | **400** | **47.7%** | **56.3%** | **67.8%** | **0.606** |
+
+This answers M6's open question. The agent's 9.8pt loss was mostly the shortened body, not the header: half of it comes back (62.6% → 67.8%) with the header still in place, and MRR goes to 0.606, the highest any configuration has recorded. Agentic now leads `hybrid+rerank` on every metric, which it did not before. Fewer, fuller chunks also mean the corpus shrank from 4,603 to 3,981 while holding the same text.
+
+A residual 4.6pt gap to the header-free 72.4% remains, but that measurement predates the column fix and so is not a clean comparison; isolating what is left would cost another full re-embed for a difference smaller than the noise of a 29-question set.
+
+Numeric questions are the one category that did not benefit: 35.7% recall@10 for the agent against 42.9% for `hybrid+rerank`. The agent decomposes a numeric question into per-company, per-year searches and then interleaves the results, which spends its budget on breadth when a single filing held the answer.
+
 ### Results summary
+
+Contextual headers changed the corpus itself, so results are grouped by the corpus they were measured on. Everything within a group is directly comparable.
+
+**Without contextual headers** (3,976 chunks, 400-token bodies):
 
 | milestone | strategy | recall@3 | recall@5 | recall@10 | MRR |
 | --- | --- | --- | --- | --- | --- |
@@ -161,20 +212,40 @@ Two behaviours account for most of the gain. Decomposition — *"How did JPMorga
 | M3 | hybrid (RRF) | 19.0% | 25.3% | 44.8% | 0.304 |
 | M4 | hybrid + MiniLM rerank | 28.7% | 37.4% | 43.7% | 0.303 |
 | M4 | hybrid + bge rerank | 27.6% | 47.7% | 54.6% | 0.390 |
-| **M5** | **agentic** | **37.9%** | **58.0%** | **72.4%** | **0.518** |
+| M5 | agentic | 37.9% | 58.0% | 72.4% | 0.518 |
 
-Baseline to agentic: recall@10 **+37.3pts**, recall@5 **+32.7pts**, MRR **+0.283**. Questions with no relevant chunk in the top 10 fell from 15 of 29 to 6.
+**With contextual headers, shortened bodies** (4,603 chunks, 352-token bodies):
 
-Cross-document subset, which is what the agent exists for:
+| milestone | strategy | recall@3 | recall@5 | recall@10 | MRR |
+| --- | --- | --- | --- | --- | --- |
+| M6 | vector | 23.0% | 35.6% | 50.6% | 0.330 |
+| M6 | hybrid (RRF) | 31.0% | 41.4% | 52.9% | 0.393 |
+| M6 | hybrid + MiniLM rerank | 39.7% | 49.4% | **64.4%** | 0.399 |
+| M6 | agentic | **41.4%** | 54.6% | 62.6% | **0.453** |
+
+**With contextual headers, full bodies and aligned tables** (3,981 chunks, 400-token bodies — the current corpus):
+
+| milestone | strategy | recall@3 | recall@5 | recall@10 | MRR |
+| --- | --- | --- | --- | --- | --- |
+| M7 | vector | 31.6% | 40.8% | 55.7% | 0.387 |
+| M7 | hybrid (RRF) | 36.2% | 41.4% | 52.9% | 0.439 |
+| M7 | hybrid + MiniLM rerank | 44.8% | 49.4% | 66.1% | 0.436 |
+| M7 | agentic | **47.7%** | **56.3%** | **67.8%** | **0.606** |
+
+M1 baseline to the best current configuration: recall@10 **35.1% → 67.8%**, recall@3 **17.2% → 47.7%**, MRR **0.235 → 0.606**. Questions with no relevant chunk in the top 10 fell from 15 of 29 to 7.
+
+Headers lift every single-shot strategy, including plain vector search, which gained 20.6pts recall@10 over the M1 baseline without any other change. The agent's apparent aversion to them turned out to be an artefact of the shortened bodies that shipped alongside them; with the body restored it leads on every metric.
+
+Cross-document subset on the current corpus, which is what the agent exists for:
 
 | strategy | recall@3 | recall@5 | recall@10 | MRR |
 | --- | --- | --- | --- | --- |
-| vector | 16.7% | 16.7% | 25.0% | 0.194 |
-| hybrid | 16.7% | 16.7% | 16.7% | 0.167 |
-| hybrid + bge rerank | 16.7% | 25.0% | 41.7% | 0.224 |
-| **agentic** | 16.7% | **41.7%** | **41.7%** | **0.325** |
+| vector | 25.0% | 25.0% | 33.3% | 0.250 |
+| hybrid | 25.0% | 25.0% | 25.0% | 0.222 |
+| hybrid + rerank | 33.3% | 33.3% | 41.7% | 0.333 |
+| **agentic** | **33.3%** | **41.7%** | **50.0%** | **0.458** |
 
-Single-shot strategies plateau on these questions because no single ranking can hold evidence from two filings at once. Cross-document recall@10 more than doubles against the baseline, and section questions reach 90.0% recall@10 with MRR 0.758.
+Single-shot strategies plateau on these questions because no single ranking can hold evidence from two filings at once. The agent is the only strategy that clears 41.7% here, and section questions reach 85.0% recall@10 with MRR 0.850.
 
 Agentic retrieval costs 20–45s per question against roughly 7s for `hybrid+rerank`, since it makes several reranked retrievals plus two LLM calls. It is the default in the app; the eval harness runs any strategy with `--strategy=`.
 
@@ -185,6 +256,14 @@ Every eval run records the full configuration it ran under — strategy, k, cand
 Golden set v1: 29 labelled questions (6 single-fact, 7 numeric, 10 section, 6 cross-document), 49 labelled chunks.
 
 `labelledBy: "model"` on the current golden set means the labels were machine-proposed, not human-confirmed. They were located largely through lexical and metadata-filtered search rather than the vector retriever being measured, which avoids grading the retriever against its own output, but two caveats follow: the label set is deliberately small (1–3 chunks per question), so recall is a **floor** rather than a true rate, and no human has yet confirmed that each labelled chunk genuinely answers its question. Run `npm run label -- --all` to review and extend.
+
+### Known limitations
+
+**Table extraction is the weakest link, and it fails silently.** Every metric on this page measures retrieval — whether the right chunk is found. None of them catch a chunk that is found correctly but parsed wrongly. The M7 column-alignment bug produced a fluent, correctly cited, factually wrong figure and no eval number moved. Merged cells, multi-row headers and nested tables are handled on a best-effort basis; a numeric answer should be checked against the linked filing before it is relied on.
+
+**Numeric questions are the agent's weakest category** — 35.7% recall@10 against 42.9% for `hybrid+rerank`. Decomposing into per-company, per-year searches spends the budget on breadth when one filing held the answer.
+
+**Ten filings, five companies, two fiscal years.** Results here do not predict behaviour on a corpus that spans more industries or older filing formats.
 
 ## Architecture
 

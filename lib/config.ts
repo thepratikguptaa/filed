@@ -87,11 +87,14 @@ const CHUNK_HEADROOM = 12;
 
 const hardLimit = embedding.maxInputTokens - CHUNK_HEADROOM;
 
+export const HEADER_BUDGET = 48;
+
 export const chunking = {
   targetTokens: Math.min(400, hardLimit - 60),
   overlapTokens: 60,
   minTokens: 40,
   maxTokens: hardLimit,
+  contextHeader: 1,
 };
 
 export const paths = {
