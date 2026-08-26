@@ -1,0 +1,1134 @@
+{
+  "ranAt": "2026-08-26T13:34:02.656Z",
+  "strategy": "hybrid+rerank",
+  "judge": "azure:gpt-4.1",
+  "questions": 29,
+  "abstentions": 0,
+  "claims": 116,
+  "counts": {
+    "supported": 42,
+    "uncited": 70,
+    "unsupported": 4,
+    "no-claim": 0
+  },
+  "citationPrecision": 0.9130434782608695,
+  "groundedShare": 0.39655172413793105,
+  "cleanAnswers": 25,
+  "audits": [
+    {
+      "id": "q01",
+      "question": "What was Apple's total net sales in fiscal 2025?",
+      "answer": "Apple's total net sales in fiscal 2025 were $416,161 million [C2][C5][C7].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple's total net sales in fiscal 2025 were $416,161 million [C2][C5][C7].",
+          "markers": [
+            "C2",
+            "C5",
+            "C7"
+          ],
+          "verdict": "supported",
+          "reason": "All sources (S1, S2, S3) state Apple's total net sales for fiscal 2025 were $416,161 million."
+        }
+      ],
+      "elapsedMs": 12307
+    },
+    {
+      "id": "q02",
+      "question": "How many people does Microsoft employ?",
+      "answer": "As of June 30, 2026, Microsoft employed approximately 223,000 people on a full-time basis, with 121,000 in the U.S. and 102,000 internationally [C2].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "As of June 30, 2026, Microsoft employed approximately 223,000 people on a full-time basis, with 121,000 in the U.S. and 102,000 internationally [C2].",
+          "markers": [
+            "C2"
+          ],
+          "verdict": "supported",
+          "reason": "Source S1 states Microsoft employed 223,000 people as of June 30, 2026, with 121,000 in U.S., 102,000 internationally."
+        }
+      ],
+      "elapsedMs": 10839
+    },
+    {
+      "id": "q03",
+      "question": "What was JPMorgan Chase's CET1 capital ratio at the end of 2025?",
+      "answer": "JPMorgan Chase's CET1 capital ratio at the end of 2025 was 15.8% under the Advanced approach, which became more binding than the Standardized approach as of December 31, 2025 [C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "JPMorgan Chase's CET1 capital ratio at the end of 2025 was 15.8% under the Advanced approach, which became more binding than the Standardized approach as of December 31, 2025 [C8].",
+          "markers": [
+            "C8"
+          ],
+          "verdict": "unsupported",
+          "reason": "Source confirms Advanced approach became more binding in 2025, but does not state the 15.8% CET1 ratio."
+        }
+      ],
+      "elapsedMs": 13721
+    },
+    {
+      "id": "q04",
+      "question": "Who is Exxon Mobil's independent registered public accounting firm?",
+      "answer": "Exxon Mobil's independent registered public accounting firm is PricewaterhouseCoopers LLP for both fiscal years 2024 and 2025 [C2][C3].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Exxon Mobil's independent registered public accounting firm is PricewaterhouseCoopers LLP for both fiscal years 2024 and 2025 [C2][C3].",
+          "markers": [
+            "C2",
+            "C3"
+          ],
+          "verdict": "unsupported",
+          "reason": "Sources do not name PricewaterhouseCoopers LLP as the auditor for 2024 or 2025."
+        }
+      ],
+      "elapsedMs": 14314
+    },
+    {
+      "id": "q05",
+      "question": "Where is Pfizer's corporate headquarters located?",
+      "answer": "Pfizer's corporate headquarters is located in New York City. The address is 66 Hudson Boulevard East, New York, New York 10001-2192 [C3][C7].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Pfizer's corporate headquarters is located in New York City.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 state Pfizer's global headquarters are located in New York City."
+        },
+        {
+          "claim": "The address is 66 Hudson Boulevard East, New York, New York 10001-2192 [C3][C7].",
+          "markers": [
+            "C3",
+            "C7"
+          ],
+          "verdict": "supported",
+          "reason": "Both S1 and S2 list 66 Hudson Boulevard East, New York, NY 10001-2192 as Pfizer's address."
+        }
+      ],
+      "elapsedMs": 14548
+    },
+    {
+      "id": "q06",
+      "question": "What is Apple's fiscal year end date?",
+      "answer": "Apple’s fiscal year ends on the last Saturday of September [C1][C2][C6][C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple’s fiscal year ends on the last Saturday of September [C1][C2][C6][C8].",
+          "markers": [
+            "C1",
+            "C2",
+            "C6",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "All sources state Apple’s fiscal year ends on the last Saturday of September."
+        }
+      ],
+      "elapsedMs": 10929
+    },
+    {
+      "id": "q07",
+      "question": "What were Apple's net sales by product category, including iPhone, Mac and iPad?",
+      "answer": "For Apple Inc., net sales by product category for fiscal years 2025, 2024, and 2023 were as follows (in millions):\n\n2025:\n- iPhone: $209,586\n- Mac: $33,708\n- iPad: $28,023\n- Wearables, Home and Accessories: $35,686\n- Services: $109,158\n- Total net sales: $416,161\n\n2024:\n- iPhone: $201,183\n- Mac: $29,984\n- iPad: $26,694\n- Wearables, Home and Accessories: $37,005\n- Services: $96,169\n- Total net sales: $391,035\n\n2023:\n- iPhone: $200,583\n- Mac: $29,357\n- iPad: $28,300\n- Wearables, Home and Accessories: $39,845\n- Services: $85,200\n- Total net sales: $383,285\n\nThese figures are from Apple Inc.'s FY2025 10-K and FY2024 10-K filings [C3][C8][C1][C4].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "For Apple Inc., net sales by product category for fiscal years 2025, 2024, and 2023 were as follows (in millions): 2025: - iPhone: $209,586 - Mac: $33,708 - iPad: $28,023 - Wearables, Home and Accessories: $35,686 - Services: $109,158 - Total net sales: $416,161 2024: - iPhone: $201,183 - Mac: $29,984 - iPad: $26,694 - Wearables, Home and Accessories: $37,005 - Services: $96,169 - Total net sales: $391,035 2023: - iPhone: $200,583 - Mac: $29,357 - iPad: $28,300 - Wearables, Home and Accessories: $39,845 - Services: $85,200 - Total net sales: $383,285 These figures are from Apple Inc.'s FY2025 10-K and FY2024 10-K filings [C3][C8][C1][C4].",
+          "markers": [
+            "C3",
+            "C8",
+            "C1",
+            "C4"
+          ],
+          "verdict": "supported",
+          "reason": "All product category net sales for 2025, 2024, and 2023 match S1, S2, S3, and S4 exactly."
+        }
+      ],
+      "elapsedMs": 12809
+    },
+    {
+      "id": "q08",
+      "question": "What was JPMorgan Chase's net interest income in 2025?",
+      "answer": "JPMorgan Chase's net interest income for the year ended December 31, 2025, was $95,443 million (or $95.443 billion) [C2][C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "JPMorgan Chase's net interest income for the year ended December 31, 2025, was $95,443 million (or $95.443 billion) [C2][C8].",
+          "markers": [
+            "C2",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "Both S1 and S2 state 2025 net interest income as $95,443 million for JPMorgan Chase."
+        }
+      ],
+      "elapsedMs": 11538
+    },
+    {
+      "id": "q10",
+      "question": "What were Exxon Mobil's capital and exploration expenditures?",
+      "answer": "Exxon Mobil's capital and exploration expenditures (Capex) for fiscal year 2024 were $27,551 million, and for fiscal year 2023 were $26,325 million. These figures represent the combined total of additions at cost to property, plant and equipment, and exploration expenses on a before-tax basis, including ExxonMobil’s share of similar costs for equity companies [C1][C3][C5].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Exxon Mobil's capital and exploration expenditures (Capex) for fiscal year 2024 were $27,551 million, and for fiscal year 2023 were $26,325 million.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 state Capex for 2024 is $27,551 million and for 2023 is $26,325 million."
+        },
+        {
+          "claim": "These figures represent the combined total of additions at cost to property, plant and equipment, and exploration expenses on a before-tax basis, including ExxonMobil’s share of similar costs for equity companies [C1][C3][C5].",
+          "markers": [
+            "C1",
+            "C3",
+            "C5"
+          ],
+          "verdict": "supported",
+          "reason": "S1 explicitly defines Capex as claimed, matching the description of combined additions and exploration expenses before tax."
+        }
+      ],
+      "elapsedMs": 15831
+    },
+    {
+      "id": "q11",
+      "question": "How much did Pfizer spend on research and development?",
+      "answer": "In fiscal year 2024, Pfizer Inc. reported research and development expenses of $9,532 million. In fiscal year 2023, the amount was $9,763 million, and in fiscal year 2022, it was $10,324 million. These figures are for the Biopharma reportable segment, which represents the company's primary business activities [C4].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "In fiscal year 2024, Pfizer Inc. reported research and development expenses of $9,532 million.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S4 shows Pfizer's 2024 research and development expenses were $9,532 million."
+        },
+        {
+          "claim": "In fiscal year 2023, the amount was $9,763 million, and in fiscal year 2022, it was $10,324 million.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S4 shows Pfizer R&D expenses: $9,763M (2023), $10,324M (2022), matching claim."
+        },
+        {
+          "claim": "These figures are for the Biopharma reportable segment, which represents the company's primary business activities [C4].",
+          "markers": [
+            "C4"
+          ],
+          "verdict": "supported",
+          "reason": "Source S1 confirms Biopharma segment figures are for the company's primary business activities."
+        }
+      ],
+      "elapsedMs": 14797
+    },
+    {
+      "id": "q12",
+      "question": "What was Apple's gross margin percentage?",
+      "answer": "Apple Inc.’s gross margin percentage was 46.9% for fiscal year 2025, 46.2% for fiscal year 2024, and 44.1% for fiscal year 2023 [C4].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple Inc.’s gross margin percentage was 46.9% for fiscal year 2025, 46.2% for fiscal year 2024, and 44.1% for fiscal year 2023 [C4].",
+          "markers": [
+            "C4"
+          ],
+          "verdict": "supported",
+          "reason": "Source S1 lists total gross margin percentage as 46.9% (2025), 46.2% (2024), 44.1% (2023) for Apple."
+        }
+      ],
+      "elapsedMs": 13964
+    },
+    {
+      "id": "q13",
+      "question": "What was JPMorgan Chase's provision for credit losses?",
+      "answer": "For JPMorgan Chase & Co., the provision for credit losses was $14.2 billion for fiscal year 2025 and $10.7 billion for fiscal year 2024 [C3][C4][C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "For JPMorgan Chase & Co., the provision for credit losses was $14.2 billion for fiscal year 2025 and $10.7 billion for fiscal year 2024 [C3][C4][C8].",
+          "markers": [
+            "C3",
+            "C4",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "Sources S1, S2, and S3 confirm $14.2B for 2025 and $10.7B for 2024 for JPMorgan Chase."
+        }
+      ],
+      "elapsedMs": 13943
+    },
+    {
+      "id": "q14",
+      "question": "What were Microsoft's capital expenditures on property and equipment?",
+      "answer": "For fiscal year 2026, Microsoft’s capital expenditures on property and equipment increased by $51.4 billion compared to the prior year, as reported in the cash flow analysis. This figure represents the increase in additions to property and equipment for the year ended June 30, 2026, but the exact total amount of capital expenditures for property and equipment is not directly stated in the sources provided. The sources do not specify the absolute dollar amount of capital expenditures for property and equipment for fiscal years 2026 or 2025, only the increase year-over-year and commitments for future construction projects [C6][C3][C4].\n\nWhat is missing: The exact dollar amount of capital expenditures on property and equipment for Microsoft for fiscal years 2026 and 2025 is not explicitly stated in the provided sources.",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "For fiscal year 2026, Microsoft’s capital expenditures on property and equipment increased by $51.4 billion compared to the prior year, as reported in the cash flow analysis.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S6 states a $51.4 billion increase in additions to property and equipment for FY2026 vs prior year."
+        },
+        {
+          "claim": "This figure represents the increase in additions to property and equipment for the year ended June 30, 2026, but the exact total amount of capital expenditures for property and equipment is not directly stated in the sources provided.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources do not directly state FY2026 capital expenditures; only increases in additions are mentioned (S6, S3, S4)."
+        },
+        {
+          "claim": "The sources do not specify the absolute dollar amount of capital expenditures for property and equipment for fiscal years 2026 or 2025, only the increase year-over-year and commitments for future construction projects [C6][C3][C4].",
+          "markers": [
+            "C6",
+            "C3",
+            "C4"
+          ],
+          "verdict": "unsupported",
+          "reason": "S1 states a $51.4B increase in additions to property and equipment, not just year-over-year or commitments."
+        },
+        {
+          "claim": "What is missing: The exact dollar amount of capital expenditures on property and equipment for Microsoft for fiscal years 2026 and 2025 is not explicitly stated in the provided sources.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources confirm no explicit dollar amount for capital expenditures on property and equipment for FY2026 and FY2025."
+        }
+      ],
+      "elapsedMs": 18120
+    },
+    {
+      "id": "q15",
+      "question": "What cybersecurity risk management processes does Apple describe?",
+      "answer": "Apple describes several cybersecurity risk management processes in its filings:\n\n- The Head of Corporate Information Security leads a dedicated Information Security team responsible for developing and distributing security policies, standards, and procedures; conducting employee cybersecurity training; implementing security controls; assessing security risk and compliance posture; monitoring and responding to security events; and executing security testing and assessments. The Head of Corporate Information Security has over 25 years of experience in the industry and has led the team since 2016 [C1][C2].\n\n- The Information Security team coordinates with other teams across the company to prevent, respond to, and manage security incidents. They also engage third parties, as appropriate, to assess, test, or assist with security processes and incident response [C1][C2].\n\n- A dedicated Supplier Trust team manages information security risks related to supplier relationships [C1][C2].\n\n- Apple has processes to log, track, address, and escalate cybersecurity incidents for further assessment and reporting to senior management and the Audit and Finance Committee of the Board [C1][C2].\n\n- The company’s enterprise risk management program is designed to identify, assess, and monitor business risks, including financial, operational, compliance, and reputational risks, and incorporates management’s assessment of cybersecurity risks [C1][C2].\n\n- The Audit Committee of the Board assists in the oversight and monitoring of cybersecurity matters, regularly reviewing and discussing cybersecurity risks with management and receiving updates regarding incidents. The Chair of the Audit Committee reports the substance of these reviews to the Board and recommends actions as deemed appropriate [C3][C4].\n\n- Apple also maintains insurance coverage intended to address certain aspects of data security risks, though it notes this may be insufficient to cover all losses or claims [C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple describes several cybersecurity risk management processes in its filings: - The Head of Corporate Information Security leads a dedicated Information Security team responsible for developing and distributing security policies, standards, and procedures; conducting employee cybersecurity training; implementing security controls; assessing security risk and compliance posture; monitoring and responding to security events; and executing security testing and assessments.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 explicitly list all processes described in the claim for Apple, matching specifics exactly."
+        },
+        {
+          "claim": "The Head of Corporate Information Security has over 25 years of experience in the industry and has led the team since 2016 [C1][C2]. - The Information Security team coordinates with other teams across the company to prevent, respond to, and manage security incidents.",
+          "markers": [
+            "C1",
+            "C2"
+          ],
+          "verdict": "supported",
+          "reason": "Both specifics—over 25 years' experience and team coordination—are explicitly stated in both sources for Apple."
+        },
+        {
+          "claim": "They also engage third parties, as appropriate, to assess, test, or assist with security processes and incident response [C1][C2]. - A dedicated Supplier Trust team manages information security risks related to supplier relationships [C1][C2]. - Apple has processes to log, track, address, and escalate cybersecurity incidents for further assessment and reporting to senior management and the Audit and Finance Committee of the Board [C1][C2]. - The company’s enterprise risk management program is designed to identify, assess, and monitor business risks, including financial, operational, compliance, and reputational risks, and incorporates management’s assessment of cybersecurity risks [C1][C2]. - The Audit Committee of the Board assists in the oversight and monitoring of cybersecurity matters, regularly reviewing and discussing cybersecurity risks with management and receiving updates regarding incidents.",
+          "markers": [
+            "C1",
+            "C2"
+          ],
+          "verdict": "supported",
+          "reason": "All specifics in the claim are directly stated in S1 and S2 for Apple."
+        },
+        {
+          "claim": "The Chair of the Audit Committee reports the substance of these reviews to the Board and recommends actions as deemed appropriate [C3][C4]. - Apple also maintains insurance coverage intended to address certain aspects of data security risks, though it notes this may be insufficient to cover all losses or claims [C8].",
+          "markers": [
+            "C3",
+            "C4",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "S1/S2 confirm the Chair reports and recommends actions; S3 confirms insurance coverage and its possible insufficiency."
+        }
+      ],
+      "elapsedMs": 19562
+    },
+    {
+      "id": "q17",
+      "question": "What properties and facilities does Exxon Mobil describe?",
+      "answer": "Exxon Mobil describes its oil and gas properties as consisting of numerous concessions, blocks, and leases, with exploration and production rights acquired from mineral interest owners, including federal and state governments and private owners. Leases typically have a primary term of one to ten years, with production periods that extend until production ceases. In some cases, ExxonMobil acquires a “fee interest” in private property, owning the underlying mineral interests outright. The company’s refining and chemical operations are highly integrated, encompassing a global network of manufacturing plants, transportation systems, and distribution centers that provide a range of fuels, specialty products, feedstocks, olefins, polyolefins, and other products to customers worldwide. The scheduled expiration of leases and concessions for undeveloped acreage over the next three years is not expected to have a material adverse impact on the Corporation [C8][C4].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Exxon Mobil describes its oil and gas properties as consisting of numerous concessions, blocks, and leases, with exploration and production rights acquired from mineral interest owners, including federal and state governments and private owners.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S8 states ExxonMobil's properties are numerous concessions, blocks, leases, with rights from governments and private owners."
+        },
+        {
+          "claim": "Leases typically have a primary term of one to ten years, with production periods that extend until production ceases.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S8 states leases typically have a primary term of one to ten years, with production periods until production ceases."
+        },
+        {
+          "claim": "In some cases, ExxonMobil acquires a “fee interest” in private property, owning the underlying mineral interests outright.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S8 states ExxonMobil sometimes acquires a 'fee interest' in private property, owning mineral interests outright."
+        },
+        {
+          "claim": "The company’s refining and chemical operations are highly integrated, encompassing a global network of manufacturing plants, transportation systems, and distribution centers that provide a range of fuels, specialty products, feedstocks, olefins, polyolefins, and other products to customers worldwide.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S4 states refining and chemical operations are highly integrated, global, and provide the listed products."
+        },
+        {
+          "claim": "The scheduled expiration of leases and concessions for undeveloped acreage over the next three years is not expected to have a material adverse impact on the Corporation [C8][C4].",
+          "markers": [
+            "C8",
+            "C4"
+          ],
+          "verdict": "supported",
+          "reason": "S1 and S2 both state scheduled expiration is not expected to have a material adverse impact."
+        }
+      ],
+      "elapsedMs": 61300
+    },
+    {
+      "id": "q18",
+      "question": "What conclusion did JPMorgan Chase reach about the effectiveness of its disclosure controls and procedures?",
+      "answer": "JPMorgan Chase concluded that its disclosure controls and procedures were effective as of December 31, 2025, based on an evaluation carried out under the supervision and with the participation of the Firm’s management, including its Chairman and Chief Executive Officer and its Chief Financial Officer. This conclusion is stated in the FY2025 10-K filing, Item 9A Controls and Procedures [C1]. The same conclusion was reached for the fiscal year ended December 31, 2024, as stated in the FY2024 10-K filing, Item 9A Controls and Procedures [C2].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "JPMorgan Chase concluded that its disclosure controls and procedures were effective as of December 31, 2025, based on an evaluation carried out under the supervision and with the participation of the Firm’s management, including its Chairman and Chief Executive Officer and its Chief Financial Officer.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 states JPMorgan Chase concluded its disclosure controls and procedures were effective as of Dec 31, 2025, after management evaluation."
+        },
+        {
+          "claim": "This conclusion is stated in the FY2025 10-K filing, Item 9A Controls and Procedures [C1].",
+          "markers": [
+            "C1"
+          ],
+          "verdict": "supported",
+          "reason": "S1 states JPMorgan Chase concluded disclosure controls and procedures were effective in FY2025 10-K Item 9A."
+        },
+        {
+          "claim": "The same conclusion was reached for the fiscal year ended December 31, 2024, as stated in the FY2024 10-K filing, Item 9A Controls and Procedures [C2].",
+          "markers": [
+            "C2"
+          ],
+          "verdict": "supported",
+          "reason": "S1 states disclosure controls were effective as of December 31, 2024, matching the claim specifics."
+        }
+      ],
+      "elapsedMs": 36485
+    },
+    {
+      "id": "q19",
+      "question": "How does Pfizer describe its business segments and commercial operations?",
+      "answer": "Pfizer describes its business segments as consisting of three operating segments: Biopharma, PC1, and Pfizer Ignite. Biopharma is their innovative science-based biopharmaceutical business, engaged in the discovery, development, manufacture, marketing, sale, and distribution of biopharmaceutical products worldwide. PC1 is their contract development and manufacturing organization and a leading supplier of specialty active pharmaceutical ingredients. Pfizer Ignite provides strategic guidance and end-to-end R&D services to select innovative biotech companies that align with Pfizer’s R&D focus areas. Biopharma is the only reportable segment.\n\nPfizer manages its commercial operations through a global structure. Within the Biopharma reportable segment, commercial divisions market, sell, and distribute products, while global operating functions are responsible for research, development, manufacturing, and supply. The commercial structure has evolved over time, with divisions such as the Pfizer U.S. Commercial Division and Pfizer International Commercial Division focusing on the commercialization of Pfizer’s entire product portfolio in their respective markets. Changes in commercial structure have been made to support commercial execution and strengthen capabilities, including the integration of Seagen and the creation of new organizations like the Global Hospital and Biosimilars organization within Biopharma, effective January 1, 2026 [C1][C3][C7][C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Pfizer describes its business segments as consisting of three operating segments: Biopharma, PC1, and Pfizer Ignite.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources S1, S2, S3, S5, S6, S7, S8 all state Pfizer's three operating segments: Biopharma, PC1, Pfizer Ignite."
+        },
+        {
+          "claim": "Biopharma is their innovative science-based biopharmaceutical business, engaged in the discovery, development, manufacture, marketing, sale, and distribution of biopharmaceutical products worldwide.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1, S3, and S7 state Biopharma is Pfizer’s innovative science-based biopharmaceutical business engaged in those activities worldwide."
+        },
+        {
+          "claim": "PC1 is their contract development and manufacturing organization and a leading supplier of specialty active pharmaceutical ingredients.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1, S2, S3, and S7 state PC1 is Pfizer's contract development and manufacturing organization and a leading supplier of specialty APIs."
+        },
+        {
+          "claim": "Pfizer Ignite provides strategic guidance and end-to-end R&D services to select innovative biotech companies that align with Pfizer’s R&D focus areas.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1, S2, S3, and S7 all state Pfizer Ignite provides strategic guidance and end-to-end R&D services to select innovative biotech companies."
+        },
+        {
+          "claim": "Biopharma is the only reportable segment.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Multiple sources (S1, S2, S3, S5, S6, S7, S8) state Biopharma is the only reportable segment."
+        },
+        {
+          "claim": "Pfizer manages its commercial operations through a global structure.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1, S3, S5, S7, S8 state Pfizer manages commercial operations through a global structure."
+        },
+        {
+          "claim": "Within the Biopharma reportable segment, commercial divisions market, sell, and distribute products, while global operating functions are responsible for research, development, manufacturing, and supply.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1, S3, and S7 state commercial divisions market, sell, distribute; global functions handle R&D, manufacturing, supply."
+        },
+        {
+          "claim": "The commercial structure has evolved over time, with divisions such as the Pfizer U.S. Commercial Division and Pfizer International Commercial Division focusing on the commercialization of Pfizer’s entire product portfolio in their respective markets.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S7 confirm Pfizer U.S. and International Commercial Divisions focus on entire product portfolio commercialization."
+        },
+        {
+          "claim": "Changes in commercial structure have been made to support commercial execution and strengthen capabilities, including the integration of Seagen and the creation of new organizations like the Global Hospital and Biosimilars organization within Biopharma, effective January 1, 2026 [C1][C3][C7][C8].",
+          "markers": [
+            "C1",
+            "C3",
+            "C7",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "S1 and S4 confirm changes, Seagen integration, and new Global Hospital and Biosimilars org effective Jan 1, 2026."
+        }
+      ],
+      "elapsedMs": 53276
+    },
+    {
+      "id": "q20",
+      "question": "What does Apple disclose about its share repurchase program?",
+      "answer": "Apple discloses that its share repurchase program is authorized by the Board of Directors and does not obligate the Company to acquire a minimum amount of shares. Shares may be repurchased in privately negotiated or open market transactions, including under plans complying with Rule 10b5-1 under the Exchange Act. On May 2, 2024, Apple announced a program to repurchase up to $110 billion of its common stock, and during the fourth quarter of fiscal year 2025, the Company utilized the final $19.8 billion under this program. On May 1, 2025, Apple announced an additional program to repurchase up to $100 billion of its common stock, of which $221 million had been utilized as of September 27, 2025. The programs do not require the Company to acquire any specific number of shares, and future repurchases are at the Company’s discretion. Apple also notes that price volatility may cause the average price at which it repurchases its stock in a given period to exceed the stock’s price at a given point in time, and that the share repurchase program does not obligate it to acquire any specific number of shares [C3][C6].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple discloses that its share repurchase program is authorized by the Board of Directors and does not obligate the Company to acquire a minimum amount of shares.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S2, S3, S4, and S6 all state Board authorization and no minimum share obligation."
+        },
+        {
+          "claim": "Shares may be repurchased in privately negotiated or open market transactions, including under plans complying with Rule 10b5-1 under the Exchange Act.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S2 and S3 state shares may be repurchased in privately negotiated or open market transactions, including Rule 10b5-1 plans."
+        },
+        {
+          "claim": "On May 2, 2024, Apple announced a program to repurchase up to $110 billion of its common stock, and during the fourth quarter of fiscal year 2025, the Company utilized the final $19.8 billion under this program.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3 states May 2, 2024, $110B program, and $19.8B utilized in Q4 FY2025 under this program."
+        },
+        {
+          "claim": "On May 1, 2025, Apple announced an additional program to repurchase up to $100 billion of its common stock, of which $221 million had been utilized as of September 27, 2025.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3 states May 1, 2025 $100B program, $221M utilized as of September 27, 2025."
+        },
+        {
+          "claim": "The programs do not require the Company to acquire any specific number of shares, and future repurchases are at the Company’s discretion.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S2, S3, S4, and S6 all state the programs do not obligate Apple to acquire a minimum amount of shares."
+        },
+        {
+          "claim": "Apple also notes that price volatility may cause the average price at which it repurchases its stock in a given period to exceed the stock’s price at a given point in time, and that the share repurchase program does not obligate it to acquire any specific number of shares [C3][C6].",
+          "markers": [
+            "C3",
+            "C6"
+          ],
+          "verdict": "supported",
+          "reason": "S2 states price volatility may affect repurchase price and program does not obligate specific share acquisition."
+        }
+      ],
+      "elapsedMs": 23399
+    },
+    {
+      "id": "q21",
+      "question": "How does Apple describe supply chain and manufacturing concentration risk?",
+      "answer": "Apple describes supply chain and manufacturing concentration risk as arising from its dependence on outsourcing partners, many of which are located outside the U.S., primarily in China mainland, India, Japan, South Korea, Taiwan, and Vietnam. A significant concentration of manufacturing is performed by a small number of outsourcing partners, often in single locations. This concentration reduces Apple’s direct control over production and distribution, which can adversely affect the quality or quantity of products manufactured or services provided, and limit the Company’s flexibility to respond to changing conditions. Apple notes that while these arrangements can lower operating costs, they also expose the Company to risks such as product defects, violations of the supplier code of conduct, and unanticipated product defect liabilities. Such risks can materially adversely affect Apple’s business, reputation, results of operations, and financial condition [C4].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple describes supply chain and manufacturing concentration risk as arising from its dependence on outsourcing partners, many of which are located outside the U.S., primarily in China mainland, India, Japan, South Korea, Taiwan, and Vietnam.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S4, S6, S7 state dependence on outsourcing partners outside U.S., mainly in China, India, Japan, S. Korea, Taiwan, Vietnam."
+        },
+        {
+          "claim": "A significant concentration of manufacturing is performed by a small number of outsourcing partners, often in single locations.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S4 states significant concentration of manufacturing by few partners, often in single locations."
+        },
+        {
+          "claim": "This concentration reduces Apple’s direct control over production and distribution, which can adversely affect the quality or quantity of products manufactured or services provided, and limit the Company’s flexibility to respond to changing conditions.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S4 states concentration reduces direct control, can adversely affect quality/quantity, and limits flexibility to respond to conditions."
+        },
+        {
+          "claim": "Apple notes that while these arrangements can lower operating costs, they also expose the Company to risks such as product defects, violations of the supplier code of conduct, and unanticipated product defect liabilities.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S4 states lower costs, reduced control, product defects, supplier code violations, and unanticipated defect liabilities as risks."
+        },
+        {
+          "claim": "Such risks can materially adversely affect Apple’s business, reputation, results of operations, and financial condition [C4].",
+          "markers": [
+            "C4"
+          ],
+          "verdict": "supported",
+          "reason": "Source [S1] states such risks can materially adversely affect business, reputation, results, and financial condition."
+        }
+      ],
+      "elapsedMs": 21784
+    },
+    {
+      "id": "q22",
+      "question": "What climate-related and energy transition risks does Exxon Mobil disclose?",
+      "answer": "Exxon Mobil discloses several climate-related and energy transition risks in its filings:\n\n1. Regulatory and Policy Risks: Exxon Mobil notes that a number of countries have adopted or are considering regulatory frameworks to report on or reduce greenhouse gas emissions, including cap and trade regimes, carbon taxes, carbon accounting, carbon-based import duties, minimum renewable usage requirements, restrictive permitting, increased efficiency standards, mandates for electric vehicles, and other incentives or mandates for lower-emission technologies. These policies could increase compliance costs, make hydrocarbon-based products more expensive or less competitive, lengthen project implementation times, reduce demand for hydrocarbons, and shift demand toward lower-carbon alternatives. Political and non-governmental actors may also seek to reduce the availability or increase the cost of financing and investment in the oil and gas sector, further impacting business strategy and investment returns [C1][C6].\n\n2. Market and Technology Risks: Exxon Mobil’s operations and earnings are significantly affected by changes in oil, gas, and petrochemical prices and margins, which are influenced by local, regional, and global events or conditions affecting supply and demand. The pursuit of lower-emission and new business opportunities (such as carbon capture and storage, hydrogen, lower-emission fuels, ProxximaTM resin systems, carbon materials, low-carbon data centers, and lithium) depends on the growth and development of markets for these products, supportive and stable government policies, and advancements in technology to enable cost-effective, commercial-scale deployment. There is substantial uncertainty in the pace and manner in which these technologies and markets will develop [C4][C3][C5].\n\n3. Strategic and Execution Risks: The company’s ambition to achieve net zero Scope 1 and 2 emissions from operated assets depends on continued technology development and government policy support. There are risks that the energy transition, including underlying technologies, government policies, and markets, will not develop as expected. The success of Exxon Mobil’s strategy also depends on its ability to recognize key changes in the global energy system and direct investment to appropriate technologies and businesses at the right stage of development [C1][C2][C6].\n\n4. Financial Risks: Material declines in oil or natural gas prices could adversely affect operations, financial condition, and proved reserves, especially in the Upstream segment. Conversely, material increases in prices could adversely affect other segments. Compliance with current, pending, and potential greenhouse gas regulations or policies may increase costs for monitoring, sequestering emissions, and complying with disclosure or due diligence requirements and government-mandated energy transition plans [C4][C6].\n\n5. Uncertainty and Scenario Risks: Expectations for the transition to lower-emission sources and net-zero scenarios are based on hypothetical assumptions about future policy and technology advancements, which carry substantial uncertainties. Without supportive policies and innovations, net zero will remain out of reach for both society and Exxon Mobil [C1][C2].\n\n6. Physical Risks: While not detailed in the provided sources, Exxon Mobil acknowledges that international accords and evolving regulations covering greenhouse gas emissions create uncertainty in predicting business impacts, and the company incorporates proxy costs for CO2 emissions in its long-term planning [C8].\n\nIn summary, Exxon Mobil discloses regulatory, market, technology, strategic, financial, and scenario-related risks associated with climate change and the energy transition [C1][C2][C3][C4][C5][C6][C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Exxon Mobil discloses several climate-related and energy transition risks in its filings: 1.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources S1, S2, S3, S4, S5, S6, and S8 all describe climate-related and energy transition risks disclosed by Exxon Mobil."
+        },
+        {
+          "claim": "Regulatory and Policy Risks: Exxon Mobil notes that a number of countries have adopted or are considering regulatory frameworks to report on or reduce greenhouse gas emissions, including cap and trade regimes, carbon taxes, carbon accounting, carbon-based import duties, minimum renewable usage requirements, restrictive permitting, increased efficiency standards, mandates for electric vehicles, and other incentives or mandates for lower-emission technologies.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S6 explicitly lists all regulatory risks cited in the claim for Exxon Mobil FY2025."
+        },
+        {
+          "claim": "These policies could increase compliance costs, make hydrocarbon-based products more expensive or less competitive, lengthen project implementation times, reduce demand for hydrocarbons, and shift demand toward lower-carbon alternatives.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S6 states such policies could increase compliance costs, make products less competitive, lengthen projects, reduce demand, and shift demand."
+        },
+        {
+          "claim": "Political and non-governmental actors may also seek to reduce the availability or increase the cost of financing and investment in the oil and gas sector, further impacting business strategy and investment returns [C1][C6]. 2.",
+          "markers": [
+            "C1",
+            "C6"
+          ],
+          "verdict": "supported",
+          "reason": "S2 states political and non-governmental actors seek to reduce financing/investment, impacting strategy and returns."
+        },
+        {
+          "claim": "Market and Technology Risks: Exxon Mobil’s operations and earnings are significantly affected by changes in oil, gas, and petrochemical prices and margins, which are influenced by local, regional, and global events or conditions affecting supply and demand.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3 and S4 state ExxonMobil’s operations and earnings are significantly affected by changes in oil, gas, and petrochemical prices and margins."
+        },
+        {
+          "claim": "The pursuit of lower-emission and new business opportunities (such as carbon capture and storage, hydrogen, lower-emission fuels, ProxximaTM resin systems, carbon materials, low-carbon data centers, and lithium) depends on the growth and development of markets for these products, supportive and stable government policies, and advancements in technology to enable cost-effective, commercial-scale deployment.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S4 and S3 state pursuit depends on market growth, government policy, and technology for listed products."
+        },
+        {
+          "claim": "There is substantial uncertainty in the pace and manner in which these technologies and markets will develop [C4][C3][C5]. 3.",
+          "markers": [
+            "C4",
+            "C3",
+            "C5"
+          ],
+          "verdict": "supported",
+          "reason": "S1 and S2 state uncertainty in the pace and manner of technology and market development for new opportunities."
+        },
+        {
+          "claim": "Strategic and Execution Risks: The company’s ambition to achieve net zero Scope 1 and 2 emissions from operated assets depends on continued technology development and government policy support.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 state net zero ambition depends on technology development and government policy support."
+        },
+        {
+          "claim": "There are risks that the energy transition, including underlying technologies, government policies, and markets, will not develop as expected.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 state risks that transition, technologies, policies, and markets may not develop as expected."
+        },
+        {
+          "claim": "The success of Exxon Mobil’s strategy also depends on its ability to recognize key changes in the global energy system and direct investment to appropriate technologies and businesses at the right stage of development [C1][C2][C6]. 4.",
+          "markers": [
+            "C1",
+            "C2",
+            "C6"
+          ],
+          "verdict": "supported",
+          "reason": "S3 states success depends on recognizing energy system changes and directing investment to technologies at right stage."
+        },
+        {
+          "claim": "Financial Risks: Material declines in oil or natural gas prices could adversely affect operations, financial condition, and proved reserves, especially in the Upstream segment.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3 and S4 explicitly state material declines in oil or gas prices could adversely affect operations, financial condition, and proved reserves, especially Upstream."
+        },
+        {
+          "claim": "Conversely, material increases in prices could adversely affect other segments.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3 and S4 state material price increases could adversely affect other segments (Energy Products, Chemical Products, Specialty Products)."
+        },
+        {
+          "claim": "Compliance with current, pending, and potential greenhouse gas regulations or policies may increase costs for monitoring, sequestering emissions, and complying with disclosure or due diligence requirements and government-mandated energy transition plans [C4][C6]. 5.",
+          "markers": [
+            "C4",
+            "C6"
+          ],
+          "verdict": "supported",
+          "reason": "S2 states current, pending, and potential GHG regulations may increase costs for monitoring, sequestering, disclosure, and transition plans."
+        },
+        {
+          "claim": "Uncertainty and Scenario Risks: Expectations for the transition to lower-emission sources and net-zero scenarios are based on hypothetical assumptions about future policy and technology advancements, which carry substantial uncertainties.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 state net-zero scenarios are based on hypothetical assumptions with substantial uncertainties about policy and technology."
+        },
+        {
+          "claim": "Without supportive policies and innovations, net zero will remain out of reach for both society and Exxon Mobil [C1][C2]. 6.",
+          "markers": [
+            "C1",
+            "C2"
+          ],
+          "verdict": "supported",
+          "reason": "S1 states: 'Without supportive policies and the innovations they drive, net zero will remain out of reach – for society and for ExxonMobil.'"
+        },
+        {
+          "claim": "Physical Risks: While not detailed in the provided sources, Exxon Mobil acknowledges that international accords and evolving regulations covering greenhouse gas emissions create uncertainty in predicting business impacts, and the company incorporates proxy costs for CO2 emissions in its long-term planning [C8].",
+          "markers": [
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "Source S1 confirms uncertainty from evolving regulations and use of proxy CO2 costs in planning."
+        },
+        {
+          "claim": "In summary, Exxon Mobil discloses regulatory, market, technology, strategic, financial, and scenario-related risks associated with climate change and the energy transition [C1][C2][C3][C4][C5][C6][C8].",
+          "markers": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C6",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "Sources mention regulatory, market, technology, strategic, financial, and scenario-related risks for climate and energy transition."
+        }
+      ],
+      "elapsedMs": 53721
+    },
+    {
+      "id": "q24",
+      "question": "What cybersecurity and technology risks does JPMorgan Chase identify?",
+      "answer": "JPMorgan Chase identifies several cybersecurity and technology risks, including:\n\n- Cybersecurity attacks that can result in unauthorized access to confidential information, destruction of data, disruptions or degradations of service, sabotage of systems, or other damage. These attacks are increasing in volume and complexity, especially amid heightened geopolitical tensions and the emergence of technologies like artificial intelligence that can be leveraged by attackers [C1][C8].\n- Risks from third parties such as vendors, supply chain partners, exchanges, clearing houses, central depositories, and financial intermediaries. Incidents involving these parties, including system breakdowns, employee misconduct, or cyber attacks (such as ransomware and supply-chain compromises), could materially affect the firm, especially if they disrupt services or compromise information [C1].\n- Clients and customers are also sources of cybersecurity risk, particularly when their activities and systems are outside the firm’s security controls [C5].\n- Specific types of attacks include attempts to introduce malware, obtain unauthorized access, manipulate or destroy data, disrupt or degrade services, steal or extort money (including through ransomware), and distributed denial-of-service (DDoS) attacks targeting online services [C4].\n- The risk of breaches due to the dynamic and innovative nature of cyber threats, including novel attack methods and zero-day vulnerabilities in both internally-developed and third-party software or services [C6][C8].\n- Risks associated with the management of administrative access to systems, secure software development practices, identity and access management, and technology asset management [C6][C8].\n- The potential for technological advances, such as AI and quantum computing, to enable more advanced attacks (e.g., targeted phishing, nullifying cryptographic protections), requiring significant investment in new security measures like quantum-resistant encryption [C8].\n- The risk of misappropriation of confidential information through interception of communications from mobile devices used by employees [C6][C8].\n- Operational risks from the introduction or changes to products, services, delivery platforms, or technologies, including the acquisition and integration of new businesses [C7].\n- The possibility that previous cybersecurity events or threats could materially affect the firm’s business strategy, results of operations, or financial condition, although as of the latest filing, such events have not had a material effect [C5].\n\nJPMorgan Chase acknowledges that despite comprehensive efforts, it may not always be successful in preventing or mitigating future cybersecurity incidents that could have a material adverse effect [C5].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "JPMorgan Chase identifies several cybersecurity and technology risks, including: - Cybersecurity attacks that can result in unauthorized access to confidential information, destruction of data, disruptions or degradations of service, sabotage of systems, or other damage.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S4 explicitly list cyber attacks causing unauthorized access, data destruction, service disruption, sabotage, or other damage."
+        },
+        {
+          "claim": "These attacks are increasing in volume and complexity, especially amid heightened geopolitical tensions and the emergence of technologies like artificial intelligence that can be leveraged by attackers [C1][C8]. - Risks from third parties such as vendors, supply chain partners, exchanges, clearing houses, central depositories, and financial intermediaries.",
+          "markers": [
+            "C1",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "S1 and S2 both mention increased attack volume/complexity, AI, and third-party risks with listed examples."
+        },
+        {
+          "claim": "Incidents involving these parties, including system breakdowns, employee misconduct, or cyber attacks (such as ransomware and supply-chain compromises), could materially affect the firm, especially if they disrupt services or compromise information [C1]. - Clients and customers are also sources of cybersecurity risk, particularly when their activities and systems are outside the firm’s security controls [C5]. - Specific types of attacks include attempts to introduce malware, obtain unauthorized access, manipulate or destroy data, disrupt or degrade services, steal or extort money (including through ransomware), and distributed denial-of-service (DDoS) attacks targeting online services [C4]. - The risk of breaches due to the dynamic and innovative nature of cyber threats, including novel attack methods and zero-day vulnerabilities in both internally-developed and third-party software or services [C6][C8]. - Risks associated with the management of administrative access to systems, secure software development practices, identity and access management, and technology asset management [C6][C8]. - The potential for technological advances, such as AI and quantum computing, to enable more advanced attacks (e.g., targeted phishing, nullifying cryptographic protections), requiring significant investment in new security measures like quantum-resistant encryption [C8]. - The risk of misappropriation of confidential information through interception of communications from mobile devices used by employees [C6][C8]. - Operational risks from the introduction or changes to products, services, delivery platforms, or technologies, including the acquisition and integration of new businesses [C7]. - The possibility that previous cybersecurity events or threats could materially affect the firm’s business strategy, results of operations, or financial condition, although as of the latest filing, such events have not had a material effect [C5].",
+          "markers": [
+            "C1",
+            "C5",
+            "C4",
+            "C6",
+            "C8",
+            "C7"
+          ],
+          "verdict": "supported",
+          "reason": "All risks and examples in the claim are explicitly described in the cited JPMorgan Chase filings."
+        },
+        {
+          "claim": "JPMorgan Chase acknowledges that despite comprehensive efforts, it may not always be successful in preventing or mitigating future cybersecurity incidents that could have a material adverse effect [C5].",
+          "markers": [
+            "C5"
+          ],
+          "verdict": "supported",
+          "reason": "Source S1 states JPMorgan may not always prevent or mitigate future incidents with material adverse effect."
+        }
+      ],
+      "elapsedMs": 35791
+    },
+    {
+      "id": "q25",
+      "question": "How does Microsoft describe risks related to artificial intelligence?",
+      "answer": "Microsoft describes several risks related to artificial intelligence (AI) in its SEC filings. The company notes that issues in the development, deployment, and use of AI may result in reputational or competitive harm or liability. Microsoft provides access to AI across its offerings and enables customers and partners to build AI-based solutions using its platforms. These capabilities may be developed by Microsoft or third parties and are becoming an increasing part of its business. The increasing scale and adoption of AI amplifies challenges that may affect its development, deployment, and use, which could give rise to reputational, competitive, or legal harm.\n\nSpecific risks include:\n\n- AI models and training methodologies may be flawed.\n- Datasets may be overbroad, insufficient, or contain biased or inaccurate information.\n- Content generated by AI systems may be offensive, illegal, inaccurate, or otherwise harmful.\n- Ineffective or inadequate AI development or deployment practices by Microsoft or others could result in incidents that impair the acceptance of AI solutions, cause harm to individuals, customers, or society, or result in products and services not working as intended.\n- Human review or oversight may be required, especially for agentic AI systems that can act autonomously.\n- Highly-personalized AI systems may result in over-reliance or dependence by users that is harmful.\n- Implementation of AI systems could result in legal liability, regulatory action, litigation, brand, reputational, or competitive harm, or other adverse impacts.\n- Risks may stem from issues related to AI model and system capabilities, intellectual property, data privacy, product liability, and other claims associated with AI training, outputs, and system behavior.\n- The evolving regulatory landscape, with new laws emerging globally and increased scrutiny from regulators and lawmakers, compounds these risks.\n- Certain AI technologies and use cases present ethical issues or may have broad or uneven impacts on society or vulnerable groups within society.\n- There is rising divergence globally in how to address these issues, requiring Microsoft to navigate a web of different tensions across geographies [C2].\n\nAdditionally, Microsoft notes that features relying on generative AI can be susceptible to security threats, and that the introduction of AI solutions with unintended consequences or controversial impacts could adversely affect its reputation, competitive position, business, financial condition, and results of operations [C5][C6].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Microsoft describes several risks related to artificial intelligence (AI) in its SEC filings.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources [S1], [S2], [S3], [S4], [S5], [S6], and [S7] all describe multiple AI-related risks in Microsoft's SEC filings."
+        },
+        {
+          "claim": "The company notes that issues in the development, deployment, and use of AI may result in reputational or competitive harm or liability.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 both state AI issues may result in reputational, competitive harm, or liability."
+        },
+        {
+          "claim": "Microsoft provides access to AI across its offerings and enables customers and partners to build AI-based solutions using its platforms.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S2 states Microsoft provides access to AI across offerings and enables customers/partners to build AI-based solutions."
+        },
+        {
+          "claim": "These capabilities may be developed by Microsoft or third parties and are becoming an increasing part of its business.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S2 states: 'These capabilities may be developed by Microsoft or third parties and are becoming an increasing part of our business.'"
+        },
+        {
+          "claim": "The increasing scale and adoption of AI amplifies challenges that may affect its development, deployment, and use, which could give rise to reputational, competitive, or legal harm.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S2 states: 'The increasing scale and adoption of AI amplifies challenges...which could give rise to reputational, competitive, or legal harm.'"
+        },
+        {
+          "claim": "Specific risks include: - AI models and training methodologies may be flawed. - Datasets may be overbroad, insufficient, or contain biased or inaccurate information. - Content generated by AI systems may be offensive, illegal, inaccurate, or otherwise harmful. - Ineffective or inadequate AI development or deployment practices by Microsoft or others could result in incidents that impair the acceptance of AI solutions, cause harm to individuals, customers, or society, or result in products and services not working as intended. - Human review or oversight may be required, especially for agentic AI systems that can act autonomously. - Highly-personalized AI systems may result in over-reliance or dependence by users that is harmful. - Implementation of AI systems could result in legal liability, regulatory action, litigation, brand, reputational, or competitive harm, or other adverse impacts. - Risks may stem from issues related to AI model and system capabilities, intellectual property, data privacy, product liability, and other claims associated with AI training, outputs, and system behavior. - The evolving regulatory landscape, with new laws emerging globally and increased scrutiny from regulators and lawmakers, compounds these risks. - Certain AI technologies and use cases present ethical issues or may have broad or uneven impacts on society or vulnerable groups within society. - There is rising divergence globally in how to address these issues, requiring Microsoft to navigate a web of different tensions across geographies [C2].",
+          "markers": [
+            "C2"
+          ],
+          "verdict": "supported",
+          "reason": "All specifics in the claim are directly stated in source S1 for Microsoft FY2026."
+        },
+        {
+          "claim": "Additionally, Microsoft notes that features relying on generative AI can be susceptible to security threats, and that the introduction of AI solutions with unintended consequences or controversial impacts could adversely affect its reputation, competitive position, business, financial condition, and results of operations [C5][C6].",
+          "markers": [
+            "C5",
+            "C6"
+          ],
+          "verdict": "supported",
+          "reason": "S2 states generative AI features can be susceptible to security threats; S1 covers reputation and business impacts."
+        }
+      ],
+      "elapsedMs": 41665
+    },
+    {
+      "id": "q26",
+      "question": "What foreign exchange and interest rate risks does Apple disclose?",
+      "answer": "Apple discloses exposure to both foreign exchange rate risk and interest rate risk.\n\nFor foreign exchange rate risk, Apple states that its primary exposure relates to being a net receiver of currencies other than the U.S. dollar. Changes in exchange rates, particularly a strengthening of the U.S. dollar, can negatively affect net sales and gross margins as expressed in U.S. dollars. Fluctuations in exchange rates may also affect the fair values of certain assets and liabilities. Apple uses derivative instruments, such as foreign currency forward and option contracts, to hedge certain exposures, but these hedges may not fully offset adverse financial effects. The company applies a value-at-risk (VAR) model to its foreign currency derivative positions; as of September 27, 2025, the maximum one-day loss in fair value with 95% confidence was estimated at $590 million, and $538 million as of September 28, 2024 [C3][C7].\n\nFor interest rate risk, Apple is primarily exposed to fluctuations in U.S. interest rates, which impact its investment portfolio and term debt. Increases in interest rates negatively affect the fair value of the investment portfolio and increase interest expense on term debt. Apple may use derivative instruments, offset interest rate–sensitive assets and liabilities, or control the duration of its investment and term debt portfolios to manage this risk. For a hypothetical 100 basis point increase in interest rates as of September 27, 2025, Apple estimated a $2,416 million decline in the fair value of its investment portfolio and a $129 million increase in annual interest expense on term debt [C1].\n\nApple also notes that the use of hedging activities may not be effective to offset more than a portion of the adverse financial effects of unfavorable movements in foreign exchange or interest rates over the limited time the hedges are in place [C7].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple discloses exposure to both foreign exchange rate risk and interest rate risk.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources S1–S4 explicitly state exposure to both foreign exchange rate and interest rate risk for Apple."
+        },
+        {
+          "claim": "For foreign exchange rate risk, Apple states that its primary exposure relates to being a net receiver of currencies other than the U.S. dollar.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3 and S4 state Apple’s foreign exchange risk relates primarily to being a net receiver of non-U.S. dollar currencies."
+        },
+        {
+          "claim": "Changes in exchange rates, particularly a strengthening of the U.S. dollar, can negatively affect net sales and gross margins as expressed in U.S. dollars.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3 and S4 state strengthening USD negatively affects net sales and gross margins in USD."
+        },
+        {
+          "claim": "Fluctuations in exchange rates may also affect the fair values of certain assets and liabilities.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3 and S4 state fluctuations in exchange rates may affect fair values of certain assets and liabilities."
+        },
+        {
+          "claim": "Apple uses derivative instruments, such as foreign currency forward and option contracts, to hedge certain exposures, but these hedges may not fully offset adverse financial effects.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S7 and S8 state Apple uses derivatives to hedge exposures, but hedges may not fully offset adverse effects."
+        },
+        {
+          "claim": "The company applies a value-at-risk (VAR) model to its foreign currency derivative positions; as of September 27, 2025, the maximum one-day loss in fair value with 95% confidence was estimated at $590 million, and $538 million as of September 28, 2024 [C3][C7].",
+          "markers": [
+            "C3",
+            "C7"
+          ],
+          "verdict": "supported",
+          "reason": "S1 states Apple used a VAR model and gives $590M (2025) and $538M (2024) as the 95% one-day loss."
+        },
+        {
+          "claim": "For interest rate risk, Apple is primarily exposed to fluctuations in U.S. interest rates, which impact its investment portfolio and term debt.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 state Apple is primarily exposed to U.S. interest rate fluctuations impacting investment portfolio and term debt."
+        },
+        {
+          "claim": "Increases in interest rates negatively affect the fair value of the investment portfolio and increase interest expense on term debt.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 state increases in interest rates negatively affect investment fair value and increase term debt interest expense."
+        },
+        {
+          "claim": "Apple may use derivative instruments, offset interest rate–sensitive assets and liabilities, or control the duration of its investment and term debt portfolios to manage this risk.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S2 state Apple may use derivatives, offset assets/liabilities, or control duration to manage interest rate risk."
+        },
+        {
+          "claim": "For a hypothetical 100 basis point increase in interest rates as of September 27, 2025, Apple estimated a $2,416 million decline in the fair value of its investment portfolio and a $129 million increase in annual interest expense on term debt [C1].",
+          "markers": [
+            "C1"
+          ],
+          "verdict": "supported",
+          "reason": "Claim matches Apple's FY2025 10-K: $2,416M decline in investment portfolio, $129M increase in term debt expense."
+        },
+        {
+          "claim": "Apple also notes that the use of hedging activities may not be effective to offset more than a portion of the adverse financial effects of unfavorable movements in foreign exchange or interest rates over the limited time the hedges are in place [C7].",
+          "markers": [
+            "C7"
+          ],
+          "verdict": "supported",
+          "reason": "Source S1 states hedging may not offset more than a portion of adverse effects over the hedge period."
+        }
+      ],
+      "elapsedMs": 35668
+    },
+    {
+      "id": "q27",
+      "question": "How did JPMorgan Chase's net interest income change from fiscal 2024 to fiscal 2025?",
+      "answer": "JPMorgan Chase's net interest income increased from $92,583 million in fiscal 2024 to $95,443 million in fiscal 2025, as reported in the 10-K filing [C1].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "JPMorgan Chase's net interest income increased from $92,583 million in fiscal 2024 to $95,443 million in fiscal 2025, as reported in the 10-K filing [C1].",
+          "markers": [
+            "C1"
+          ],
+          "verdict": "supported",
+          "reason": "S1 shows net interest income increased from $92,583M (2024) to $95,443M (2025) for JPMorgan Chase."
+        }
+      ],
+      "elapsedMs": 11277
+    },
+    {
+      "id": "q28",
+      "question": "How did Apple's risk factor disclosures change between fiscal 2024 and fiscal 2025?",
+      "answer": "The sources provided do not contain the full text of Apple’s risk factor disclosures for either fiscal 2024 or fiscal 2025, nor do they provide a summary or comparison of changes between the two years. The only relevant information is a reference in both years’ filings that risk factors are discussed in Part I, Item 1A of the Form 10-K, but the actual content or any changes are not included in the excerpts provided. Therefore, there is not enough information to answer how Apple’s risk factor disclosures changed between fiscal 2024 and fiscal 2025. The missing information is the full text or a summary of the risk factor sections for both years [C1][C2][C3][C4][C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "The sources provided do not contain the full text of Apple’s risk factor disclosures for either fiscal 2024 or fiscal 2025, nor do they provide a summary or comparison of changes between the two years.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "No source provides the full text, summary, or comparison of Apple’s risk factor disclosures for 2024 or 2025."
+        },
+        {
+          "claim": "The only relevant information is a reference in both years’ filings that risk factors are discussed in Part I, Item 1A of the Form 10-K, but the actual content or any changes are not included in the excerpts provided.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources only reference risk factors in Part I, Item 1A; no actual content or changes are included in excerpts."
+        },
+        {
+          "claim": "Therefore, there is not enough information to answer how Apple’s risk factor disclosures changed between fiscal 2024 and fiscal 2025.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "No information in sources details changes in Apple’s risk factor disclosures between FY2024 and FY2025."
+        },
+        {
+          "claim": "The missing information is the full text or a summary of the risk factor sections for both years [C1][C2][C3][C4][C8].",
+          "markers": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "Sources reference risk factor sections but do not provide their full text or summaries for both years."
+        }
+      ],
+      "elapsedMs": 30361
+    },
+    {
+      "id": "q29",
+      "question": "Did Pfizer's total revenue grow or decline year over year, and by how much?",
+      "answer": "Pfizer's total revenue declined year over year from 2024 to 2025. Total revenues decreased by $1.0 billion, or 2%, to $62.6 billion in 2025 from $63.6 billion in 2024 [C1][C7]. \n\nFrom 2023 to 2024, total revenues increased by $4.1 billion, or 7%, to $63.6 billion in 2024 from $59.6 billion in 2023 [C2][C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Pfizer's total revenue declined year over year from 2024 to 2025.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1 and S7 confirm Pfizer's total revenue declined from $63.6B in 2024 to $62.6B in 2025."
+        },
+        {
+          "claim": "Total revenues decreased by $1.0 billion, or 2%, to $62.6 billion in 2025 from $63.6 billion in 2024 [C1][C7].",
+          "markers": [
+            "C1",
+            "C7"
+          ],
+          "verdict": "supported",
+          "reason": "S1 and S2 both state total revenues decreased by $1.0B (2%) to $62.6B in 2025 from $63.6B in 2024."
+        },
+        {
+          "claim": "From 2023 to 2024, total revenues increased by $4.1 billion, or 7%, to $63.6 billion in 2024 from $59.6 billion in 2023 [C2][C8].",
+          "markers": [
+            "C2",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "Pfizer's total revenues increased by $4.1B (7%) to $63.6B from $59.6B per S1."
+        }
+      ],
+      "elapsedMs": 20630
+    },
+    {
+      "id": "q30",
+      "question": "How do Apple and Microsoft differ in how they describe supply chain risk?",
+      "answer": "Apple’s filings emphasize risks related to the physical supply chain, including reliance on single or limited sources for components, exposure to supply shortages, price fluctuations, and disruptions from natural disasters, industrial accidents, public health issues, and geopolitical tensions. Apple highlights the concentration of its manufacturing and suppliers in specific regions (primarily Asia), the potential for industry-wide shortages (such as semiconductors), and the impact of trade restrictions or international disputes on its ability to obtain components and deliver products. Apple also discusses the risks of supplier financial instability, the need for custom components, and the challenges of changing or adding suppliers, which can be expensive and disruptive. The company notes that these risks can materially adversely affect its business, results of operations, financial condition, and stock price [C1][C2][C4][C5][C6][C7].\n\nMicrosoft, by contrast, frames supply chain risk primarily in terms of regulatory, trade, and geopolitical factors. Its disclosures focus on the impact of trade laws, sanctions, export and import controls, and supply chain regulations on its operations. Microsoft discusses how these factors can restrict its ability to offer products and services, increase operational costs, and create uncertainty in product continuity. The company also notes the impact of tariffs, shifting export control policies (especially related to AI), and the unpredictability of the global trade landscape due to geopolitical instability and changing government priorities. Microsoft’s risk discussion is less about physical supply chain disruptions and more about regulatory and policy-driven risks, as well as the effects of diplomatic or armed conflict on trade ecosystems [C8].\n\nIn summary, Apple’s risk disclosures focus on operational, physical, and supplier-related risks in its global supply chain, while Microsoft emphasizes regulatory, trade, and geopolitical risks affecting its supply chain and business operations.",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple’s filings emphasize risks related to the physical supply chain, including reliance on single or limited sources for components, exposure to supply shortages, price fluctuations, and disruptions from natural disasters, industrial accidents, public health issues, and geopolitical tensions.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources S1, S2, S4, S6, S7 all explicitly mention physical supply chain risks, single/limited sources, shortages, price, disasters, health, and geopolitics."
+        },
+        {
+          "claim": "Apple highlights the concentration of its manufacturing and suppliers in specific regions (primarily Asia), the potential for industry-wide shortages (such as semiconductors), and the impact of trade restrictions or international disputes on its ability to obtain components and deliver products.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S3, S5, S7 confirm concentration in Asia; S1, S2 mention shortages; S5 details trade restrictions/disputes impact."
+        },
+        {
+          "claim": "Apple also discusses the risks of supplier financial instability, the need for custom components, and the challenges of changing or adding suppliers, which can be expensive and disruptive.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S1, S2, S3, and S7 mention supplier financial instability, custom components, and challenges/costs of changing suppliers."
+        },
+        {
+          "claim": "The company notes that these risks can materially adversely affect its business, results of operations, financial condition, and stock price [C1][C2][C4][C5][C6][C7].",
+          "markers": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "verdict": "supported",
+          "reason": "S2 states supply chain risks can materially adversely affect business, results, financial condition, and stock price."
+        },
+        {
+          "claim": "Microsoft, by contrast, frames supply chain risk primarily in terms of regulatory, trade, and geopolitical factors.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S8 shows Microsoft frames supply chain risk in regulatory, trade, and geopolitical terms."
+        },
+        {
+          "claim": "Its disclosures focus on the impact of trade laws, sanctions, export and import controls, and supply chain regulations on its operations.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Microsoft's disclosure (S8) explicitly focuses on trade laws, sanctions, export/import controls, and supply chain regulations."
+        },
+        {
+          "claim": "Microsoft discusses how these factors can restrict its ability to offer products and services, increase operational costs, and create uncertainty in product continuity.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "S8 states Microsoft discusses supply chain risks restricting offerings, increasing costs, and creating uncertainty in product continuity."
+        },
+        {
+          "claim": "The company also notes the impact of tariffs, shifting export control policies (especially related to AI), and the unpredictability of the global trade landscape due to geopolitical instability and changing government priorities.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Microsoft notes tariffs, shifting AI export controls, and unpredictable trade landscape due to geopolitical instability and changing priorities (S8)."
+        },
+        {
+          "claim": "Microsoft’s risk discussion is less about physical supply chain disruptions and more about regulatory and policy-driven risks, as well as the effects of diplomatic or armed conflict on trade ecosystems [C8].",
+          "markers": [
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "Microsoft emphasizes regulatory, policy, and conflict-driven risks over physical supply chain disruptions in S1."
+        },
+        {
+          "claim": "In summary, Apple’s risk disclosures focus on operational, physical, and supplier-related risks in its global supply chain, while Microsoft emphasizes regulatory, trade, and geopolitical risks affecting its supply chain and business operations.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Apple focuses on operational, physical, and supplier risks (S1-S7); Microsoft emphasizes regulatory, trade, and geopolitical risks (S8)."
+        }
+      ],
+      "elapsedMs": 38763
+    },
+    {
+      "id": "q31",
+      "question": "Which companies in the corpus disclose artificial intelligence as a risk factor?",
+      "answer": "Apple Inc. (AAPL) and Pfizer Inc. (PFE) both disclose artificial intelligence as a risk factor in their SEC filings.\n\nApple Inc. discusses risks related to artificial intelligence in its FY2025 and FY2024 10-K filings, noting that the introduction of new and complex technologies such as artificial intelligence features can increase risks of inadvertent disclosure of personal data, regulatory compliance challenges, and legal liability [C1][C4].\n\nPfizer Inc. also addresses artificial intelligence as a risk factor in its FY2025 and FY2024 10-K filings, highlighting risks such as flawed algorithms, regulatory uncertainty, potential legal liability, reputational harm, and the use of adversarial AI in cyber-attacks [C3][C6][C7][C8].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "Apple Inc. (AAPL) and Pfizer Inc. (PFE) both disclose artificial intelligence as a risk factor in their SEC filings.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Both Apple (S1, S2, S4) and Pfizer (S3, S6, S7, S8) disclose AI as a risk factor."
+        },
+        {
+          "claim": "Apple Inc. discusses risks related to artificial intelligence in its FY2025 and FY2024 10-K filings, noting that the introduction of new and complex technologies such as artificial intelligence features can increase risks of inadvertent disclosure of personal data, regulatory compliance challenges, and legal liability [C1][C4].",
+          "markers": [
+            "C1",
+            "C4"
+          ],
+          "verdict": "supported",
+          "reason": "Both FY2025 and FY2024 10-K filings discuss AI-related risks as described in the claim."
+        },
+        {
+          "claim": "Pfizer Inc. also addresses artificial intelligence as a risk factor in its FY2025 and FY2024 10-K filings, highlighting risks such as flawed algorithms, regulatory uncertainty, potential legal liability, reputational harm, and the use of adversarial AI in cyber-attacks [C3][C6][C7][C8].",
+          "markers": [
+            "C3",
+            "C6",
+            "C7",
+            "C8"
+          ],
+          "verdict": "supported",
+          "reason": "Pfizer Inc. FY2024 and FY2025 10-K filings disclose AI risk factors matching the claim specifics."
+        }
+      ],
+      "elapsedMs": 134438
+    },
+    {
+      "id": "q32",
+      "question": "How does research and development spending compare between Microsoft and Pfizer?",
+      "answer": "The provided sources do not contain specific figures for total research and development (R&D) expenses for either Microsoft Corporation for fiscal year 2026 or Pfizer Inc. for fiscal year 2025. The sources describe the nature of R&D expenses and some reductions or funding arrangements, but do not state the total R&D spending amounts for either company in the relevant fiscal years. Therefore, a direct comparison of R&D spending between Microsoft and Pfizer cannot be made with the information given. The missing information is the total R&D expense figures for both companies for the specified fiscal years [C1][C2][C3][C4][C6].",
+      "abstained": false,
+      "claims": [
+        {
+          "claim": "The provided sources do not contain specific figures for total research and development (R&D) expenses for either Microsoft Corporation for fiscal year 2026 or Pfizer Inc. for fiscal year 2025.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "No specific total R&D expense figures for Microsoft FY2026 or Pfizer FY2025 are present in the sources."
+        },
+        {
+          "claim": "The sources describe the nature of R&D expenses and some reductions or funding arrangements, but do not state the total R&D spending amounts for either company in the relevant fiscal years.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "Sources do not state total R&D spending amounts for either company in relevant fiscal years."
+        },
+        {
+          "claim": "Therefore, a direct comparison of R&D spending between Microsoft and Pfizer cannot be made with the information given.",
+          "markers": [],
+          "verdict": "uncited",
+          "reason": "No R&D spending figures for either company are provided; direct comparison is not possible per sources."
+        },
+        {
+          "claim": "The missing information is the total R&D expense figures for both companies for the specified fiscal years [C1][C2][C3][C4][C6].",
+          "markers": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6"
+          ],
+          "verdict": "unsupported",
+          "reason": "No total R&D expense figures for either company or fiscal year are provided in the sources."
+        }
+      ],
+      "elapsedMs": 45342
+    }
+  ]
+}

@@ -17,7 +17,8 @@
     "find": "tsx scripts/find.ts",
     "apply-labels": "tsx scripts/apply-labels.ts",
     "diagnose": "tsx scripts/diagnose.ts",
-    "verify-labels": "tsx scripts/verify-labels.ts"
+    "verify-labels": "tsx scripts/verify-labels.ts",
+    "faithfulness": "tsx scripts/faithfulness.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",

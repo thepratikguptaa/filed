@@ -21,6 +21,8 @@ export interface ChunkRow {
   score: number;
 }
 
+const EF_SEARCH = Number(process.env.HNSW_EF_SEARCH ?? 400);
+
 export function rowToChunk(row: ChunkRow): Chunk {
   return {
     id: row.id,
@@ -51,15 +53,20 @@ async function vectorSearchByEmbedding(
   filters?: RetrievalFilters,
 ): Promise<Chunk[]> {
   const literal = toVectorLiteral(vector);
-  const rows = await withRetry((sql) => sql<ChunkRow[]>`
-    select
-      id, document_id, company, ticker, filing_type, fiscal_year,
-      section, section_title, position, text, token_count, has_table, content_hash,
-      1 - (embedding <=> ${literal}::vector) as score
-    from chunks
-    where embedding is not null and ${metadataClause(sql, filters)}
-    order by embedding <=> ${literal}::vector
-    limit ${k}
-  `);
+  const rows = await withRetry((sql) =>
+    sql.begin(async (tx) => {
+      await tx.unsafe(`set local hnsw.ef_search = ${EF_SEARCH}`);
+      return tx<ChunkRow[]>`
+        select
+          id, document_id, company, ticker, filing_type, fiscal_year,
+          section, section_title, position, text, token_count, has_table, content_hash,
+          1 - (embedding <=> ${literal}::vector) as score
+        from chunks
+        where embedding is not null and ${metadataClause(tx, filters)}
+        order by embedding <=> ${literal}::vector
+        limit ${k}
+      `;
+    }),
+  );
   return rows.map(rowToChunk).map((chunk, index) => ({ ...chunk, vectorRank: index + 1 }));
 }

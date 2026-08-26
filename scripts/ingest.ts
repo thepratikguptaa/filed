@@ -1,4 +1,4 @@
-import { closeDb, db } from "../lib/db";
+import { closeDb, withRetry } from "../lib/db";
 import { dryRunCorpus, ingestCorpus } from "../lib/ingest/pipeline";
 
 function flag(name: string): string | undefined {
@@ -37,12 +37,12 @@ async function main() {
     { chunks: 0, embedded: 0, reused: 0 },
   );
 
-  const [corpus] = await db()<{ documents: number; chunks: number; tokens: number }[]>`
+  const [corpus] = await withRetry((sql) => sql<{ documents: number; chunks: number; tokens: number }[]>`
     select
       (select count(*) from documents) as documents,
       (select count(*) from chunks) as chunks,
       (select coalesce(sum(token_count), 0) from chunks) as tokens
-  `;
+  `);
 
   console.log("\n--- ingest summary ---");
   console.log(`filings processed : ${results.length} (${ingested.length} ingested, ${results.length - ingested.length} unchanged)`);
@@ -50,9 +50,9 @@ async function main() {
   console.log(`corpus totals     : ${corpus.documents} documents, ${corpus.chunks} chunks, ${corpus.tokens} tokens`);
   console.log(`elapsed           : ${((Date.now() - started) / 1000).toFixed(1)}s`);
 
-  const bySection = await db()<{ section: string | null; chunks: number }[]>`
+  const bySection = await withRetry((sql) => sql<{ section: string | null; chunks: number }[]>`
     select section, count(*) as chunks from chunks group by section order by chunks desc limit 12
-  `;
+  `);
   console.log("\ntop sections by chunk count:");
   for (const row of bySection) {
     console.log(`  ${(row.section ?? "(none)").padEnd(10)} ${row.chunks}`);
