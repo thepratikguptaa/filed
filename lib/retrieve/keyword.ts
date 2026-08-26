@@ -1,17 +1,8 @@
-import type postgres from "postgres";
 import { withRetry } from "../db";
 import type { Chunk } from "../types";
+import { metadataClause } from "./filters";
 import type { RetrievalFilters } from "./types";
 import { rowToChunk, type ChunkRow } from "./vector";
-
-function metadataClause(sql: postgres.Sql, filters?: RetrievalFilters) {
-  let clause = sql`true`;
-  if (filters?.tickers?.length) clause = sql`${clause} and ticker = any(${filters.tickers})`;
-  if (filters?.fiscalYears?.length) clause = sql`${clause} and fiscal_year = any(${filters.fiscalYears})`;
-  if (filters?.sections?.length) clause = sql`${clause} and section = any(${filters.sections})`;
-  if (filters?.filingTypes?.length) clause = sql`${clause} and filing_type = any(${filters.filingTypes})`;
-  return clause;
-}
 
 async function search(query: string, k: number, mode: "all" | "any", filters?: RetrievalFilters) {
   return withRetry((sql) => {
@@ -44,7 +35,7 @@ export async function keywordSearch(
 
   if (rows.length < k) {
     const seen = new Set(rows.map((row) => row.id));
-    const loose = await search(query, k, "any", filters);
+    const loose = await search(query, k + rows.length, "any", filters);
     for (const row of loose) {
       if (rows.length >= k) break;
       if (!seen.has(row.id)) rows.push(row);

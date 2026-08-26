@@ -11,8 +11,9 @@ export function scoreQuestion(question: GoldenQuestion, retrieved: Chunk[]): Que
 
   const recallAt: Record<number, number> = {};
   for (const k of K_VALUES) {
-    const found = hits.slice(0, k).filter(Boolean).length;
-    recallAt[k] = total === 0 ? 0 : Math.min(found, total) / total;
+    const top = retrieved.slice(0, k);
+    const covered = question.labels.filter((label) => top.some((chunk) => isRelevant(chunk, [label]))).length;
+    recallAt[k] = total === 0 ? 0 : covered / total;
   }
 
   return {

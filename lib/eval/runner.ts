@@ -53,7 +53,6 @@ export async function runEval(questions: GoldenQuestion[], options: RunOptions):
       embedder: embedding.model,
       reranker: usesRerank ? `${reranker.model}/${reranker.dtype}` : "none",
     },
-    candidateK: options.candidateK,
     k,
     goldenVersion: options.goldenVersion,
     questions: questions.length,

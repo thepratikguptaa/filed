@@ -1,8 +1,7 @@
 import type { Chunk } from "../types";
+import { DEFAULT_OPTS } from "./types";
 
-export const RRF_K = 5;
-
-export function reciprocalRankFusion(lists: Chunk[][], k = RRF_K): Chunk[] {
+export function reciprocalRankFusion(lists: Chunk[][], k = DEFAULT_OPTS.rrfK): Chunk[] {
   const merged = new Map<string, Chunk>();
   const scores = new Map<string, number>();
 

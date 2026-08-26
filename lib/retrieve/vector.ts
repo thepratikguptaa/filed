@@ -1,7 +1,7 @@
-import type postgres from "postgres";
-import { db, toVectorLiteral, withRetry } from "../db";
+import { toVectorLiteral, withRetry } from "../db";
 import { getEmbedder } from "../embed";
 import type { Chunk } from "../types";
+import { metadataClause } from "./filters";
 import type { RetrievalFilters } from "./types";
 
 export interface ChunkRow {
@@ -40,22 +40,12 @@ export function rowToChunk(row: ChunkRow): Chunk {
   };
 }
 
-export function filterClause(filters?: RetrievalFilters, client?: postgres.Sql) {
-  const sql = client ?? db();
-  let clause = sql`embedding is not null`;
-  if (filters?.tickers?.length) clause = sql`${clause} and ticker = any(${filters.tickers})`;
-  if (filters?.fiscalYears?.length) clause = sql`${clause} and fiscal_year = any(${filters.fiscalYears})`;
-  if (filters?.sections?.length) clause = sql`${clause} and section = any(${filters.sections})`;
-  if (filters?.filingTypes?.length) clause = sql`${clause} and filing_type = any(${filters.filingTypes})`;
-  return clause;
-}
-
 export async function vectorSearch(query: string, k: number, filters?: RetrievalFilters): Promise<Chunk[]> {
   const [vector] = await getEmbedder().embed([query], "query");
   return vectorSearchByEmbedding(vector, k, filters);
 }
 
-export async function vectorSearchByEmbedding(
+async function vectorSearchByEmbedding(
   vector: number[],
   k: number,
   filters?: RetrievalFilters,
@@ -67,7 +57,7 @@ export async function vectorSearchByEmbedding(
       section, section_title, position, text, token_count, has_table, content_hash,
       1 - (embedding <=> ${literal}::vector) as score
     from chunks
-    where ${filterClause(filters, sql)}
+    where embedding is not null and ${metadataClause(sql, filters)}
     order by embedding <=> ${literal}::vector
     limit ${k}
   `);

@@ -1,5 +1,3 @@
-import type { Chunk } from "../types";
-
 export type RetrievalStrategy = "vector" | "keyword" | "hybrid" | "hybrid+rerank" | "agentic";
 
 export interface RetrievalFilters {
@@ -16,10 +14,6 @@ export interface RetrieveOpts {
   rrfK?: number;
   rerankN?: number;
   filters?: RetrievalFilters;
-}
-
-export interface Retriever {
-  retrieve(query: string, opts?: RetrieveOpts): Promise<Chunk[]>;
 }
 
 export const DEFAULT_OPTS = {

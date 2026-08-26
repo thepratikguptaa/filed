@@ -46,7 +46,6 @@ export interface EvalReport {
   ranAt: string;
   strategy: string;
   config: EvalConfig;
-  candidateK?: number;
   k: number;
   goldenVersion: number;
   questions: number;

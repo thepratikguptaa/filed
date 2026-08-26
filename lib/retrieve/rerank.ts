@@ -43,7 +43,7 @@ export async function rerank(query: string, chunks: Chunk[], k: number): Promise
       { text_pair: batch.map((chunk) => chunk.text), padding: true, truncation: true },
     );
     const { logits } = await model(inputs);
-    for (const row of logits.tolist() as number[][]) scores.push(row[0]);
+    for (const row of logits.tolist() as number[][]) scores.push(row.length > 1 ? row[1] : row[0]);
   }
 
   return chunks

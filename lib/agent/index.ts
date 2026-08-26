@@ -92,15 +92,6 @@ function toPlanned(
     }));
 }
 
-function describeFilters(filters?: PlannedSearch["filters"]): string {
-  if (!filters) return "";
-  const parts: string[] = [];
-  if (filters.tickers?.length) parts.push(filters.tickers.join("/"));
-  if (filters.fiscalYears?.length) parts.push(`FY${filters.fiscalYears.join("/FY")}`);
-  if (filters.sections?.length) parts.push(filters.sections.join("/"));
-  return parts.length > 0 ? ` [${parts.join(" · ")}]` : "";
-}
-
 function interleave(groups: Chunk[][]): Chunk[] {
   const merged: Chunk[] = [];
   const seen = new Set<string>();
@@ -217,7 +208,6 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
       });
     }
 
-    const merged = interleave(groups);
     if (outOfTime || Date.now() > deadline) {
       stoppedBecause = "time-budget";
       break;
@@ -231,6 +221,7 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
       break;
     }
 
+    const merged = interleave(groups);
     const assessStarted = Date.now();
     const assessRaw = await llm.complete(
       [
@@ -272,16 +263,10 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
       break;
     }
     queue = followUps;
-
-    if (iteration >= maxIterations) stoppedBecause = "iteration-cap";
   }
 
   return {
     chunks: interleave(groups).slice(0, k),
     trace: { question, steps, searches: searchCount, iterations: iteration, stoppedBecause },
   };
-}
-
-export function formatFilters(filters?: PlannedSearch["filters"]): string {
-  return describeFilters(filters);
 }

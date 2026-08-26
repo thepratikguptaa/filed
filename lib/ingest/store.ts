@@ -1,4 +1,4 @@
-import { toVectorLiteral, withRetry } from "../db";
+import { withRetry } from "../db";
 import type { ChunkInput, FilingRef } from "../types";
 
 export async function documentIsCurrent(documentId: string, contentHash: string): Promise<boolean> {
@@ -66,6 +66,3 @@ export async function persistFiling(
   }));
 }
 
-export function vectorLiteral(values: number[]): string {
-  return toVectorLiteral(values);
-}

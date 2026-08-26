@@ -37,10 +37,7 @@ export interface AnswerResult {
 
 function renderContext(chunks: Chunk[]): string {
   return chunks
-    .map((chunk, index) => {
-      const header = `[C${index + 1}] ${chunk.company} (${chunk.ticker}) FY${chunk.fiscalYear} ${chunk.filingType} — ${chunk.section ?? "front matter"}`;
-      return `${header}\n${chunk.text}`;
-    })
+    .map((chunk, index) => `[C${index + 1}] ${chunk.text}`)
     .join("\n\n---\n\n");
 }
 
