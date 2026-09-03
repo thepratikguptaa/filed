@@ -1,5 +1,6 @@
 import { getLlm } from "./llm";
 import { retrieve, type RetrieveOpts } from "./retrieve";
+import { markersIn, sentenceSpans } from "./text";
 import type { AgentTrace } from "./agent/types";
 import type { Chunk } from "./types";
 
@@ -35,6 +36,72 @@ export interface AnswerResult {
   usedChunkIds: string[];
   model: string;
   elapsedMs: number;
+}
+
+const ATTRIBUTE_PROMPT = `You attach citations to sentences that are missing them. You never rewrite a sentence and you never add information.
+
+For each numbered sentence, list the sources that state what the sentence asserts. A source counts only if it contains the words or the figure being reported, not if it merely discusses the same subject. Sources from different filings look alike, so check the company, fiscal year, units and any column label before accepting one.
+
+Return JSON: { "attributions": [{ "sentence": number, "markers": string[] }] }
+
+Use an empty markers array when no source states the sentence, and when the sentence asserts no fact about the filings — a transition, a statement that the sources are insufficient, or a description of what is missing.`;
+
+function parseJson<T>(raw: string): T | null {
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) return null;
+    try {
+      return JSON.parse(match[0]) as T;
+    } catch {
+      return null;
+    }
+  }
+}
+
+async function attributeUncited(question: string, answer: string, chunks: Chunk[]): Promise<string> {
+  const pending = sentenceSpans(answer).filter((span) => markersIn(span.text).length === 0);
+  if (pending.length === 0) return answer;
+
+  const listed = pending.map((span, index) => `${index + 1}. ${span.text}`).join("\n");
+  const raw = await getLlm().complete(
+    [
+      { role: "system", content: ATTRIBUTE_PROMPT },
+      {
+        role: "user",
+        content: `Question: ${question}\n\nSentences:\n${listed}\n\nSources:\n\n${renderContext(chunks)}`,
+      },
+    ],
+    { json: true, maxTokens: 400 },
+  );
+
+  const parsed = parseJson<{ attributions?: { sentence?: number; markers?: string[] }[] }>(raw);
+  if (!Array.isArray(parsed?.attributions)) return answer;
+
+  const edits: { at: number; text: string }[] = [];
+  for (const entry of parsed.attributions) {
+    const target = pending[Number(entry?.sentence) - 1];
+    if (!target) continue;
+
+    const markers = [...new Set(entry?.markers ?? [])].filter((marker) => {
+      const index = /^C(\d+)$/.exec(marker)?.[1];
+      return index !== undefined && Number(index) >= 1 && Number(index) <= chunks.length;
+    });
+    if (markers.length === 0) continue;
+
+    const trailing = /[.!?"”)\]]+$/.exec(target.text);
+    edits.push({
+      at: target.end - (trailing?.[0].length ?? 0),
+      text: ` ${markers.map((marker) => `[${marker}]`).join("")}`,
+    });
+  }
+
+  let attributed = answer;
+  for (const edit of edits.sort((a, b) => b.at - a.at)) {
+    attributed = `${attributed.slice(0, edit.at)}${edit.text}${attributed.slice(edit.at)}`;
+  }
+  return attributed;
 }
 
 function renderContext(chunks: Chunk[]): string {
@@ -83,10 +150,11 @@ export async function answerQuestion(question: string, opts: RetrieveOpts = {}):
   }
 
   const llm = getLlm();
-  const answer = await llm.complete([
+  const drafted = await llm.complete([
     { role: "system", content: SYSTEM_PROMPT },
     { role: "user", content: `Sources:\n\n${renderContext(chunks)}\n\nQuestion: ${question}` },
   ]);
+  const answer = await attributeUncited(question, drafted, chunks);
 
   const used = new Set<string>();
   for (const match of answer.matchAll(/\[C(\d+)\]/g)) {

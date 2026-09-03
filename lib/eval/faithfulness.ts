@@ -3,6 +3,7 @@ import { answerQuestion } from "../answer";
 import { getLlm } from "../llm";
 import type { RetrievalStrategy } from "../retrieve";
 import type { Chunk } from "../types";
+import { splitSentences, markersIn } from "../text";
 import type { GoldenQuestion } from "./types";
 
 export const FAITHFULNESS_PATH = "eval/faithfulness.jsonl";
@@ -56,30 +57,6 @@ Return JSON: { "verdict": "supported" | "unsupported" | "no-claim", "reason": st
 - "no-claim": the sentence asserts no fact about the filings, such as a statement that the sources are insufficient.
 
 Keep reason under 20 words and point at the specific that decided it.`;
-
-const ABBREVIATION = /(?:^|\s)(?:[A-Z]|U\.S|Inc|Co|Corp|Ltd|No|St|Mr|Ms|Dr|vs|approx|est|Fig|pp)\.$/;
-
-export function splitClaims(answer: string): string[] {
-  const pieces = answer
-    .replace(/\s+/g, " ")
-    .trim()
-    .split(/(?<=[.!?])\s+(?=[A-Z"“(\[])/);
-
-  const claims: string[] = [];
-  for (const piece of pieces) {
-    const previous = claims[claims.length - 1];
-    if (previous && (ABBREVIATION.test(previous) || piece.length < 15)) {
-      claims[claims.length - 1] = `${previous} ${piece}`;
-      continue;
-    }
-    claims.push(piece);
-  }
-  return claims.filter((claim) => claim.length > 0);
-}
-
-export function markersIn(claim: string): string[] {
-  return [...new Set([...claim.matchAll(/\[C(\d+)\]/g)].map((match) => `C${match[1]}`))];
-}
 
 function sourcesFor(markers: string[], chunks: Chunk[]): Chunk[] {
   if (markers.length === 0) return chunks;
@@ -155,7 +132,7 @@ export async function runFaithfulness(
     });
 
     const claims: ClaimAudit[] = [];
-    for (const claim of splitClaims(result.answer)) {
+    for (const claim of splitSentences(result.answer)) {
       claims.push(await judgeClaim(question.question, claim, sourcesFor(markersIn(claim), result.chunks)));
     }
 
