@@ -62,6 +62,8 @@ Question in, cited answer out, with the retrieved passages and scores beside it.
 
 `POST /api/ask` takes `{ question, strategy?, k? }` and returns the answer, ordered citations, retrieved chunks, and which chunk ids the model actually cited.
 
+Answers are drafted and then passed through an attribution step that finds sentences carrying no citation and asks, in one further call, which sources state them. That call returns markers only — never prose — and each is range-checked before being inserted at a known character offset, so it can add attribution but cannot alter a figure or introduce a claim.
+
 Grounding rules live in the system prompt in [lib/answer.ts](lib/answer.ts): answer only from the supplied sources, cite inline, quote figures exactly, name the company and fiscal year, read the column label before reporting a table figure, say plainly when the sources fall short, never phrase anything as advice. The LLM sits behind `LlmProvider` in [lib/llm](lib/llm), so swapping providers is one file.
 
 ## Evaluation
@@ -127,11 +129,11 @@ Answer quality, `hybrid+rerank`, from `npm run faithfulness`:
 
 | metric | value |
 | --- | --- |
-| citation precision | 90.0% |
-| grounded share | 36.8% |
-| clean answers | 24 / 29 |
+| citation precision | 94.2% |
+| grounded share | 93.2% |
+| clean answers | 23 / 29 |
 
-Read together: the citations that exist are reliable, and most of the answer carries none.
+148 claims judged: 130 supported, 10 uncited, 8 unsupported.
 
 Agentic retrieval costs 20–45s per question against roughly 7s for `hybrid+rerank`, since it runs several reranked retrievals plus two LLM calls. It is the default in the app, but under Vercel's 60s request limit it frequently will not finish, which makes `hybrid+rerank` the realistic production path.
 
@@ -154,11 +156,20 @@ MiniLM is the default because it keeps an end-to-end answer near 10s. `RERANK_MO
 
 **Context headers.** A table of numbers in which the string "JPMorgan" never appears cannot match a question naming the company — the name, caption and units all live in blocks outside the chunk. Every chunk now carries company, ticker, fiscal year, filing type, section, and for tables the nearest caption. This lifted every single-shot strategy, plain vector search included.
 
-**Two things that did not work.** Composing multi-row table headers into self-describing column labels (`Standardized December 31, 2024`) bloated the header row that repeats on every split of a long table, cost retrieval accuracy, and broke the one question it targeted. Adding an explicit prompt rule that every factual sentence must carry a citation moved grounded share 39.7% → 36.8%. Undercitation is not a prompt-compliance problem.
+**Attribution is a separate pass, not a prompt rule.** The model cited its first sentence and then stopped, leaving grounded share at 39.7%. Adding an explicit prompt rule that every factual sentence must carry a marker moved it to 36.8% — nowhere. Doing it structurally worked: after drafting, the uncited sentences are sent back with the sources in one call that returns markers only, never prose, and each marker is range-checked before being inserted at a known character offset. The model cannot rewrite a figure or add a claim in that pass, only attach attribution.
+
+| | prompt rule | separate pass |
+| --- | --- | --- |
+| grounded share | 36.8% | **93.2%** |
+| citation precision | 90.0% | **94.2%** |
+
+Precision rising alongside coverage is the part worth trusting: attaching markers exposes each claim to a stricter test, since a claim with no marker is judged against every retrieved source while a cited one is judged against its own. Costs one extra LLM call per answer.
+
+**One thing that did not work.** Composing multi-row table headers into self-describing column labels (`Standardized December 31, 2024`) bloated the header row that repeats on every split of a long table, cost retrieval accuracy, and broke the one question it targeted.
 
 ## Known limitations
 
-**Most factual claims are uncited.** Grounded share is 36.8% — nearly two thirds of factual sentences carry no marker, though the evidence for them is in the retrieved set. Of the claims that *are* cited, 90.0% check out. A reader verifying a specific sentence will often find nothing to verify. Fixing it needs a pass that detects uncited factual sentences and forces attribution.
+**About one claim in eighteen is unsupported by the source it cites.** 8 of 148, and they are generation errors rather than retrieval or attribution errors: reporting a year-over-year *increase* as an absolute figure, taking a figure from the wrong column of a correctly retrieved table, or stretching a risk factor past what the filing says. The faithfulness harness names them per run in `eval/faithfulness.latest.json`.
 
 **Table extraction fails silently.** Retrieval metrics cannot see a chunk that is found correctly and parsed wrongly. Cell alignment within a row is fixed, but which *column* a figure belongs to is still positional, and when column labels span two header rows nothing in the chunk states the mapping. The model now usually declines rather than guesses — a safer failure, still a failure. Check numeric answers against the linked filing.
 
