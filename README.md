@@ -78,7 +78,7 @@ npm run faithfulness           # generate answers, judge each claim against its 
 npm run faithfulness -- --strategy=agentic --limit=5
 ```
 
-Each label stores the chunk id **and** a normalised text anchor. Chunk ids change whenever chunking or the parser changes — exactly the experiments the harness exists to run — so a chunk counts as relevant if its id matches *or* its text contains the anchor. Labels have survived four re-chunkings.
+The set is human-confirmed. Each label stores the chunk id **and** a normalised text anchor. Chunk ids change whenever chunking or the parser changes — exactly the experiments the harness exists to run — so a chunk counts as relevant if its id matches *or* its text contains the anchor. Labels have survived four re-chunkings.
 
 Two measurement details that materially changed the numbers:
 
@@ -175,7 +175,7 @@ Precision rising alongside coverage is the part worth trusting: attaching marker
 
 **Numeric questions are the agent's weakest category** — 35.7% recall@10 against 42.9% for `hybrid+rerank`. Splitting a lookup into per-company, per-year searches spends budget on breadth when one filing held the answer. If your questions are mostly "what was X in year Y", use `hybrid+rerank`.
 
-**The golden set is model-proposed.** `labelledBy: "model"` means labels were located by lexical and metadata-filtered search rather than by the vector retriever being measured — which avoids grading the retriever against its own output — but no human has confirmed each labelled chunk answers its question. Labels are deliberately sparse (1–3 per question), so recall is a **floor**, not a true rate. Run `npm run label -- --all` to review.
+**The golden set is small and deliberately sparse.** 29 labelled questions carrying 56 labels, 1–3 per question, reviewed and confirmed by hand (`labelledBy: "human"`). Candidates were located by lexical and metadata-filtered search rather than by the vector retriever being measured, so the set does not grade the retriever against its own output. But a question rarely has only two relevant chunks in a 3,981-chunk corpus, so **recall is a floor rather than a true rate** — a retriever is penalised for surfacing a genuinely relevant chunk nobody labelled. Three further questions remain unlabelled and are excluded from every run.
 
 **Ten filings, five companies, two fiscal years.** These results do not predict behaviour on a corpus spanning more industries or older filing formats.
 

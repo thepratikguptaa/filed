@@ -1,7 +1,7 @@
 {
   "version": 1,
   "embedder": "Xenova/bge-small-en-v1.5",
-  "labelledBy": "model",
+  "labelledBy": "human",
   "questions": [
     {
       "id": "q01",
@@ -219,7 +219,8 @@
           "MSFT"
         ]
       },
-      "labels": []
+      "labels": [],
+      "labelledAt": "2026-09-04T07:28:21.595Z"
     },
     {
       "id": "q10",
@@ -386,7 +387,8 @@
           "Item 3"
         ]
       },
-      "labels": []
+      "labels": [],
+      "labelledAt": "2026-09-04T07:28:32.906Z"
     },
     {
       "id": "q17",
@@ -562,7 +564,8 @@
           "Item 1A"
         ]
       },
-      "labels": []
+      "labels": [],
+      "labelledAt": "2026-09-04T07:28:36.242Z"
     },
     {
       "id": "q24",
