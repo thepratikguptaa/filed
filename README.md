@@ -78,7 +78,7 @@ npm run faithfulness           # generate answers, judge each claim against its 
 npm run faithfulness -- --strategy=agentic --limit=5
 ```
 
-The set is human-confirmed. Each label stores the chunk id **and** a normalised text anchor. Chunk ids change whenever chunking or the parser changes — exactly the experiments the harness exists to run — so a chunk counts as relevant if its id matches *or* its text contains the anchor. Labels have survived four re-chunkings.
+Each label stores the chunk id **and** a normalised text anchor. Chunk ids change whenever chunking or the parser changes — exactly the experiments the harness exists to run — so a chunk counts as relevant if its id matches *or* its text contains the anchor. Labels have survived four re-chunkings.
 
 Two measurement details that materially changed the numbers:
 
@@ -175,7 +175,11 @@ Precision rising alongside coverage is the part worth trusting: attaching marker
 
 **Numeric questions are the agent's weakest category** — 35.7% recall@10 against 42.9% for `hybrid+rerank`. Splitting a lookup into per-company, per-year searches spends budget on breadth when one filing held the answer. If your questions are mostly "what was X in year Y", use `hybrid+rerank`.
 
-**The golden set is small and deliberately sparse.** 29 labelled questions carrying 56 labels, 1–3 per question, reviewed and confirmed by hand (`labelledBy: "human"`). Candidates were located by lexical and metadata-filtered search rather than by the vector retriever being measured, so the set does not grade the retriever against its own output. But a question rarely has only two relevant chunks in a 3,981-chunk corpus, so **recall is a floor rather than a true rate** — a retriever is penalised for surfacing a genuinely relevant chunk nobody labelled. Three further questions remain unlabelled and are excluded from every run.
+**Recall is understated, measurably.** Of the 9 questions where `hybrid+rerank` retrieved no labelled chunk in the top 10, **5 retrieved a chunk within two positions of a label** — the same financial table, one chunk over. q08 is the clearest: the label is chunk `#0160`, retrieval returned `#0161`, and `#0161` contains `Net interest income – reported | $95,443 | $92,583 | 89,267`, which is exactly what the question asks for. The system answers correctly and scores zero. **Recall@10 is understated by up to 17.2 points**, which is larger than most improvements recorded on this page.
+
+The cause was the labelling tool, not the labels. Its candidate pool was vector-only, so a chunk unreachable by vector search — q08's is unreachable at depth 200 — could never be shown to a labeller. The pool now unions vector, keyword, and the position-neighbours of chunks already selected, which surfaces co-relevant chunks independently of the retriever being measured.
+
+**The golden set is model-proposed and sparse.** 29 labelled questions, 56 labels, 1–3 each, `labelledBy: "model"`. Candidates were found by lexical and metadata-filtered search rather than by the vector retriever under test, so the set does not grade the retriever against its own output — but no human has confirmed each label, and the numbers above should be read with the understatement described here. Three further questions are unlabelled and excluded from every run. Run `npm run label -- --all` to review.
 
 **Ten filings, five companies, two fiscal years.** These results do not predict behaviour on a corpus spanning more industries or older filing formats.
 

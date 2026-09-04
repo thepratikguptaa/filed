@@ -1,6 +1,7 @@
 import { createInterface } from "node:readline/promises";
-import { closeDb } from "../lib/db";
+import { closeDb, withRetry } from "../lib/db";
 import { retrieve } from "../lib/retrieve";
+import { rowToChunk, type ChunkRow } from "../lib/retrieve/vector";
 import { embedding } from "../lib/config";
 import { GOLDEN_PATH, labelFromChunk, loadDraft, loadGolden, saveGolden } from "../lib/eval/golden";
 import type { GoldenSet } from "../lib/eval/types";
@@ -12,9 +13,54 @@ function flag(name: string): string | undefined {
   return process.argv.find((arg) => arg.startsWith(`--${name}=`))?.split("=")[1];
 }
 
+function has(name: string): boolean {
+  return process.argv.some((arg) => arg === `--${name}` || arg.startsWith(`--${name}=`));
+}
+
+async function neighbours(chunkIds: string[]): Promise<Chunk[]> {
+  if (chunkIds.length === 0) return [];
+  const wanted = new Set<string>();
+  for (const id of chunkIds) {
+    const [documentId, position] = id.split("#");
+    const n = Number(position);
+    if (!documentId || Number.isNaN(n)) continue;
+    for (const offset of [-2, -1, 1, 2]) {
+      const near = n + offset;
+      if (near >= 0) wanted.add(`${documentId}#${String(near).padStart(4, "0")}`);
+    }
+  }
+  if (wanted.size === 0) return [];
+
+  const rows = await withRetry((sql) => sql<ChunkRow[]>`
+    select
+      id, document_id, company, ticker, filing_type, fiscal_year,
+      section, section_title, position, text, token_count, has_table, content_hash,
+      0 as score
+    from chunks where id in ${sql([...wanted])} order by id
+  `);
+  return rows.map(rowToChunk);
+}
+
+async function buildPool(question: string, depth: number, labelled: string[]): Promise<Chunk[]> {
+  const [dense, sparse, near] = await Promise.all([
+    retrieve(question, { strategy: "vector", k: depth }),
+    retrieve(question, { strategy: "keyword", k: Math.ceil(depth / 2) }),
+    neighbours(labelled),
+  ]);
+
+  const pool: Chunk[] = [];
+  const seen = new Set<string>();
+  for (const chunk of [...dense, ...sparse, ...near]) {
+    if (seen.has(chunk.id)) continue;
+    seen.add(chunk.id);
+    pool.push(chunk);
+  }
+  return pool;
+}
+
 function preview(chunk: Chunk, index: number, selected: boolean): string {
   const mark = selected ? "[x]" : "[ ]";
-  const head = `${mark} ${String(index + 1).padStart(2)}. ${chunk.ticker} FY${chunk.fiscalYear} ${(chunk.section ?? "-").padEnd(8)} score ${chunk.score?.toFixed(3)}`;
+  const head = `${mark} ${String(index + 1).padStart(2)}. ${chunk.ticker} FY${chunk.fiscalYear} ${(chunk.section ?? "-").padEnd(8)} ${chunk.id}`;
   const body = chunk.text.replace(/\s+/g, " ").slice(0, 260);
   return `${head}\n     ${body}...`;
 }
@@ -31,8 +77,8 @@ async function main() {
   }
 
   const queue = [...byId.values()]
-    .filter((question) => (only ? question.id === only : true))
-    .filter((question) => (flag("all") === undefined ? question.labels.length === 0 : true));
+    .filter((question) => (only ? only.split(",").includes(question.id) : true))
+    .filter((question) => (has("all") ? true : question.labels.length === 0));
 
   if (queue.length === 0) {
     console.log("Nothing to label. Use --all to revisit labelled questions, or --id=q07 for one.");
@@ -51,7 +97,7 @@ async function main() {
 
     const selected = new Set<string>(question.labels.map((label) => label.chunkId));
     let depth = CANDIDATES;
-    let pool = await retrieve(question.question, { strategy: "vector", k: depth });
+    let pool = await buildPool(question.question, depth, [...selected]);
 
     for (;;) {
       console.log(`\n${"=".repeat(90)}\n${question.id} [${question.category}]  ${question.question}\n`);
@@ -68,7 +114,7 @@ async function main() {
 
       if (answer === "m") {
         depth += CANDIDATES;
-        pool = await retrieve(question.question, { strategy: "vector", k: depth });
+        pool = await buildPool(question.question, depth, [...selected]);
         continue;
       }
 
