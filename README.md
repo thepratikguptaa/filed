@@ -106,24 +106,24 @@ The faithfulness judge sees one claim and *only the sources that claim cites*, a
 
 | strategy | recall@3 | recall@5 | recall@10 | MRR | misses |
 | --- | --- | --- | --- | --- | --- |
-| keyword | 21.8% | 23.6% | 35.1% | 0.234 | 15 |
-| vector | 32.8% | 40.8% | 48.9% | 0.390 | 11 |
-| hybrid (RRF) | 32.2% | 37.4% | 54.0% | 0.423 | 9 |
-| hybrid + rerank | 37.9% | 49.4% | 59.2% | 0.437 | 9 |
-| **agentic** | **44.3%** | **58.0%** | **62.6%** | **0.579** | **7** |
+| keyword | 18.9% | 24.7% | 36.7% | 0.251 | 13 |
+| vector | 31.3% | 42.5% | 50.2% | 0.440 | 9 |
+| hybrid (RRF) | 31.9% | 38.8% | 53.2% | 0.479 | 7 |
+| hybrid + rerank | **42.8%** | 54.0% | 63.9% | 0.562 | 5 |
+| **agentic** | 41.9% | **58.0%** | **69.9%** | **0.639** | **3** |
 
 "Misses" counts questions with no relevant chunk in the top 10, out of 29. Earlier configurations are in `eval/history.jsonl`, but those predate the two measurement fixes above and are not comparable to this table.
 
-The agent leads every column, though by category the win is narrower than the total suggests:
+The agent leads on depth and ranking quality, though `hybrid+rerank` edges it at rank 3. By category:
 
 | category | agentic recall@10 | hybrid + rerank | better |
 | --- | --- | --- | --- |
-| cross-document (6) | **50.0%** | 33.3% | agent |
-| section (10) | **75.0%** | 65.0% | agent |
-| single-fact (6) | 86.1% | **94.4%** | rerank |
-| numeric (7) | 35.7% | **42.9%** | rerank |
+| section (10) | **86.0%** | 70.2% | agent |
+| cross-document (6) | **56.9%** | 40.3% | agent |
+| single-fact (6) | 86.1% | 86.1% | tie |
+| numeric (7) | 44.0% | **56.0%** | rerank |
 
-It wins where a question needs more than one retrieval and loses where one well-ranked chunk was always going to hold the answer. On the cross-document subset every single-shot strategy is *flat* across depth — 25% at rank 3 and still 25% at rank 10 for vector and hybrid — because no single ranking can hold evidence from two filings at once. The agent is the only strategy where looking deeper finds anything.
+It wins where a question needs more than one retrieval and loses where one well-ranked chunk was always going to hold the answer. On the cross-document subset every single-shot strategy is *flat* across depth — 27.8% at rank 3 and still 27.8% at rank 10 for vector and hybrid — because no single ranking can hold evidence from two filings at once. The agent is the only strategy where looking deeper finds anything, and the only one to leave just three questions unanswered.
 
 Answer quality, `hybrid+rerank`, from `npm run faithfulness`:
 
@@ -173,13 +173,11 @@ Precision rising alongside coverage is the part worth trusting: attaching marker
 
 **Table extraction fails silently.** Retrieval metrics cannot see a chunk that is found correctly and parsed wrongly. Cell alignment within a row is fixed, but which *column* a figure belongs to is still positional, and when column labels span two header rows nothing in the chunk states the mapping. The model now usually declines rather than guesses — a safer failure, still a failure. Check numeric answers against the linked filing.
 
-**Numeric questions are the agent's weakest category** — 35.7% recall@10 against 42.9% for `hybrid+rerank`. Splitting a lookup into per-company, per-year searches spends budget on breadth when one filing held the answer. If your questions are mostly "what was X in year Y", use `hybrid+rerank`.
+**Numeric questions are the agent's weakest category** — 44.0% recall@10 against 56.0% for `hybrid+rerank`, the one category where it loses outright. Splitting a lookup into per-company, per-year searches spends budget on breadth when one filing held the answer. Fusing the agent's results by RRF instead of round-robin was tried: it changed numeric not at all and cost cross-document MRR, so the cause is the decomposition, not the merge. If your questions are mostly "what was X in year Y", use `hybrid+rerank`.
 
-**Recall is understated, measurably.** Of the 9 questions where `hybrid+rerank` retrieved no labelled chunk in the top 10, **5 retrieved a chunk within two positions of a label** — the same financial table, one chunk over. q08 is the clearest: the label is chunk `#0160`, retrieval returned `#0161`, and `#0161` contains `Net interest income – reported | $95,443 | $92,583 | 89,267`, which is exactly what the question asks for. The system answers correctly and scores zero. **Recall@10 is understated by up to 17.2 points**, which is larger than most improvements recorded on this page.
+**The golden set is model-proposed.** 29 questions, 81 labels, `labelledBy: "model"`. Candidates were found by lexical and metadata-filtered search rather than by the vector retriever under test, so the set does not grade the retriever against its own output — but no human has confirmed each label. Three further questions are unlabelled and excluded from every run. Run `npm run label -- --all` to review.
 
-The cause was the labelling tool, not the labels. Its candidate pool was vector-only, so a chunk unreachable by vector search — q08's is unreachable at depth 200 — could never be shown to a labeller. The pool now unions vector, keyword, and the position-neighbours of chunks already selected, which surfaces co-relevant chunks independently of the retriever being measured.
-
-**The golden set is model-proposed and sparse.** 29 labelled questions, 56 labels, 1–3 each, `labelledBy: "model"`. Candidates were found by lexical and metadata-filtered search rather than by the vector retriever under test, so the set does not grade the retriever against its own output — but no human has confirmed each label, and the numbers above should be read with the understatement described here. Three further questions are unlabelled and excluded from every run. Run `npm run label -- --all` to review.
+Recall was badly understated until those labels were completed. Chunks overlap and a financial table spans several of them, so retrieval would return the right table one chunk over and score zero — q08's label was `#0160` while retrieval returned `#0161`, which contains `Net interest income – reported | $95,443 | $92,583 | 89,267`, exactly what the question asks. The cause was the labelling tool: its candidate pool was vector-only, so a chunk unreachable by vector search could never be shown to a labeller. The pool now unions vector, keyword and the position-neighbours of already-selected chunks, and 25 labels were added across 14 questions under one rule — the chunk must independently state what the question asks. Nine of those 14 questions were already passing, where extra labels can only *lower* recall, and vector's recall@3 did fall from 32.8% to 31.3%. Runs recorded before this used the 56-label set and are not comparable.
 
 **Ten filings, five companies, two fiscal years.** These results do not predict behaviour on a corpus spanning more industries or older filing formats.
 

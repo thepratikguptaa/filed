@@ -80,6 +80,12 @@
           "documentId": "000162828026008131",
           "section": "Item 7",
           "anchor": "pital | 307,630 | 294,881 | 307,630 | 294,881 total capital | 343,843 | 325,589 | 328,962 | (e) | 311,898 | (e) risk-weighted assets | 1,981"
+        },
+        {
+          "chunkId": "000162828026008131#0761",
+          "documentId": "000162828026008131",
+          "section": "Item 8",
+          "anchor": "al metrics:(a) $cet1 capital | $288,469 | $294,804 | $288,469 | 294,804 tier 1 capital | 307,630 | 294,807 | 307,630 | 294,807 total capital"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.728Z"
@@ -206,6 +212,18 @@
           "documentId": "000162828026008131",
           "section": "Item 7",
           "anchor": " | 90,041 average interest-earning assets(a) | $ | 3,834,359 | $ | 3,537,567 | $ | 3,325,708 less: average markets interest-earning assets(b"
+        },
+        {
+          "chunkId": "000162828026008131#0161",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": "st income excluding markets | $92,591 | $92,419 | 90,041 $average interest-earning assets(a) | $3,834,359 | $3,537,567 | 3,325,708 less: ave"
+        },
+        {
+          "chunkId": "000162828026008131#0131",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": "sses | 14,212 | 10,678 | 33 net income | 57,048 | 58,471 | (2) diluted earnings per share | 20.02 | 19.75 | 1 selected ratios and metrics re"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.728Z"
@@ -312,6 +330,18 @@
           "documentId": "000162828026008131",
           "section": "Item 7",
           "anchor": " | (2) diluted earnings per share | 20.02 | 19.75 | 1 selected ratios and metrics return on common equity | 17 | % | 18 | % return on tangib"
+        },
+        {
+          "chunkId": "000162828026008131#0144",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": "ommitment portfolios, net changes in credit quality of client-specific exposures, an update to loss assumptions on certain leveraged loans, "
+        },
+        {
+          "chunkId": "000162828026008131#0131",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": "sses | 14,212 | 10,678 | 33 net income | 57,048 | 58,471 | (2) diluted earnings per share | 20.02 | 19.75 | 1 selected ratios and metrics re"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.729Z"
@@ -371,6 +401,18 @@
           "documentId": "000032019324000123",
           "section": "Item 1C",
           "anchor": "large technology companies and leading the company’s information security team since 2016. the company’s information security team coordinat"
+        },
+        {
+          "chunkId": "000032019324000123#0052",
+          "documentId": "000032019324000123",
+          "section": "Item 1C",
+          "anchor": "ce and business conduct, business assurance, and internal audit, and receives updates, as necessary, regarding cybersecurity incidents. the "
+        },
+        {
+          "chunkId": "000032019325000079#0055",
+          "documentId": "000032019325000079",
+          "section": "Item 1C",
+          "anchor": "eads of compliance and business conduct, business assurance, and internal audit, and receives updates, as necessary, regarding cybersecurity"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.729Z"
@@ -408,6 +450,18 @@
           "documentId": "000003408826000045",
           "section": "Item 2",
           "anchor": " table of contents canada / other americas production operations for the region are mainly in canada, guyana, and brazil. total operations i"
+        },
+        {
+          "chunkId": "000003408826000045#0052",
+          "documentId": "000003408826000045",
+          "section": "Item 2",
+          "anchor": "lished to recover shallow deposits of oil sands using open-pit mining methods to extract the crude bitumen. imperial oil limited holds a 70."
+        },
+        {
+          "chunkId": "000003408826000045#0054",
+          "documentId": "000003408826000045",
+          "section": "Item 2",
+          "anchor": "7 table of contents | financial table of contents canada / other americas production operations for the region are mainly in canada, guyana,"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.730Z"
@@ -464,6 +518,24 @@
           "documentId": "000007800326000026",
           "section": "Item 1",
           "anchor": "ee the item 1a. risk factors—concentration section. research and development r&d is at the heart of fulfilling our purpose to deliver breakt"
+        },
+        {
+          "chunkId": "000007800326000026#0030",
+          "documentId": "000007800326000026",
+          "section": "Item 1",
+          "anchor": " reportable segment. within our biopharma reportable segment, our commercial divisions market, sell and distribute our products, and global "
+        },
+        {
+          "chunkId": "000007800326000026#0031",
+          "documentId": "000007800326000026",
+          "section": "Item 1",
+          "anchor": "lobal hospital and biosimilars | includes the commercial organization covering pfizer’s product portfolio of off-patent branded and generic "
+        },
+        {
+          "chunkId": "000007800326000026#0033",
+          "documentId": "000007800326000026",
+          "section": "Item 1",
+          "anchor": " of our major products, see the item 1a. risk factors—concentration section. research and development r&d is at the heart of fulfilling our "
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.730Z"
@@ -520,6 +592,18 @@
           "documentId": "000032019325000079",
           "section": "Item 1A",
           "anchor": " disruptions could occur in the future. additionally, the company’s new products often utilize custom components available from only one sou"
+        },
+        {
+          "chunkId": "000032019325000079#0018",
+          "documentId": "000032019325000079",
+          "section": "Item 1A",
+          "anchor": "ich may include additional sector-based tariffs or other measures. for example, the u.s. department of commerce has initiated an investigati"
+        },
+        {
+          "chunkId": "000032019325000079#0025",
+          "documentId": "000032019325000079",
+          "section": "Item 1A",
+          "anchor": "ble terms, or at all. such disruptions could occur in the future. additionally, the company’s new products often utilize custom components a"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.730Z"
@@ -548,6 +632,12 @@
           "documentId": "000003408826000045",
           "section": "Item 1A",
           "anchor": "ults can be adversely affected by political or regulatory developments affecting our businesses or operations. access limitations. a number "
+        },
+        {
+          "chunkId": "000003408826000045#0018",
+          "documentId": "000003408826000045",
+          "section": "Item 1A",
+          "anchor": "nhouse gases from human activities would be balanced by actions that remove such gases from the atmosphere. expectations for transition of t"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.730Z"
@@ -591,6 +681,30 @@
           "documentId": "000001961725000270",
           "section": "Item 1A",
           "anchor": "the systems of the large number of clients, customers, counterparties and third-party service providers with which it does business, and •it"
+        },
+        {
+          "chunkId": "000001961725000270#0071",
+          "documentId": "000001961725000270",
+          "section": "Item 1A",
+          "anchor": "ion belonging to jpmorganchase or its clients, customers, counterparties or employees •manipulate data •destroy data or systems with the aim"
+        },
+        {
+          "chunkId": "000001961725000270#0073",
+          "documentId": "000001961725000270",
+          "section": "Item 1A",
+          "anchor": " and enhancement of controls related to secure software development practices and identity and access management, such as those relating to "
+        },
+        {
+          "chunkId": "000162828026008131#0063",
+          "documentId": "000162828026008131",
+          "section": "Item 1A",
+          "anchor": "ology companies, securities exchanges, clearing houses, financial messaging networks and other financial market infrastructures increases th"
+        },
+        {
+          "chunkId": "000162828026008131#0065",
+          "documentId": "000162828026008131",
+          "section": "Item 1A",
+          "anchor": "e confidential information obtained by intercepting signals or communications from mobile devices used by jpmorganchase’s employees. jpmorga"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.730Z"
@@ -644,6 +758,12 @@
           "documentId": "000032019324000123",
           "section": "Item 7A",
           "anchor": "ns, including accounting considerations or prohibitive cost. the company applied a value-at-risk (“var”) model to its foreign currency deriv"
+        },
+        {
+          "chunkId": "000032019325000079#0074",
+          "documentId": "000032019325000079",
+          "section": "Item 7A",
+          "anchor": " to protect against interest rate risk, the company may use derivative instruments, offset interest rate–sensitive assets and liabilities, o"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.730Z"
@@ -673,6 +793,18 @@
           "documentId": "000001961725000270",
           "section": "Item 7",
           "anchor": "1 | 49,552 | 18 diluted earnings per share | 19.75 | 16.23 | 22 selected ratios and metrics return on common equity | 18 | % | 17 | % return"
+        },
+        {
+          "chunkId": "000162828026008131#0161",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": "st income excluding markets | $92,591 | $92,419 | 90,041 $average interest-earning assets(a) | $3,834,359 | $3,537,567 | 3,325,708 less: ave"
+        },
+        {
+          "chunkId": "000162828026008131#0131",
+          "documentId": "000162828026008131",
+          "section": "Item 7",
+          "anchor": "sses | 14,212 | 10,678 | 33 net income | 57,048 | 58,471 | (2) diluted earnings per share | 20.02 | 19.75 | 1 selected ratios and metrics re"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.730Z"
@@ -734,6 +866,12 @@
           "documentId": "000007800326000026",
           "section": "Item 7",
           "anchor": "nes the components of the net change in total revenues: see the total revenues by geography and total revenues––selected product discussion "
+        },
+        {
+          "chunkId": "000007800326000026#0149",
+          "documentId": "000007800326000026",
+          "section": "Item 7",
+          "anchor": "lly. pfizer inc. | 2025 form 10-k | 31 the following chart outlines the components of the net change in total revenues: see the total revenu"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.731Z"
@@ -763,6 +901,12 @@
           "documentId": "000119312526323660",
           "section": "Item 1A",
           "anchor": "xpanding manufacturing or supply capacity for certain components may require significant investments and multi-year lead times. as component"
+        },
+        {
+          "chunkId": "000032019325000079#0025",
+          "documentId": "000032019325000079",
+          "section": "Item 1A",
+          "anchor": "ble terms, or at all. such disruptions could occur in the future. additionally, the company’s new products often utilize custom components a"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.731Z"
@@ -788,6 +932,12 @@
           "documentId": "000162828026008131",
           "section": "Item 1A",
           "anchor": "ined by intercepting signals or communications from mobile devices used by jpmorganchase’s employees. jpmorganchase could become increasingl"
+        },
+        {
+          "chunkId": "000162828026008131#0065",
+          "documentId": "000162828026008131",
+          "section": "Item 1A",
+          "anchor": "e confidential information obtained by intercepting signals or communications from mobile devices used by jpmorganchase’s employees. jpmorga"
         }
       ],
       "labelledAt": "2026-08-24T16:24:15.731Z"
