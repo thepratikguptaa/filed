@@ -21,17 +21,23 @@ Corpus:
 Given a question, decide what to search for. Return JSON:
 {
   "needsRetrieval": boolean,
+  "questionType": "single-fact" | "comparison" | "exploratory",
   "searches": [{ "query": string, "purpose": string, "tickers": string[], "fiscalYears": number[], "sections": string[] }]
 }
 
 Rules:
+- Classify the question:
+  - "single-fact": asks for one specific figure, fact, or disclosure from one company in one year. Examples: "What was Apple's total revenue in FY2025?", "What is JPMorgan's CET1 ratio?"
+  - "comparison": compares across companies, years, or metrics. Examples: "How did net income change from FY2024 to FY2025?", "Compare Apple and Microsoft R&D spending."
+  - "exploratory": asks about risks, strategy, qualitative disclosures, company overview, or broad topics. Examples: "What is Apple?", "What does Pfizer do?", "What cybersecurity risks does JPMorgan identify?"
 - Rewrite the question into search queries that use the vocabulary a filing would actually use. Filings say "Additions to property and equipment", not "capital expenditures"; "loss of exclusivity", not "patent cliff".
+- If a question asks what a company is, what it does, or asks for a general business overview (e.g. "what is Apple?", "tell me about JPMorgan", "what is Pfizer?"), plan a search for its business overview in Item 1 (query: "business overview products services", tickers: [matched ticker], sections: ["Item 1"]).
 - Decompose anything that spans companies or years into one search per company per year. A question comparing FY2024 and FY2025 needs a separate search for each.
 - Set tickers and fiscalYears when the question names a company or year. Use empty arrays otherwise.
 - Use sections only when the question explicitly names an Item, or when you are certain which Item holds the answer. Cover pages, addresses and exhibit lists have no section, so a section filter hides them. When unsure, leave sections empty.
 - Only use values that exist in the corpus above.
 - Prefer 1 search for a simple lookup, 2 to 4 for a comparison.
-- needsRetrieval is false only for questions that are not about the filings at all.`;
+- needsRetrieval is false ONLY for questions that are completely unrelated to any company, business, finance, or filing in the corpus (e.g. "what is the capital of France?", "tell me a joke"). If the question mentions any company, ticker, product, or topic in the corpus, needsRetrieval MUST be true.`;
 
 const ASSESS_PROMPT = `You judge whether retrieved SEC filing passages are enough to answer a question. You do not answer it.
 
@@ -148,8 +154,9 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
     ],
     { json: true, maxTokens: 700 },
   );
-  const plan = parseJson<{ needsRetrieval?: boolean; searches?: RawSearch[] }>(planRaw);
+  const plan = parseJson<{ needsRetrieval?: boolean; questionType?: string; searches?: RawSearch[] }>(planRaw);
   let queue = toPlanned(plan?.searches, maxSearches, vocab);
+  const questionType = plan?.questionType ?? "exploratory";
 
   steps.push({
     iteration: 0,
@@ -157,18 +164,76 @@ export async function agenticRetrieve(question: string, options: AgentOptions = 
     detail:
       queue.length === 0
         ? "No searches planned; falling back to the question as written."
-        : `Planned ${queue.length} search${queue.length === 1 ? "" : "es"}`,
+        : `Planned ${queue.length} search${queue.length === 1 ? "" : "es"} (${questionType})`,
     elapsedMs: Date.now() - planStarted,
   });
 
-  if (plan?.needsRetrieval === false) {
+    const companyKeywords: Record<string, string> = {
+      apple: "AAPL",
+      aapl: "AAPL",
+      microsoft: "MSFT",
+      msft: "MSFT",
+      jpmorgan: "JPM",
+      chase: "JPM",
+      jpm: "JPM",
+      pfizer: "PFE",
+      pfe: "PFE",
+      exxon: "XOM",
+      mobil: "XOM",
+      xom: "XOM",
+    };
+    const questionLower = question.toLowerCase();
+    const matchedTicker = Object.entries(companyKeywords).find(([kw]) =>
+      new RegExp(`\\b${kw}\\b`, "i").test(questionLower),
+    )?.[1];
+
+    if (plan?.needsRetrieval === false && !matchedTicker) {
+      return {
+        chunks: [],
+        trace: { question, steps, searches: 0, iterations: 0, stoppedBecause: "no-retrieval-needed" },
+      };
+    }
+
+    if (queue.length === 0) {
+      if (matchedTicker) {
+        queue = [
+          {
+            query: `${question} business overview products and services`,
+            purpose: `Overview for ${matchedTicker}`,
+            filters: { tickers: [matchedTicker], sections: ["Item 1"] },
+          },
+        ];
+      } else {
+        queue = [{ query: question }];
+      }
+    }
+
+  // Single-fact shortcut: for simple numeric/factual lookups, hybrid+rerank
+  // has better recall than the full agent loop (56% vs 44% on numeric questions).
+  // Skip the assess loop and return the first search result directly.
+  if (questionType === "single-fact" && queue.length === 1) {
+    const search = queue[0];
+    const started = Date.now();
+    const chunks = await retrieve(search.query, {
+      strategy: "hybrid+rerank",
+      k,
+      filters: search.filters,
+    });
+    steps.push({
+      iteration: 1,
+      kind: "search",
+      detail: search.purpose ?? "Single-fact direct search",
+      query: search.query,
+      filters: search.filters,
+      results: chunks.length,
+      newResults: chunks.length,
+      elapsedMs: Date.now() - started,
+    });
     return {
-      chunks: [],
-      trace: { question, steps, searches: 0, iterations: 0, stoppedBecause: "no-retrieval-needed" },
+      chunks,
+      trace: { question, steps, searches: 1, iterations: 1, stoppedBecause: "sufficient" },
     };
   }
-
-  if (queue.length === 0) queue = [{ query: question }];
 
   while (queue.length > 0 && iteration < maxIterations) {
     iteration += 1;

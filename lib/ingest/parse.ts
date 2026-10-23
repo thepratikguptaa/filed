@@ -1,14 +1,14 @@
 import { createHash } from "node:crypto";
 import * as cheerio from "cheerio";
 import type { AnyNode, Element } from "domhandler";
-import type { Block, ParsedFiling, Section } from "../types";
+import type { Block, FilingType, ParsedFiling, Section } from "../types";
 
 const BLOCK_TAGS = new Set([
   "p", "div", "li", "tr", "h1", "h2", "h3", "h4", "h5", "h6",
   "section", "article", "blockquote", "ul", "ol", "dd", "dt", "td", "th", "br",
 ]);
 
-const ITEM_HEADING = /^item\s+(\d{1,2}[A-Ca-c]?)\s*[.:—-]?\s*(.{0,120})$/i;
+const ITEM_HEADING = /^(?:part\s+([iIvV]{1,2})\s*[-—–.:,]\s*)?item\s+(\d{1,2}[A-Ca-c]?)\s*[.:—-]?\s*(.{0,120})$/i;
 
 const ITEM_TITLES: Record<string, string> = {
   "1": "Business",
@@ -33,6 +33,24 @@ const ITEM_TITLES: Record<string, string> = {
   "14": "Principal Accountant Fees and Services",
   "15": "Exhibits and Financial Statement Schedules",
   "16": "Form 10-K Summary",
+};
+
+const ITEM_TITLES_10Q: Record<string, string> = {
+  "1": "Financial Statements",
+  "2": "Management's Discussion and Analysis",
+  "3": "Quantitative and Qualitative Disclosures About Market Risk",
+  "4": "Controls and Procedures",
+  "PART I - ITEM 1": "Financial Statements",
+  "PART I - ITEM 2": "Management's Discussion and Analysis",
+  "PART I - ITEM 3": "Quantitative and Qualitative Disclosures About Market Risk",
+  "PART I - ITEM 4": "Controls and Procedures",
+  "PART II - ITEM 1": "Legal Proceedings",
+  "PART II - ITEM 1A": "Risk Factors",
+  "PART II - ITEM 2": "Unregistered Sales of Equity Securities",
+  "PART II - ITEM 3": "Defaults Upon Senior Securities",
+  "PART II - ITEM 4": "Mine Safety Disclosures",
+  "PART II - ITEM 5": "Other Information",
+  "PART II - ITEM 6": "Exhibits",
 };
 
 function clean(value: string): string {
@@ -105,22 +123,46 @@ function collectBlocks($: cheerio.CheerioAPI, node: AnyNode, out: Block[]): void
   }
 }
 
-function headingFor(block: Block): { item: string; title: string } | null {
+function headingFor(block: Block, filingType: FilingType = "10-K"): { item: string; title: string } | null {
   if (block.kind !== "text" || block.text.length > 140) return null;
   const match = ITEM_HEADING.exec(block.text);
   if (!match) return null;
-  const item = match[1].toUpperCase();
-  if (!(item in ITEM_TITLES)) return null;
-  const trailing = clean(match[2]).replace(/\.+$/, "");
-  return { item, title: trailing.length > 3 ? trailing : ITEM_TITLES[item] };
+  const part = match[1]?.toUpperCase();
+  const itemNum = match[2].toUpperCase();
+  const trailing = clean(match[3]).replace(/\.+$/, "");
+
+  if (part) {
+    const partKey = `PART ${part} - ITEM ${itemNum}`;
+    const defaultTitle = ITEM_TITLES_10Q[partKey] ?? (filingType === "10-Q" ? ITEM_TITLES_10Q[itemNum] : ITEM_TITLES[itemNum]);
+    if (!defaultTitle) return null;
+    return {
+      item: partKey,
+      title: trailing.length > 3 ? trailing : defaultTitle,
+    };
+  }
+
+  if (filingType === "10-Q") {
+    if (!(itemNum in ITEM_TITLES_10Q) && !(itemNum in ITEM_TITLES)) return null;
+    const defaultTitle = ITEM_TITLES_10Q[itemNum] ?? ITEM_TITLES[itemNum];
+    return {
+      item: `Item ${itemNum}`,
+      title: trailing.length > 3 ? trailing : defaultTitle,
+    };
+  }
+
+  if (!(itemNum in ITEM_TITLES)) return null;
+  return {
+    item: `Item ${itemNum}`,
+    title: trailing.length > 3 ? trailing : ITEM_TITLES[itemNum],
+  };
 }
 
-function mergeShortText(blocks: Block[]): Block[] {
+function mergeShortText(blocks: Block[], filingType: FilingType = "10-K"): Block[] {
   const merged: Block[] = [];
   let previousWasHeading = false;
 
   for (const block of blocks) {
-    const isHeading = headingFor(block) !== null;
+    const isHeading = headingFor(block, filingType) !== null;
     const previous = merged[merged.length - 1];
     if (
       !isHeading &&
@@ -183,23 +225,23 @@ function splitIncorporatedReport(section: Section): Section[] {
   return parts;
 }
 
-export function parseFiling(html: string): ParsedFiling {
+export function parseFiling(html: string, filingType: FilingType = "10-K"): ParsedFiling {
   const $ = cheerio.load(html);
   $("script, style, ix\\:header, [style*='display:none'], [style*='display: none']").remove();
 
   const blocks: Block[] = [];
   const body = $("body").get(0);
   collectBlocks($, body ?? $.root().get(0)!, blocks);
-  const normalized = mergeShortText(blocks);
+  const normalized = mergeShortText(blocks, filingType);
 
   const sections: Section[] = [];
   let current: Section = { item: null, title: "Front Matter", blocks: [] };
 
   for (const block of normalized) {
-    const heading = headingFor(block);
+    const heading = headingFor(block, filingType);
     if (heading) {
       sections.push(current);
-      current = { item: `Item ${heading.item}`, title: heading.title, blocks: [] };
+      current = { item: heading.item, title: heading.title, blocks: [] };
       continue;
     }
     current.blocks.push(block);

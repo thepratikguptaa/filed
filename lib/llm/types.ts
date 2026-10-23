@@ -12,4 +12,5 @@ export interface CompletionOptions {
 export interface LlmProvider {
   readonly id: string;
   complete(messages: Message[], options?: CompletionOptions): Promise<string>;
+  stream(messages: Message[], options?: CompletionOptions): AsyncIterable<string>;
 }

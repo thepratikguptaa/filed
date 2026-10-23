@@ -16,6 +16,7 @@ async function search(query: string, k: number, mode: "all" | "any", filters?: R
     select
       id, document_id, company, ticker, filing_type, fiscal_year,
       section, section_title, position, text, token_count, has_table, content_hash,
+      (select source_url from documents where id = chunks.document_id) as source_url,
       ts_rank_cd(search_vector, q.tsq, 32) as score
     from chunks, q
     where search_vector @@ q.tsq and ${metadataClause(sql, filters)}

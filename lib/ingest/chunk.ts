@@ -105,9 +105,42 @@ function isCaption(block: Block): boolean {
   return block.kind === "text" && block.text.length < 220 && CAPTION_HINT.test(block.text);
 }
 
-function buildHeader(filing: FilingRef, section: Section, caption: string | null): string {
+/**
+ * Extract years from a table's header row. SEC tables typically label columns
+ * with dates like "December 31, 2024" or just "2025". Returns sorted unique
+ * years found, which lets us distinguish restated prior-year tables from
+ * current-year tables within the same filing.
+ */
+const TABLE_YEAR_PATTERN = /\b(20\d{2})\b/g;
+
+function extractTablePeriods(blocks: Block[]): number[] {
+  const years = new Set<number>();
+  for (const block of blocks) {
+    if (block.kind !== "table") continue;
+    // Look at the first two rows of the table (header area)
+    const rows = block.text.split("\n").slice(0, 2);
+    for (const row of rows) {
+      for (const match of row.matchAll(TABLE_YEAR_PATTERN)) {
+        const year = Number(match[1]);
+        if (year >= 2000 && year <= 2099) years.add(year);
+      }
+    }
+  }
+  return [...years].sort();
+}
+
+function buildHeader(filing: FilingRef, section: Section, caption: string | null, tablePeriods?: number[]): string {
   const where = section.item ? `${section.item} ${section.title}` : "front matter";
-  const base = `${filing.company} (${filing.ticker}) FY${filing.fiscalYear} ${filing.filingType} · ${where}`;
+  let base = `${filing.company} (${filing.ticker}) FY${filing.fiscalYear} ${filing.filingType} · ${where}`;
+
+  // When a table's column headers reference specific years, include them
+  // so the embedder/retriever can distinguish e.g. a 2024 table restated
+  // inside an FY2025 filing from the actual 2025 table.
+  if (tablePeriods && tablePeriods.length > 0) {
+    const periodLabel = tablePeriods.map((y) => String(y)).join(", ");
+    base = `${base} · table periods: ${periodLabel}`;
+  }
+
   if (!caption) return base;
 
   const room = HEADER_BUDGET - countTokens(base) - 4;
@@ -136,7 +169,9 @@ export function chunkFiling(filing: FilingRef, sections: Section[]): ChunkInput[
     const flush = () => {
       if (buffer.length === 0 || buffer.length === carried) return;
       const body = render(buffer);
-      const header = buildHeader(filing, section, buffer.some((b) => b.kind === "table") ? caption : null);
+      const hasTable = buffer.some((b) => b.kind === "table");
+      const tablePeriods = hasTable ? extractTablePeriods(buffer) : undefined;
+      const header = buildHeader(filing, section, hasTable ? caption : null, tablePeriods);
       const text = `${header}\n\n${body}`;
       const tokenCount = countTokens(text);
       if (tokenCount > chunking.maxTokens) {
@@ -159,7 +194,7 @@ export function chunkFiling(filing: FilingRef, sections: Section[]): ChunkInput[
           text,
           tokenCount,
           contentHash: createHash("sha256").update(text).digest("hex"),
-          hasTable: buffer.some((block) => block.kind === "table"),
+          hasTable,
         });
         position += 1;
       }

@@ -1,14 +1,17 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CitationText } from "@/components/citation-text";
 import { SourceCard } from "@/components/source-card";
 import { AgentTraceView } from "@/components/agent-trace";
-import type { AnswerResult } from "@/lib/answer";
-import type { CorpusStats } from "@/lib/corpus";
+import type { AnswerCitation } from "@/lib/answer";
+import type { AgentStep, AgentTrace } from "@/lib/agent/types";
+import { type CorpusStats, getCompanyFullName } from "@/lib/companies";
+import type { Chunk } from "@/lib/types";
+import type { StreamEvent } from "@/lib/answer-stream";
 
 const EXAMPLES = [
   "What was Apple's total net sales in fiscal 2025?",
@@ -18,43 +21,173 @@ const EXAMPLES = [
   "How did JPMorgan's net interest income change from FY2024 to FY2025?",
 ];
 
+interface StreamResult {
+  question: string;
+  trace: AgentTrace | null;
+  citations: AnswerCitation[];
+  chunks: Chunk[];
+  draftAnswer: string;
+  finalAnswer: string | null;
+  usedChunkIds: string[];
+  model: string;
+  elapsedMs: number;
+}
+
+function emptyResult(question: string): StreamResult {
+  return {
+    question,
+    trace: null,
+    citations: [],
+    chunks: [],
+    draftAnswer: "",
+    finalAnswer: null,
+    usedChunkIds: [],
+    model: "",
+    elapsedMs: 0,
+  };
+}
+
 export function Console({ stats }: { stats: CorpusStats }) {
   const [question, setQuestion] = useState("");
-  const [result, setResult] = useState<AnswerResult | null>(null);
+  const [result, setResult] = useState<StreamResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [phase, setPhase] = useState<"idle" | "retrieving" | "answering" | "attributing" | "done">("idle");
   const [hovered, setHovered] = useState<string | null>(null);
+  const [liveSteps, setLiveSteps] = useState<AgentStep[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  async function ask(value: string) {
+  // Conversation history: last completed Q&A pair
+  const lastTurnRef = useRef<{ question: string; answer: string } | null>(null);
+
+  const ask = useCallback(async (value: string) => {
     const trimmed = value.trim();
     if (!trimmed || pending) return;
 
     setPending(true);
     setError(null);
-    setResult(null);
+    setResult(emptyResult(trimmed));
+    setPhase("retrieving");
+    setLiveSteps([]);
 
     try {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: trimmed }),
+        body: JSON.stringify({
+          question: trimmed,
+          history: lastTurnRef.current,
+        }),
       });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error ?? "Request failed.");
-      setResult(payload as AnswerResult);
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error((payload as { error?: string }).error ?? "Request failed.");
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No stream available.");
+
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let currentDraft = "";
+      const collectedSteps: AgentStep[] = [];
+
+      while (true) {
+        const { done, value: chunk } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(chunk, { stream: true });
+
+        // Parse SSE events from the buffer
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        let eventType = "";
+        let eventData = "";
+
+        for (const line of lines) {
+          if (line.startsWith("event: ")) {
+            eventType = line.slice(7).trim();
+          } else if (line.startsWith("data: ")) {
+            eventData = line.slice(6);
+
+            if (!eventType || !eventData) continue;
+
+            try {
+              const event = JSON.parse(eventData) as StreamEvent;
+
+              switch (event.type) {
+                case "trace": {
+                  collectedSteps.push(event.step);
+                  setLiveSteps([...collectedSteps]);
+                  break;
+                }
+                case "sources": {
+                  setPhase("answering");
+                  setResult((prev) =>
+                    prev
+                      ? { ...prev, citations: event.citations, chunks: event.chunks }
+                      : null,
+                  );
+                  break;
+                }
+                case "answer-delta": {
+                  currentDraft += event.text;
+                  const draft = currentDraft;
+                  setResult((prev) =>
+                    prev ? { ...prev, draftAnswer: draft } : null,
+                  );
+                  break;
+                }
+                case "answer-done": {
+                  setPhase("done");
+                  setResult((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          finalAnswer: event.answer,
+                          usedChunkIds: event.usedChunkIds,
+                          model: event.model,
+                          elapsedMs: event.elapsedMs,
+                          trace: event.trace ?? prev.trace,
+                        }
+                      : null,
+                  );
+                  // Save for follow-up context
+                  lastTurnRef.current = { question: trimmed, answer: event.answer };
+                  break;
+                }
+                case "error": {
+                  throw new Error(event.message);
+                }
+              }
+            } catch (e) {
+              if (e instanceof Error && e.message !== eventData) throw e;
+              // Skip malformed JSON lines
+            }
+
+            eventType = "";
+            eventData = "";
+          }
+        }
+      }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Something went wrong.");
+      setPhase("idle");
     } finally {
       setPending(false);
     }
-  }
+  }, [pending]);
 
   function scrollToSource(marker: string) {
     document.getElementById(`source-${marker}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
     setHovered(marker);
     window.setTimeout(() => setHovered(null), 1200);
   }
+
+  const displayAnswer = result?.finalAnswer ?? result?.draftAnswer ?? "";
+  const showResult = result && (displayAnswer || result.citations.length > 0);
 
   return (
     <div className="mx-auto w-full max-w-[1180px] px-6 pb-24 sm:px-10">
@@ -65,7 +198,7 @@ export function Console({ stats }: { stats: CorpusStats }) {
             Evidence from SEC filings, with every claim traced to a source passage.
           </p>
         </div>
-        <dl className="flex items-end gap-6">
+        <dl className="flex flex-wrap items-baseline gap-x-6 gap-y-3">
           <div>
             <dt className="text-[10px] uppercase tracking-[0.11em] text-muted-foreground">Filings</dt>
             <dd className="numeric mt-0.5 text-[15px] text-foreground">{stats.documents}</dd>
@@ -74,10 +207,10 @@ export function Console({ stats }: { stats: CorpusStats }) {
             <dt className="text-[10px] uppercase tracking-[0.11em] text-muted-foreground">Passages</dt>
             <dd className="numeric mt-0.5 text-[15px] text-foreground">{stats.chunks.toLocaleString()}</dd>
           </div>
-          <div>
+          <div className="max-w-xl">
             <dt className="text-[10px] uppercase tracking-[0.11em] text-muted-foreground">Companies</dt>
-            <dd className="mt-0.5 text-[15px] text-foreground">
-              {stats.companies.map((company) => company.ticker).join(" · ")}
+            <dd className="mt-0.5 text-[14px] leading-snug text-foreground">
+              {stats.companies.map((company) => company.company || getCompanyFullName(company.ticker)).join(" · ")}
             </dd>
           </div>
         </dl>
@@ -122,8 +255,23 @@ export function Console({ stats }: { stats: CorpusStats }) {
         ))}
       </div>
 
+      {/* Live retrieval trace — shown during agent retrieval */}
+      <AnimatePresence>
+        {pending && liveSteps.length > 0 && phase === "retrieving" && (
+          <motion.div
+            key="live-trace"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <AgentTraceView trace={{ steps: liveSteps }} live />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Streaming skeleton when waiting for sources */}
       <AnimatePresence mode="wait">
-        {pending && (
+        {pending && liveSteps.length === 0 && !showResult && (
           <motion.div
             key="pending"
             initial={{ opacity: 0 }}
@@ -148,7 +296,7 @@ export function Console({ stats }: { stats: CorpusStats }) {
           </motion.p>
         )}
 
-        {result && !pending && (
+        {showResult && (
           <motion.div
             key={result.question}
             initial={{ opacity: 0, y: 8 }}
@@ -158,19 +306,39 @@ export function Console({ stats }: { stats: CorpusStats }) {
           >
             <section>
               <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2">
-                <h2 className="text-[10px] uppercase tracking-[0.11em] text-muted-foreground">Answer</h2>
+                <h2 className="text-[10px] uppercase tracking-[0.11em] text-muted-foreground">
+                  Answer
+                  {phase !== "done" && (
+                    <span className="ml-2 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-marker" />
+                  )}
+                </h2>
                 <span className="numeric text-[11px] text-muted-foreground">
-                  {result.chunks.length} passages · {(result.elapsedMs / 1000).toFixed(1)}s
+                  {result.chunks.length > 0 && `${result.chunks.length} passages`}
+                  {result.elapsedMs > 0 && ` · ${(result.elapsedMs / 1000).toFixed(1)}s`}
+                  {phase === "attributing" && " · verifying citations…"}
                 </span>
               </div>
               <div className="pt-5">
                 <CitationText
-                  text={result.answer}
+                  text={displayAnswer}
                   onHoverMarker={setHovered}
                   onSelectMarker={scrollToSource}
                 />
               </div>
-              {result.trace && <AgentTraceView trace={result.trace} />}
+
+              {/* Show trace after completion, or live trace after retrieval phase */}
+              {result.trace && phase === "done" && <AgentTraceView trace={result.trace} />}
+              {!result.trace && liveSteps.length > 0 && phase !== "retrieving" && (
+                <AgentTraceView
+                  trace={{
+                    question: result.question,
+                    steps: liveSteps,
+                    searches: liveSteps.filter((s) => s.kind === "search").length,
+                    iterations: liveSteps.length > 0 ? liveSteps[liveSteps.length - 1].iteration : 0,
+                    stoppedBecause: "sufficient",
+                  }}
+                />
+              )}
 
               <p className="mt-8 border-t border-border pt-4 text-[11px] leading-relaxed text-muted-foreground">
                 Filed reports what the filings say and cites where. It does not give investment advice.
@@ -181,7 +349,7 @@ export function Console({ stats }: { stats: CorpusStats }) {
               <div className="flex items-baseline justify-between gap-4 border-b border-border pb-2">
                 <h2 className="text-[10px] uppercase tracking-[0.11em] text-muted-foreground">Retrieved</h2>
                 <span className="numeric text-[11px] text-muted-foreground">
-                  {result.usedChunkIds.length} cited
+                  {result.usedChunkIds.length > 0 && `${result.usedChunkIds.length} cited`}
                 </span>
               </div>
               <ul className="mt-1 rounded-[3px] border border-border bg-card">

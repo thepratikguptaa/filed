@@ -23,5 +23,19 @@ export function azureLlm(): LlmProvider {
       });
       return response.choices[0]?.message?.content?.trim() ?? "";
     },
+    async *stream(messages: Message[], options: CompletionOptions = {}): AsyncIterable<string> {
+      const response = await client.chat.completions.create({
+        model: deployment,
+        messages,
+        temperature: options.temperature ?? 0,
+        max_tokens: options.maxTokens ?? 900,
+        stream: true,
+        ...(options.json ? { response_format: { type: "json_object" as const } } : {}),
+      });
+      for await (const chunk of response) {
+        const delta = chunk.choices[0]?.delta?.content;
+        if (delta) yield delta;
+      }
+    },
   };
 }

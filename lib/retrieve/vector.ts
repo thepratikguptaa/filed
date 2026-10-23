@@ -18,6 +18,7 @@ export interface ChunkRow {
   token_count: number;
   has_table: boolean;
   content_hash: string;
+  source_url?: string;
   score: number;
 }
 
@@ -38,6 +39,7 @@ export function rowToChunk(row: ChunkRow): Chunk {
     tokenCount: row.token_count,
     hasTable: row.has_table,
     contentHash: row.content_hash,
+    sourceUrl: row.source_url ?? undefined,
     score: Number(row.score),
   };
 }
@@ -60,6 +62,7 @@ async function vectorSearchByEmbedding(
         select
           id, document_id, company, ticker, filing_type, fiscal_year,
           section, section_title, position, text, token_count, has_table, content_hash,
+          (select source_url from documents where id = chunks.document_id) as source_url,
           1 - (embedding <=> ${literal}::vector) as score
         from chunks
         where embedding is not null and ${metadataClause(tx, filters)}

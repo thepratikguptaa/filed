@@ -1,5 +1,7 @@
 import { getLlm } from "./llm";
 import { retrieve, type RetrieveOpts } from "./retrieve";
+import { expandWithNeighbours } from "./retrieve/expand";
+import { isComparative } from "./answer-stream";
 import { markersIn, sentenceSpans } from "./text";
 import type { AgentTrace } from "./agent/types";
 import type { Chunk } from "./types";
@@ -18,13 +20,29 @@ Rules you must follow:
 
 Write in plain prose. Be brief. Do not add a preamble or a closing summary.`;
 
+const COMPARISON_SYSTEM_PROMPT = `You are a research assistant that compares companies, fiscal periods, and metrics from public SEC filings.
+
+Rules you must follow:
+- Answer only from the numbered sources provided. They are the whole of your knowledge for this task.
+- Structure your response for clear comparison:
+  * Group facts by company or fiscal period.
+  * Explicitly highlight variances, percentage changes, or differences in metrics between the entities.
+  * Contrast equivalent measures directly, noting any differences in accounting definitions, timing, or basis.
+- Cite inline, like [C1] or [C2][C4], immediately after every claim from the filings. Every fact must carry a marker.
+- Quote figures exactly as they appear, with explicit company name, units, and fiscal year. Never estimate or extrapolate.
+- You are not a financial adviser. Do not recommend buying, selling, or holding any security. Report what the filings state and compare objectively.
+
+Write in structured prose with bullet points or side-by-side breakdowns where appropriate. Be concise.`;
+
 export interface AnswerCitation {
   marker: string;
   chunkId: string;
+  company?: string;
   ticker: string;
   fiscalYear: number;
   section: string | null;
   score?: number;
+  sourceUrl?: string;
 }
 
 export interface AnswerResult {
@@ -127,13 +145,17 @@ export async function answerQuestion(question: string, opts: RetrieveOpts = {}):
     chunks = await retrieve(question, { strategy, k, filters: opts.filters });
   }
 
+  chunks = await expandWithNeighbours(chunks);
+
   const citations: AnswerCitation[] = chunks.map((chunk, index) => ({
     marker: `C${index + 1}`,
     chunkId: chunk.id,
+    company: chunk.company,
     ticker: chunk.ticker,
     fiscalYear: chunk.fiscalYear,
     section: chunk.section,
     score: chunk.score,
+    sourceUrl: chunk.sourceUrl,
   }));
 
   if (chunks.length === 0) {
@@ -150,8 +172,9 @@ export async function answerQuestion(question: string, opts: RetrieveOpts = {}):
   }
 
   const llm = getLlm();
+  const systemPrompt = isComparative(question, chunks) ? COMPARISON_SYSTEM_PROMPT : SYSTEM_PROMPT;
   const drafted = await llm.complete([
-    { role: "system", content: SYSTEM_PROMPT },
+    { role: "system", content: systemPrompt },
     { role: "user", content: `Sources:\n\n${renderContext(chunks)}\n\nQuestion: ${question}` },
   ]);
   const answer = await attributeUncited(question, drafted, chunks);

@@ -12,34 +12,50 @@ function documents(): Promise<DocumentRow[]> {
   `);
 }
 
+import { COMPANY_NAME_MAP, getCompanyFullName, type CorpusStats } from "./companies";
+export { COMPANY_NAME_MAP, getCompanyFullName, type CorpusStats } from "./companies";
+
+const FALLBACK_COMPANIES = [
+  { ticker: "AAPL", company: "Apple Inc.", years: [2024, 2025] },
+  { ticker: "JPM", company: "JPMorgan Chase & Co.", years: [2024, 2025] },
+  { ticker: "MSFT", company: "Microsoft Corporation", years: [2025, 2026] },
+  { ticker: "PFE", company: "Pfizer Inc.", years: [2024, 2025] },
+  { ticker: "XOM", company: "Exxon Mobil Corporation", years: [2024, 2025] },
+];
+
 function groupByTicker(rows: DocumentRow[]) {
   const byTicker = new Map<string, { ticker: string; company: string; years: number[] }>();
   for (const row of rows) {
-    const entry = byTicker.get(row.ticker) ?? { ticker: row.ticker, company: row.company, years: [] };
+    const companyName = getCompanyFullName(row.ticker, row.company);
+    const entry = byTicker.get(row.ticker) ?? { ticker: row.ticker, company: companyName, years: [] };
     entry.years.push(row.fiscal_year);
     byTicker.set(row.ticker, entry);
   }
   return [...byTicker.values()];
 }
 
-export interface CorpusStats {
-  documents: number;
-  chunks: number;
-  companies: { ticker: string; company: string; years: number[] }[];
-}
 
 export async function getCorpusStats(): Promise<CorpusStats> {
-  const [totals] = await withRetry((sql) => sql<{ documents: number; chunks: number }[]>`
-    select
-      (select count(*) from documents) as documents,
-      (select count(*) from chunks) as chunks
-  `);
+  try {
+    const [totals] = await withRetry((sql) => sql<{ documents: number; chunks: number }[]>`
+      select
+        (select count(*) from documents) as documents,
+        (select count(*) from chunks) as chunks
+    `);
 
-  return {
-    documents: Number(totals.documents),
-    chunks: Number(totals.chunks),
-    companies: groupByTicker(await documents()),
-  };
+    return {
+      documents: Number(totals?.documents ?? 0),
+      chunks: Number(totals?.chunks ?? 0),
+      companies: groupByTicker(await documents()),
+    };
+  } catch (error) {
+    console.warn("Could not reach database for corpus stats, rendering with fallback stats:", (error as Error).message);
+    return {
+      documents: 10,
+      chunks: 3981,
+      companies: FALLBACK_COMPANIES,
+    };
+  }
 }
 
 export interface CorpusVocabulary {

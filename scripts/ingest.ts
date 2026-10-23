@@ -9,12 +9,13 @@ function flag(name: string): string | undefined {
 async function main() {
   const companies = flag("companies")?.split(",").map((value) => value.trim().toUpperCase());
   const years = flag("years") ? Number(flag("years")) : undefined;
+  const filingTypes = flag("types")?.split(",").map((value) => value.trim() as "10-K" | "10-Q");
   const force = process.argv.includes("--force");
 
   const started = Date.now();
 
   if (process.argv.includes("--dry")) {
-    const dry = await dryRunCorpus({ companies, years, onProgress: (message) => console.log(message) });
+    const dry = await dryRunCorpus({ companies, years, filingTypes, onProgress: (message) => console.log(message) });
     const chunks = dry.reduce((total, result) => total + result.chunks, 0);
     console.log(`\n${dry.length} filings, ${chunks} chunks, no database or embedding calls made.`);
     return;
@@ -23,6 +24,7 @@ async function main() {
   const results = await ingestCorpus({
     companies,
     years,
+    filingTypes,
     force,
     onProgress: (message) => console.log(message),
   });
